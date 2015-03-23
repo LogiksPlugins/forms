@@ -1,0 +1,32 @@
+.mailform {
+	border:1px solid #777;
+	width:80%;
+}
+.mailform thead {
+	color:#0D57D6;
+	text-align:center;
+	width:100%;
+	
+	font:1.2em bold Georgia,Verdana;
+	font-size:1.2em;
+	font-weight:bold;	
+}
+.mailform thead td {
+	border-bottom:1px solid #aaa;
+}
+.mailform columnName {
+	font:13px bold Georgia,Verdana;
+	font-weight:bold;
+}
+.mailform tfoot {
+	margin-top:10px;
+	font:1.2em bold Georgia,Verdana;
+	font-size:0.7em;
+	font-weight:bold;
+	text-align:center;
+	color:#888;
+}
+.mailform tfoot td {
+	border-top:2px solid #777;
+	text-align:center;
+}

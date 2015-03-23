@@ -1,0 +1,153 @@
+/*Form DataTable Oriented Features*/
+.formDatatable {
+	padding:0px;
+	width:100%;
+	font:12px plain Georgia,Vardana,Seriff;
+	overflow:auto;
+}
+.noFormFound {
+	width:500px;height:170px;
+	margin:auto;margin-top:50px;
+	text-align:center;
+	border:2px solid #aaa;
+}
+.noFormFound h1 {
+	color:maroon;
+	margin:0px;padding:10px;
+	text-align:center;
+}
+.noFormFound h3 {
+	color:#708BC4;
+	margin:0px;margin-top:30px;
+	text-align:left;
+}
+.noFormFound .noFormIcon {
+	background: url(images/alert.png) left top no-repeat;
+	width:100px;height:100px;
+	float:left;	
+	margin-top:25px;margin-left:20px;
+}
+/*DataForm Buttons*/
+.gridbutton {
+	width:25px; height:25px;
+	cursor:pointer;
+	border:0px;
+	background:transparent url(images/buttons/unknown.png) no-repeat center center;
+}
+.gridbutton:hover {
+	opacity:0.5;
+}
+.btn_reload {
+	background:transparent url(images/buttons/reload.png) no-repeat center center;
+}
+.btn_search {
+	background:transparent url(images/buttons/search.png) no-repeat center center;
+}
+.btn_column {
+	background:transparent url(images/buttons/cols.png) no-repeat center center;
+}
+.btn_edit {
+	background:transparent url(images/buttons/edit.png) no-repeat center center;
+}
+.btn_view {
+	background:transparent url(images/buttons/view.png) no-repeat center center;
+}
+.btn_print {
+	background:transparent url(images/buttons/print.png) no-repeat center center;
+}
+.btn_mail {
+	background:transparent url(images/buttons/mail.png) no-repeat center center;
+}
+.btn_info {
+	background:transparent url(images/buttons/info.png) no-repeat center center;
+}
+
+.btn_xls {
+	background:transparent url(images/export/xls.png) no-repeat center center;
+}
+.btn_html {
+	background:transparent url(images/export/html.png) no-repeat center center;
+}
+.btn_xml {
+	background:transparent url(images/export/xml.png) no-repeat center center;
+}
+.btn_new {
+	background:transparent url(images/new.png) no-repeat center center;
+}
+.field_add { background:transparent url(images/buttons/add.png) no-repeat center center;}
+.field_minus { background:transparent url(images/buttons/cancel.png) no-repeat center center;}
+
+.field_open { background:transparent url(images/buttons/cancel.png) no-repeat center center;}
+
+.frmbtn {
+	width:22px; height:22px;float:right;cursor:pointer;
+}
+.frmbtn:hover {
+	opacity:0.7;
+}
+.helpinfo {
+	position:absolute;
+	left:2px;
+	bottom:20px;
+	width:180px;
+	border:2px solid #FF751A;
+	padding:4px;
+	font:15px bold Verdana;
+	opacity:0.8;
+	z-index:100;
+}
+.curWait {
+	cursor:wait;
+}
+.datepopup {
+	background:url(images/calendar.png) no-repeat;	
+}
+
+.formaftermsg {
+	width:50%;
+	height:50%;
+	border:2px solid #777;
+	margin:auto;
+	margin-top:10%;
+	padding:15px;
+}
+
+#formModeDisp {
+	float:right;
+	text-transform:uppercase;
+	font-weight:bold;
+	font-size:1.5em;
+	text-align:center;
+	padding:3px;padding-top:5px;
+	margin-top:2px;margin-right:2px;
+	overflow:hidden;
+	color:white;
+	cursor:pointer;
+	width:80px;
+}
+.filepreviewlink {
+	cursor:pointer;
+	text-transform:capitalize;
+}
+.filepreviewlink:hover {
+	text-decoration:underline;
+	color:maroon;
+}
+
+/*Jquery Fixes*/
+.ui-jqgrid-pager select.ui-pg-selbox, input.ui-pg-input {
+	border:1px solid #aaa;
+}
+.ui-jqgrid-view .ui-jqgrid-hbox table.ui-jqgrid-htable thead input {border:1px solid #aaa;}
+.formTable button.ui-multiselect.ui-widget.ui-state-default.ui-corner-all.ui-state-hover {
+	width:100%;
+}
+
+.datagrid {
+	font-family: sans-serif;
+	font-size: 11px;
+	line-height: 20px;
+}
+.datagrid tr:not(.jqgfirstrow) td[role='gridcell'] {
+	padding: 2px !important;
+}
