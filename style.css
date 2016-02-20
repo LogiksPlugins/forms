@@ -1,0 +1,60 @@
+.formbox {
+    margin-bottom: 20px;
+    position: relative;
+}
+.formbox .formbox-content {
+    padding: 30px;
+    border: 1px solid #dddddd;
+    background: white;
+    display: block;
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+    -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.055);
+}
+.formbox .img-content {
+    padding: 10px;
+    border: 1px dashed #AAA;
+}
+.formbox .formbox-content img.img-responsive {
+    width: 100%;
+}
+.formbox .formbox-content hr {
+    margin-top: 5px;
+    margin-bottom: 7px;
+}
+.formbox .form-icon, .form-actions .form-icon {
+
+}
+.formbox .form-icon.left, .form-actions .form-icon.left {
+    margin-left: 5px;
+}
+.formbox .form-icon.right, .form-actions .form-icon.right {
+    margin-right: 5px;
+}
+
+.formbox .span-required {
+    color: #AA0000;
+}
+
+.formbox .form-group {
+    margin-bottom: 23px;
+}
+
+.formbox .form-group input[type=radio], 
+    .formbox .form-group input[type=checkbox],
+    .formbox .form-group input[type=color] {
+    outline: none;
+    -webkit-box-shadow:none;
+    box-shadow::none;
+}
+.formbox .form-group input[type=color] { 
+    width: 30px;
+    padding: 1px;
+    margin: auto;
+}
+.formbox label.error {
+    font-weight: normal;
+    color: maroon;
+    font-size: 10px;
+    float: right;
+}

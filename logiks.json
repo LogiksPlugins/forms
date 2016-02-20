@@ -1,11 +1,10 @@
 {
-    "name": "forms",
-    "version": "1.0.0",
-    "status": "",
+    "name": "Logiks Forms",
+    "version": "3.0.0",
+    "status": "alpha",
+    "type": "module",
     "package":"forms",
     "type": "module",
-    "app": "*",
-    "privilege": "*",
     "description": "Forms deals with rendering, validating and updating forms used to save and edit data into the system",
     "keywords": "logiks,modules,forms",
     "license": "MIT",
@@ -13,12 +12,8 @@
     "homepage": "https://github.com/LogiksPlugins/forms",
     "bugs": "https://github.com/LogiksPlugins/forms/issues",
     "private": false,
-    "permissions": "",
     "dependencies": {
-        "core": "*",
-    },
-    "directoryMap": {
-        "installer": ".install"
+        "core": "+4.0.0",
     },
     "repository": {
         "type": "git",
