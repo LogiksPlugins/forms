@@ -2,7 +2,8 @@
 if(!defined('ROOT')) exit('No direct script access allowed');
 
 
-echo '<div class="formbox"><div class="formbox-content"><form class="form validate">';
+echo '<div class="formbox"><div class="formbox-content">';
+echo '<form class="form validate" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" >';
 echo "<div class='row'>";
 echo getFormFieldset($formConfig['fields'],$formData,$formConfig['dbkey']);
 echo "</div>";

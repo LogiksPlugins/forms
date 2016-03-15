@@ -22,16 +22,27 @@ if(!function_exists("findForm")) {
 		$formConfig=json_decode(file_get_contents($file),true);
 
 		$formConfig['sourcefile']=$file;
-		$formConfig['formkey']=md5(session_id().$file);
+		if(isset($formConfig['singleton']) && $formConfig['singleton']) {
+			$formConfig['formkey']=md5(session_id().$file);
+		} else {
+			$formConfig['formkey']=md5(session_id().time().$file);
+		}
 
 		return $formConfig;
 	}
 
-	function printForm($mode,$formConfig,$dbKey="app",$preloadData=false) {
-		//var_dump($formConfig);
+	function printForm($mode,$formConfig,$dbKey="app",$whereCondition=false) {
 		if(!is_array($formConfig)) $formConfig=findForm($formConfig);
 
-		if(!isset($formConfig['formkey'])) $formConfig['formkey']=md5(time());
+		if(!is_array($formConfig) || count($formConfig)<=2) {
+			trigger_logikserror("Corrupt form defination");
+			return false;
+		}
+		
+		if(!isset($formConfig['formkey'])) $formConfig['formkey']=md5(rand().time());
+		
+		$formConfig['formcode']=md5($_SESSION['SESS_USER_ID'].$formConfig['sourcefile']);
+		$formConfig['formuid']=md5($formConfig['sourcefile']);
 
 		$formConfig['dbkey']=$dbKey;
 
@@ -56,18 +67,22 @@ if(!function_exists("findForm")) {
 		if(!isset($formConfig['actions'])) {
 			switch ($mode) {
 				case 'update':
+				case 'edit':
 					$formConfig['actions']=[
 							"update"=>[
+								"type"=>"submit",
 								"label"=>"Update",
 								"icon"=>"<i class='fa fa-save form-icon right'></i>"
 							]
 						];
 					break;
 				
+				case 'insert':
 				case 'new':	
 				default:
 					$formConfig['actions']=[
 							"submit"=>[
+								"type"=>"submit",
 								"label"=>"Submit",
 								"icon"=>"<i class='fa fa-save form-icon right'></i>"
 							]
@@ -77,15 +92,33 @@ if(!function_exists("findForm")) {
 		}
 
 		$formData=[];
-		if(is_array($preloadData)) {
-			$formData=array_merge($formData,$preloadData);
-		} elseif($preloadData===true) {
-			//DO DB Operation for extracting Data
-
-
-			//Data Source
+		if($mode=="update") {
+			$source=$formConfig['source'];
+			switch ($source['type']) {
+				case 'sql':
+					$sql=_db($dbKey)->_selectQ($source['table'],array_keys($formConfig['fields']),$whereCondition);
+					$data=$sql->_get();
+					
+					if(isset($data[0])) {
+						$formData=$data[0];
+					} else {
+						$formData=[];
+					}
+				break;
+				case 'php':
+					$file=APPROOT.$source['file'];
+					if(file_exists($file) && is_file($file)) {
+						$formData=include_once($file);
+					} else {
+						trigger_error("Form Data Source File Not Found");
+					}
+				break;
+			}
 		}
 
+		$formConfig['data']=$formData;
+
+		$formConfig['mode']=$mode;
 		
 		$formKey=$formConfig['formkey'];
 		$_SESSION['FORM'][$formKey]=$formConfig;
@@ -125,14 +158,16 @@ if(!function_exists("findForm")) {
 	function getFormActions($formActions=[]) {
 		$html="";
 		foreach ($formActions as $key => $button) {
-			if(!isset($button['class'])) $button['class']="btn-primary btn-lg";
+			if(!isset($button['class'])) $button['class']="btn btn-primary btn-lg";
 			if(isset($button['label'])) $label=$button['label'];
 			else $label=toTitle(_ling($key));
 
 			if(isset($button['icon']))  $icon=$button['icon'];
 			else $icon="";
 
-			$html.="<button type='button' cmd='{$key}' class='btn {$button['class']}'>{$icon}{$label}</button>";
+			if(!isset($button['type'])) $button['type']="button";
+
+			$html.="<button type='{$button['type']}' cmd='{$key}' class='{$button['class']}'>{$icon}{$label}</button>";
 		}
 		return $html;
 	}
@@ -143,7 +178,6 @@ if(!function_exists("findForm")) {
 		$html="<fieldset>";
 		foreach ($fields as $field) {
 			if(!isset($field['fieldkey'])) {
-
 				continue;
 			}
 			
@@ -182,6 +216,9 @@ if(!function_exists("findForm")) {
 		$class="form-control field-{$formKey}";
 		$xtraAttributes=[];
 
+		if(isset($fieldinfo['class']) && strlen($fieldinfo['class'])>0) {
+			$class.=" ".$fieldinfo['class'];
+		}
 		if(isset($fieldinfo['disabled']) && $fieldinfo['disabled']==true) {
 			$xtraAttributes[]="disabled";
 		}
@@ -233,6 +270,10 @@ if(!function_exists("findForm")) {
 			case 'text': case 'password':
 			
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
+				break;
+
+			case 'file':
+				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' placeholder='{$fieldinfo['placeholder']}' type='file'>";
 				break;
 
 			default:

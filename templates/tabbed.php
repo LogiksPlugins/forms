@@ -1,7 +1,6 @@
 <?php
 if(!defined('ROOT')) exit('No direct script access allowed');
 
-
 if(count($fieldGroups)>1) {
 	$groups=array_keys($fieldGroups);
 	echo '<ul class="nav nav-tabs">';
@@ -14,7 +13,7 @@ if(count($fieldGroups)>1) {
 		}
 	}
 	echo '</ul>';
-	echo '<form class="form validate">';
+	echo '<form class="form validate" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" >';
 	echo '<div class="tab-content">';
 	foreach ($groups as $nx=>$fkey) {
 		if($nx==0) {
@@ -36,7 +35,8 @@ if(count($fieldGroups)>1) {
 	echo '</div></div>';
 	echo '</form>';
 } else {
-	echo '<div class="formbox"><div class="formbox-content"><form class="form validate">';
+	echo '<div class="formbox"><div class="formbox-content">';
+	echo '<form class="form validate" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" >';
 	echo "<div class='row'>";
 	echo getFormFieldset($formConfig['fields'],$formData,$formConfig['dbkey']);
 	echo "</div>";
