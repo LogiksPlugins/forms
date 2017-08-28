@@ -52,9 +52,179 @@
     padding: 1px;
     margin: auto;
 }
+.formbox label {
+  font-weight: normal;
+  font-size: 13px;
+  width:100%;
+}
 .formbox label.error {
     font-weight: normal;
     color: maroon;
     font-size: 10px;
     float: right;
+}
+.formbox .input-group label.error {
+  height: 0px;
+  padding: 0px;
+  margin: 0px;
+}
+.formbox .multiselect-native-select > .btn-group .multiselect-selected-text, .formbox .multiselect-native-select button.multiselect .multiselect-selected-text {
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+.formbox .jsonField tbody td {
+  padding: 2px !important;
+}
+.formbox .jsonField tbody td .fa {
+  margin-top: 10px;
+}
+form .form-actions button {
+  margin-left:20px;
+}
+form .form-actions {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+form textarea.form-control {
+  height: 114px;
+}
+form .CodeMirror {
+  min-height: 100px;
+  max-height: 100px;
+}
+form .CodeMirror-scroll {
+  min-height: 100px;
+  max-height: 100px;
+}
+form .nicEdit-panelContain, form .nicEdit-buttonContain>div {
+  background:transparent !important;
+}
+form .nicEdit-main {
+  outline: none;
+}
+form a.field-tips {
+  text-decoration:none;
+}
+
+form .file-input {
+  padding: 3px;
+}
+form .file-input .file-preview {
+  
+}
+form .file-input .file-preview .file-drop,form .file-input .file-preview .file-gallery {
+  display: inline-table;
+  margin-right: 10px;
+  float: left;
+  cursor:pointer;
+}
+form .file-input .file-preview .file-drop .file-upload,form .file-input .file-preview .file-gallery .file-upload {
+  width: 72px;
+  height: 72px;
+  display: inline-block;
+  overflow: hidden;
+  text-align: center;
+  padding-top: 30px;
+  border: 1px dashed #DEDEDE;
+}
+form .file-input .file-preview .file-drop .file-upload i.fa,form .file-input .file-preview .file-gallery .file-upload i.fa {
+  
+}
+form .file-input .file-preview .file-preview-thumbnails {
+  display: inline-table;
+  width: 80%;
+  min-height: 74px;
+  max-height: 148px;
+  display: block;
+  overflow: auto;
+}
+form .file-input .file-preview .file-preview-thumbnails .file-preview-thumb {
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  display:inline-block;
+  border: 1px solid #DEDEDE;
+  padding: 2px;
+  margin-right: 2px;margin-bottom: 2px;
+}
+form .file-input .file-preview .file-preview-thumbnails .file-preview-thumb:hover {
+  background:#F1F1F1;
+  cursor:pointer;
+}
+form .file-input .file-preview .file-preview-thumbnails .file-queue-thumb {
+  width: 72px;
+  height: 72px;
+  overflow: hidden;
+  display:inline-block;
+  border: 1px dashed #AAA;
+  padding: 2px;
+  margin-right: 2px;margin-bottom: 2px;
+}
+form .file-input .file-preview .file-preview-thumbnails img {
+  min-width:100%;min-height:100%;
+  width:100%;
+}
+form .file-input .file-preview .file-preview-thumbnails .fileicon.fa {
+  margin-top: 23px;
+  margin-left: 23px;
+  font-size: 23px;
+}
+form .file-input citie {
+  font-size: 10px;
+  font-weight: bold;
+  font-family: monospace;
+}
+form .file-input .filename {
+  display:none;
+}
+form .file-input .fa-close:hover {
+  background:#CDCDCD;
+}
+form .file-input.file-input-attachment .file-preview .file-preview-thumbnails .file-preview-thumb  {
+  width: 100%;    height: 25px;
+  display: block;
+  padding: 2px;    padding-top: 3px;
+  margin: 0px;    margin-bottom: 5px;
+  border: 0px;
+}
+form .file-input.file-input-attachment .file-preview .file-preview-thumbnails .fileicon.fa {
+  margin: 0px;
+  font-size: 13px;
+  margin-right: 3px;
+}
+form .file-input.file-input-attachment .file-preview .file-preview-thumbnails {
+  max-height: 150px;
+  display: block;
+  height: 140px;
+}
+form .file-input.file-input-attachment .file-preview .file-preview-thumbnails .file-queue-thumb {
+  width: 100%;    height: 25px;
+  display: block;
+  padding: 2px;    padding-top: 3px;
+  margin: 0px;    margin-bottom: 5px;
+  border: 0px;
+}
+form .file-input .fa-close {
+  position: relative;
+  margin-left: 48px;
+  margin-top: 2px;
+  background: white;
+  padding: 2px;
+  padding-left: 3px;
+  padding-right: 3px;
+  border-radius: 50px;
+  cursor:pointer;
+  display:none;
+}
+form .file-input.file-input-attachment .fa-close {
+  margin-top: 2px;
+  position: relative;
+  margin-top: 0px;
+}
+form .file-preview-thumb:hover .fa-close,form .file-queue-thumb:hover .fa-close {
+  display:block;
+}
+form .file-input.file-input-attachment .filename {
+  display:inline;
 }

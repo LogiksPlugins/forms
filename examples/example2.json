@@ -50,14 +50,11 @@
 			"label":"Address",
 			"group":"address"
 		},
-		"country":{
-			"label":"Country",
+		"type":{
+			"label":"Address Type",
 			"group":"address",
-			"type":"dataMethod",
-			"method":{
-				"name":"getCountrySelector",
-				"valuefield":"default"
-			}
+			"type":"dataSelector",
+			"groupid":"address_type"
 		},
 		"region":{
 			"label":"Region/State",
