@@ -30,6 +30,10 @@ if(isset($_REQUEST['src']) && strlen($_REQUEST['src'])>0) {
 				$refid="id";
 			}
 			$where=["md5({$refid})"=>$slug['refid']];//,['gotolink'=>$glink]
+			
+			if(isset($formConfig['source']['precreate']) && isset($formConfig['source']['precreate'])==true) {
+				autoReferenceSystem($formConfig,$slug['refid']);
+			}
 			printForm($mode,$formConfig,$formConfig['dbkey'],$where);
 		} else {
 			printForm($mode,$formConfig,$formConfig['dbkey']);
