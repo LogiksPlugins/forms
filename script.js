@@ -324,7 +324,6 @@ function initFileFields() {
 	});
 }
 function loadAjaxChain(srcSelect) {
-	console.log("XXXX");
 	ajxURL=null;
 	target=$(srcSelect).attr("ajaxchain-target");
 	name=$(srcSelect).attr("name");
