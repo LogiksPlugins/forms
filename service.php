@@ -12,6 +12,66 @@ include_once __DIR__."/api.php";
 if(!defined("APPS_USERDATA_FOLDER")) define("APPS_USERDATA_FOLDER","usermedia/");
 
 switch($_REQUEST["action"]) {
+	case "autocomplete":
+		$formKey=$_REQUEST['formid'];
+		if(!isset($_SESSION['FORMAUTOCOMPLETE'][$formKey])) {
+			printServiceMsg([]);
+			return;
+		}
+		if(!isset($_REQUEST['srcname']) || !isset($_SESSION['FORMAUTOCOMPLETE'][$formKey][$_REQUEST['srcname']])) {
+			printServiceMsg([]);
+			return;
+		}
+		$src=$_SESSION['FORMAUTOCOMPLETE'][$formKey][$_REQUEST['srcname']];
+		$data=[];
+		if(isset($src['table']) && isset($src['columns'])) {
+			if(isset($src['where'])) {
+				if(is_array($src['where'])) {
+					foreach($src['where'] as $aaa=>$bbb) {
+						$src['where'][$aaa]=_replace($bbb);
+					}
+				} else {
+					$src['where']=_replace($src['where']);
+				}
+			} else {
+				$src['where']=[];
+			}
+
+			$data=_db()->_selectQ($src['table'],$src['columns'],$src['where']);
+			if(isset($src['orderby'])) {
+				$data=$data->_orderby($src['orderby']);
+			} elseif(isset($src['sortby'])) {
+				$data=$data->_orderby($src['sortby']);
+			}
+
+			if(isset($src['groupby'])) {
+				$data=$data->_groupby($src['groupby']);
+			} else {
+				if(!is_array($src['columns'])) {
+					$gCols=explode(",",$src['columns']);
+				} else {
+					$gCols=$src['columns'];
+				}
+				$gCols[0]=explode(" ",$gCols[0]);
+				$data=$data->_groupby($gCols[0][0]);
+			}
+
+			if(!isset($src['limit'])) {
+				$src['limit']=100;
+			}
+
+			$data=$data->_limit($src['limit'],0)->_GET();
+
+			$fData=[];
+	    foreach ($data as $key => $row) {
+	      $fData[$row['title']]=$row['value'];
+	    }
+			$data=$fData;
+		} elseif(isset($src['file']) && file_exists(APPROOT.$src['file'])) {
+			$data=include_once APPROOT.$src['file'];
+		}
+		printServiceMsg($data);
+	break;
 	case "empty":
 		if(!isset($_POST['field'])) {
 			displayFormMsg("Sorry, form field not defined.");
@@ -20,19 +80,19 @@ switch($_REQUEST["action"]) {
 		if(!isset($_SESSION['FORM'][$formKey])) {
 			displayFormMsg("Sorry, form key not found.");
 		}
-		
+
 		$formConfig=$_SESSION['FORM'][$formKey];
 		if(isset($formConfig['fields'][$_POST['field']])) {
 			$field=$formConfig['fields'][$_POST['field']];
 			$source=$formConfig['source'];
-			
+
 			if(isset($field['disabled']) && $field['disabled']) {
 				displayFormMsg("Sorry, disabled field not supported.");
 			} else {
 				if(!isset($formConfig['submit']) && !isset($formConfig['submit']['type'])) {
 					$formConfig['submit']['type']="sql";
 				}
-				
+
 				switch($formConfig['submit']['type']) {
 					case "php":
 						$file=APPROOT.$formConfig['submit']['file'];
@@ -72,10 +132,10 @@ switch($_REQUEST["action"]) {
 		if(!isset($_SESSION['FORM'][$formKey])) {
 			displayFormMsg("Sorry, form key not found.");
 		}
-		
+
 		$formConfig=$_SESSION['FORM'][$formKey];
 		processFormHook("dataposted",["config"=>$formConfig,"mode"=>$formConfig['mode']]);
-		
+
 		if(isset($formConfig['submit']) && isset($formConfig['submit']['type'])) {
 			switch($formConfig['submit']['type']) {
 				case "php":
@@ -190,11 +250,11 @@ switch($_REQUEST["action"]) {
 							if($sql->_run()) {
 								$whereNew=['id'=>_db($dbKey)->get_insertID()];
 								finalizeSubmit($formConfig,$cols,$whereNew);
-								
+
 								$formConfig['mode']="update";
 								$_SESSION['FORM'][$formKey]['mode']="update";
 								$_SESSION['FORM'][$formKey]['source']['where_auto']=$whereNew;
-									
+
 								displayFormMsg($cols,'success',$formConfig['gotolink']);
 							} else {
 								$msg=_db($dbKey)->get_error();
@@ -213,7 +273,7 @@ switch($_REQUEST["action"]) {
 						case 'edit':
 						case 'update':
 							processFormHook("preSubmit",["config"=>$formConfig,"data"=>$cols,"where"=>$where,"mode"=>"edit"]);
-							
+
 							$sql=_db($dbKey)->_updateQ($source['table'],$cols,$where);
 							//displayFormMsg($sql->_SQL());exit();
 							if($sql->_run()) {
@@ -246,13 +306,13 @@ function finalizeSubmit($formConfig,$data,$where) {
 		if(!is_array($formConfig['slavetable'])) $formConfig['slavetable']=explode(",",$formConfig['slavetable']);
 		foreach($formConfig['slavetable'] as $tbl=>$keys) {
 			if(is_array($keys)) {
-				
+
 			} else {
 				$ans=_db()->_insertQ1($tbl,[$keys=>$where['id']])->_RUN();
 			}
 		}
 	}
-	
+
 	$_ENV['FORMSUBMIT']=["data"=>$data,"where"=>$where,"config"=>$formConfig,"mode"=>$formConfig['mode']];
 	processFormHook("postSubmit",$_ENV['FORMSUBMIT']);
 }
@@ -262,7 +322,7 @@ function mergeFixedData($cols,$formConfig,$data) {
 	if(isset($_SESSION['SESS_USER_ID'])) $user=$_SESSION['SESS_USER_ID'];
 	$guid="global";
 	if(isset($_SESSION['SESS_GUID'])) $guid=$_SESSION['SESS_GUID'];
-	
+
 	$defaultArr=[
 			"guid"=>$guid,
 			"edited_by"=>$user,
@@ -272,10 +332,10 @@ function mergeFixedData($cols,$formConfig,$data) {
 			"user_agent"=>$_SERVER['HTTP_USER_AGENT'],
 			"sitename"=>SITENAME,
 		];
-	
+
 	if(isset($formConfig['NOGUID']) && $formConfig['NOGUID']) unset($defaultArr['guid']);
 	elseif(getConfig("FORMS_NOGUID")) unset($defaultArr['guid']);
-	
+
 	if($_SESSION['SESS_PRIVILEGE_ID']<=ROLE_PRIME) {
 		if(isset($cols['guid'])) {
 			$defaultArr['guid']=$cols['guid'];
@@ -284,32 +344,32 @@ function mergeFixedData($cols,$formConfig,$data) {
 			$defaultArr['timestamp']=$cols['timestamp'];
 		}
 	}
-	
+
 	if(!isset($formConfig['mode']) || $formConfig['mode']=="new" || $formConfig['mode']=="insert") {
 		$defaultArr["created_on"]=date("Y-m-d H:i:s");
 		$defaultArr["created_by"]=$user;
 	}
-	
+
 	//printArray([$cols,$formConfig,$data]);
 	if(!isset($formConfig['autofill'])) $formConfig['autofill']="guid,created_by,edited_by,created_on,edited_on";
 	if(!is_array($formConfig['autofill'])) $formConfig['autofill']=explode(",",$formConfig['autofill']);
-	
+
 	foreach($formConfig['autofill'] as $key) {
 		if(isset($defaultArr[$key])) {
 			$cols[$key]=$defaultArr[$key];
 		}
 	}
-	
+
 	if(!isset($formConfig['forcefill'])) $formConfig['forcefill']=[];
 	foreach($formConfig['forcefill'] as $key=>$val) {
 		$cols[$key]=_replace($val);
 	}
-	
+
 	if(!isset($formConfig['nofill'])) $formConfig['nofill']=[];
 	foreach($formConfig['nofill'] as $key) {
 		unset($cols[$key]);
 	}
-	
+
 	return $cols;
 }
 function processInput($cols,$formConfig,$data) {
@@ -335,11 +395,11 @@ function processInput($cols,$formConfig,$data) {
 		} elseif(isset($data[$key]) && is_array($data[$key])) {
 			$cols[$key]=implode(",",$data[$key]);
 		}
-		
+
 		if(isset($field['concat']) && count($field['concat'])>0) {
 			$concatData="";$concatSeparator="";
 			if(!isset($cols[$key])) $cols[$key]="";
-			
+
 			if(!isset($field['concat']['position'])) {
 				$field['concat']['position']="after";
 			}
@@ -349,7 +409,7 @@ function processInput($cols,$formConfig,$data) {
 			if(isset($data[$field['concat']['separator']])) {
 				$concatSeparator=$data[$field['concat']['separator']];
 			}
-			
+
 			switch ($field['concat']['position']) {
 				case 'after':
 					$cols[$key]=$concatData.$concatSeparator.$cols[$key];
@@ -359,7 +419,7 @@ function processInput($cols,$formConfig,$data) {
 					break;
 			}
 		}
-		
+
 		if(isset($field['type'])) {
 			switch(strtolower($field['type'])) {
 				case "date":
@@ -429,11 +489,11 @@ function handleFileUpload($formConfig,$fs) {
 	if(defined("CMS_APPROOT")) {
 		$appFolder=CMS_APPROOT;
 	}
-	
+
 	$a=$fs->cd($attachmentFolder,true);
 	$attachmentFolderAbsolute=$fs->pwd();
 	//printArray($_FILES);
-	
+
 	$files=[];
 	$date=date("Y-m-d-H-i-s");
 
@@ -448,13 +508,13 @@ function handleFileUpload($formConfig,$fs) {
 					"error"=>$upFiles['error'][$k],
 					"size"=>$upFiles['size'][$k],
 				];
-				
+
 				$fname=$ext=explode(".", $finfo['name']);
 				$ext=$ext[count($ext)-1];
 				$fname=array_splice($fname,0,count($fname)-1);
 				$fname=implode(".",$fname);
 				$fname=cleanSpecial($fname);
-				
+
 				if(isset($fields[$key])) {
 					if($finfo['error']==4) continue;
 					if($finfo['error']!=0) {
@@ -471,7 +531,7 @@ function handleFileUpload($formConfig,$fs) {
 							displayFormMsg("'$key' supports only {$fields[$key]['maxsize']} file size.",'error');
 						}
 					}
-					
+
 					$finalFileName="{$key}/{$date}/".md5($formuid.$_SESSION['SESS_USER_ID'].time())."_{$fname}.".strtolower($ext);
 
 					// if(isset($fields[$key]['filepath'])) {
@@ -484,13 +544,13 @@ function handleFileUpload($formConfig,$fs) {
 						displayFormMsg("File for '$key' could not be moved form storage.",'error');
 					}
 				} else {
-					
+
 				}
 			}
 			unset($_FILES[$key]);
 		} else {
 			$finfo=$upFiles;
-			
+
 			$ext=explode(".", $finfo['name']);
 			$ext=$ext[count($ext)-1];
 
@@ -515,7 +575,7 @@ function handleFileUpload($formConfig,$fs) {
 				// if(isset($fields[$key]['filepath'])) {
 				// } else {
 				// }
-				
+
 				$x=$fs->upload($finfo['tmp_name'],$attachmentFolderAbsolute.$finalFileName);
 				if($x) {
 					$files[$key]=$attachmentFolder.$finalFileName;

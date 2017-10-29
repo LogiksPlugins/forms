@@ -6,7 +6,7 @@ if(count($fieldGroups)>1) {
 
 	$accordionID=$formConfig['formkey'];
 
-	echo '<form class="form validate" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" >';
+	echo '<form class="form validate '.$formConfig['mode'].'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" >';
 	echo '<div class="panel-group" id="accordion'.$accordionID.'" role="tablist" aria-multiselectable="true">';
 	foreach ($groups as $nx=>$fkey) {
 		$title=toTitle(_ling($fkey));
@@ -50,7 +50,7 @@ if(count($fieldGroups)>1) {
 	echo '</form>';
 } else {
 	echo '<div class="formbox"><div class="formbox-content">';
-	echo '<form class="form validate" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" >';
+	echo '<form class="form validate '.$formConfig['mode'].'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" >';
 	echo "<div class='row'>";
 	echo getFormFieldset($formConfig['fields'],$formData,$formConfig['dbkey'],$formConfig['mode']);
 	echo "</div>";

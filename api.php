@@ -6,13 +6,13 @@ include_once __DIR__."/validation.php";
 if(!function_exists("findForm")) {
 	define("FORM_CSS",'bootstrap.datetimepicker,forms');
 	define("FORM_JS",'jquery.validate,moment,bootstrap.datetimepicker,forms');
-	
+
 	function findForm($file) {
 		$fileName=$file;
 		if(!file_exists($file)) {
 			$file=str_replace(".","/",$file);
 		}
-		
+
 		$fsArr=[
 				$file,
 				APPROOT.APPS_MISC_FOLDER."forms/{$file}.json",
@@ -49,12 +49,12 @@ if(!function_exists("findForm")) {
 			trigger_logikserror("Corrupt form defination");
 			return false;
 		}
-		
+
 		if($params==null) $params=[];
 		$formConfig=array_merge($formConfig,$params);
-		
+
 		if(!isset($formConfig['formkey'])) $formConfig['formkey']=md5(session_id().time());
-		
+
 		$formConfig['formcode']=md5($_SESSION['SESS_USER_ID'].$formConfig['sourcefile']);
 		$formConfig['formuid']=md5($formConfig['sourcefile']);
 
@@ -63,11 +63,11 @@ if(!function_exists("findForm")) {
 		if(!isset($formConfig['template'])) {
 			$formConfig['template']="tabbed";
 		}
-		
+
 		if(!isset($formConfig['gotolink'])) {
 			$formConfig['gotolink']="";
 		}
-		
+
 		if(!isset($formConfig['config'])) {
 			$formConfig['config']=[];
 		}
@@ -77,7 +77,7 @@ if(!function_exists("findForm")) {
 			if(!isset($fieldset['label'])) $fieldset['label']=_ling($fieldKey);
 			if(!isset($fieldset['width'])) $fieldset['width']=6;
 			if(!isset($fieldset['group'])) $fieldset['group']="default";
-			
+
 			$fieldset['group']=str_replace(" ","_",$fieldset['group']);
 
 			$fieldset['fieldkey']=$fieldKey;
@@ -87,9 +87,9 @@ if(!function_exists("findForm")) {
 			$formConfig['fields'][$fieldKey]=$fieldset;
 			$fieldGroups[$fieldset['group']][]=$fieldset;
 		}
-		
+
 		if(!isset($formConfig['actions'])) $formConfig['actions']=[];
-		
+
 		if(isset($formConfig['gotolink']) && strlen($formConfig['gotolink'])>0) {
 			$formConfig['actions']['cancel']=[
 								"type"=>"button",
@@ -97,7 +97,7 @@ if(!function_exists("findForm")) {
 								"icon"=>"<i class='fa fa-angle-left form-icon right'></i>"
 							];
 		}
-		
+
 		switch ($mode) {
 			case 'update':
 			case 'edit':
@@ -130,17 +130,17 @@ if(!function_exists("findForm")) {
 					if(isset($formConfig['config']['GUID_LOCK']) && $formConfig['config']['GUID_LOCK']===true) {
 						$whereCondition["guid"]=$_SESSION['SESS_GUID'];
 					}
-					
+
 					$formConfig['fields'] = array_filter($formConfig['fields'], function($key){
 											return strpos($key, '__') !== 0;
 									}, ARRAY_FILTER_USE_KEY );
-					
+
 // 					printArray($formConfig['fields']);exit();
-					
+
 					$sql=_db($dbKey)->_selectQ($source['table'],array_keys($formConfig['fields']),$whereCondition);
 // 					echo $sql->_SQL();exit();
 					//echo $sql->_SQL();printArray([$formConfig['fields'],$whereCondition]);
-					
+
 					$res=_dbQuery($sql,$dbKey);
 					if($res) {
 						$data=_dbData($res,$dbKey);
@@ -155,7 +155,7 @@ if(!function_exists("findForm")) {
 						trigger_logikserror(_db($dbKey)->get_error());
 					}
 					//printArray($data);exit($sql->_SQL());
-					
+
 				break;
 				case 'php':
 					$file=APPROOT.$source['file'];
@@ -167,28 +167,29 @@ if(!function_exists("findForm")) {
 				break;
 			}
 		}
-		
+
 		$formConfig['data']=$formData;
 
 		$formConfig['mode']=$mode;
 		if($formConfig['mode']==null || strlen($formConfig['mode'])<=0) {
 			$formConfig['mode']="new";
 		}
-		
+
 		$formKey=$formConfig['formkey'];
 		$_SESSION['FORM'][$formKey]=$formConfig;
+		$_ENV['FORMKEY']=$formKey;
 
 		//Loading Form Template
 		$templateArr=[
 				$formConfig['template'],
 				__DIR__."/templates/{$formConfig['template']}.php"
 			];
-		
+
 // 		printArray($formConfig);return;
 		foreach ($templateArr as $f) {
 			if(file_exists($f) && is_file($f)) {
 				processFormHook("preLoad",["config"=>$formConfig,"mode"=>$formConfig['mode']]);
-				
+
 				include __DIR__."/vendors/autoload.php";
 				echo _css(explode(",",FORM_CSS));
 				include $f;
@@ -208,7 +209,7 @@ if(!function_exists("findForm")) {
 
 			if(isset($button['icon']))  $icon=$button['icon'];
 			else $icon="";
-			
+
 			if(strlen($icon)>0 && $icon == strip_tags($icon)) {
 				$icon="<i class='{$icon}'></i> ";
 			}
@@ -222,7 +223,7 @@ if(!function_exists("findForm")) {
 	function getFormFieldset($fields,$data=[],$dbKey="app",$formMode='new') {
 		if(!is_array($fields)) return false;
 		//printArray($fields);
-		
+
 		$noLabelFields=["widget","source"];
 
 		$html="<fieldset>";
@@ -230,7 +231,7 @@ if(!function_exists("findForm")) {
 			if(!isset($field['fieldkey'])) {
 				continue;
 			}
-			
+
 			if(isset($field['vmode'])) {
 				if(!is_array($field['vmode'])) {
 					$field['vmode']=explode(",",$field['vmode']);
@@ -239,26 +240,26 @@ if(!function_exists("findForm")) {
 					continue;
 				}
 			}
-			
+
 			if(!isset($field['label'])) {
 				$fieldKey=$field['fieldkey'];
 				$field['label']=_ling($fieldKey);
 			}
 			if(!isset($field['width'])) $field['width']=6;
-			
+
 			if(isset($field['hidden']) && $field['hidden']==true) {
 				$html.="<div class='col-sm-{$field['width']} col-lg-{$field['width']} field-container hidden'>";
 			} else {
 				$html.="<div class='col-sm-{$field['width']} col-lg-{$field['width']} field-container'>";
 			}
-			
+
 			if(!isset($field['type'])) $field['type']="text";
-			
+
 			$html.="<div class='form-group'>";
 			if(!in_array($field['type'],$noLabelFields)) {
 				$html.="<label>{$field['label']}";
 			}
-			
+
 			if(isset($field['required']) && $field['required']==true) {
 				$html.="<span class='span-required'>*</span>";
 			}
@@ -316,7 +317,7 @@ if(!function_exists("findForm")) {
 			$class.=" multiple";
 			$xtraAttributes[]="multiple";
 		}
-		
+
 		if(isset($fieldinfo['max']) && strlen($fieldinfo['max'])>0) {
 			$xtraAttributes[]="max={$fieldinfo['max']}";
 		}
@@ -341,29 +342,54 @@ if(!function_exists("findForm")) {
 		if(isset($fieldinfo['src']) && strlen($fieldinfo['src'])>0) {
 			$xtraAttributes[]="src='{$fieldinfo['src']}'";
 		}
+		if(isset($fieldinfo['nodb']) && $fieldinfo['nodb']==true) {
+			$class.=" nodb";
+			$xtraAttributes[]="nodb";
+		}
+
+		if(isset($fieldinfo['ajaxchain']) && isset($fieldinfo['ajaxchain']['target'])>0) {
+			if(isset($fieldinfo['ajaxchain']['scmd'])) {
+				$class.=" ajaxchain ajaxchainscmd";
+				$xtraAttributes[]="ajaxchain-target='{$fieldinfo['ajaxchain']['target']}' ajaxchain-scmd='{$fieldinfo['ajaxchain']['scmd']}'";
+			} elseif(isset($fieldinfo['ajaxchain']['src'])) {
+				$class.=" ajaxchain ajaxchainself";
+				$autoSrc=$fieldinfo['ajaxchain']['src'];
+
+				$_SESSION['FORMAUTOCOMPLETE'][$_ENV['FORMKEY']][$formKey]=$autoSrc;
+				$xtraAttributes[]="ajaxchain-target='{$fieldinfo['ajaxchain']['target']}'";
+			}
+		}
 
 		if(!isset($fieldinfo['no-option'])) {
 			$fieldinfo['no-option']="Select ".toTitle($formKey);
 		}
 		$noOption=_ling($fieldinfo['no-option']);
 
+		$xtraAttributes[]="no-options='{$noOption}'";
+
+		if(isset($fieldinfo['multiple']) && $fieldinfo['multiple']==true) {
+			$xtraAttributes[]="data-name='{$formKey}[]'";
+		} else {
+			$xtraAttributes[]="data-name='{$formKey}'";
+		}
+
 		$xtraAttributes=trim(implode(" ", $xtraAttributes));
-		
+
 		$typeArr=explode("@",$fieldinfo['type']);
 		$typeS=current($typeArr);
 		switch ($typeS) {
 			case 'dataMethod': case 'dataSelector': case 'dataSelectorFromUniques': case 'dataSelectorFromTable':
-			case 'dropdown': case 'select': case 'selectAJAX': 
+			case 'dropdown': case 'select': case 'selectAJAX':
 				if(!isset($fieldinfo['options'])) $fieldinfo['options']=[];
-				
+
 				$html.="<div class='select-group'>";
-				
+
 				if(isset($fieldinfo['multiple']) && $fieldinfo['multiple']==true) {
 					$html.="<select class='{$class} field-dropdown {$fieldinfo['type']}' $xtraAttributes name='{$formKey}[]' data-value=\"".$data[$formKey]."\" data-selected=\"".$data[$formKey]."\">";
 				} else {
 					$html.="<select class='{$class} field-dropdown {$fieldinfo['type']}' $xtraAttributes name='{$formKey}' data-value=\"".$data[$formKey]."\" data-selected=\"".$data[$formKey]."\">";
 				}
-				
+
 				if(is_array($fieldinfo['options'])) {
 					if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
 						$html.="<option value=''>{$noOption}</option>";
@@ -376,19 +402,19 @@ if(!function_exists("findForm")) {
 				$html.="</div>";
 				break;
 
-			case 'radiolist': case 'checkboxlist':  
+			case 'radiolist': case 'checkboxlist':
 				if(!isset($fieldinfo['options'])) $fieldinfo['options']=[];
-				
+
 				$html.="<div class='fieldlist {$fieldinfo['type']}' $xtraAttributes name='{$formKey}' data-value=\"".$data[$formKey]."\" data-selected=\"".$data[$formKey]."\">";
 				//TODO
 				//$fieldinfo['type']="select";
-				
+
 				$html.="<select>";
 				$html.=generateSelectOptions($fieldinfo,$data[$formKey],$dbKey);
 				$html.="</select>";
 				$html.="</div>";
 				break;
-				
+
 			case 'textarea': case 'longtext': case 'richtextarea': case 'markup':
 				$data[$formKey]=stripslashes(str_replace("\\r\\n","",$data[$formKey]));
 				$data[$formKey]=stripslashes(str_replace("&amp%3B","&amp;",$data[$formKey]));
@@ -396,15 +422,15 @@ if(!function_exists("findForm")) {
 // 				$data[$formKey]=urldecode($data[$formKey]);
 				$html.="<textarea class='{$class}' $xtraAttributes name='{$formKey}' placeholder='{$fieldinfo['placeholder']}'>".$data[$formKey]."</textarea>";
 				break;
-			
-			case 'color': 
+
+			case 'color':
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
 				break;
-			
-			case 'radio': case 'checkbox': 
+
+			case 'radio': case 'checkbox':
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
 				break;
-			case 'date': case 'datetime': case 'month': case 'year': case 'time'://case 'datetime-local': case 'week': 
+			case 'date': case 'datetime': case 'month': case 'year': case 'time'://case 'datetime-local': case 'week':
 				if($fieldinfo['type']!="time") {
 					if($data[$formKey]==null || strlen($data[$formKey])<=1 || $data[$formKey]==0) $data[$formKey]="";
 					else $data[$formKey]=_pDate($data[$formKey],"d/m/Y");
@@ -414,7 +440,7 @@ if(!function_exists("findForm")) {
 				$html.="<div class='input-group-addon'><i class='fa fa-calendar'></i></div>";
 				$html.="</div>";
 				break;
-			
+
 			case 'currency':
 				if(!isset($fieldinfo['currency_type'])) $fieldinfo['currency_type']="usd";
 				$html.="<div class='input-group'>";
@@ -475,13 +501,13 @@ if(!function_exists("findForm")) {
 				$html.="<div class='input-group-addon'><i class='fa fa-barcode'></i></div>";
 				$html.="</div>";
 				break;
-			case 'qrcode': 
+			case 'qrcode':
 				$html.="<div class='input-group'>";
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
 				$html.="<div class='input-group-addon'><i class='fa fa-qrcode'></i></div>";
 				$html.="</div>";
 				break;
-			case 'search': 
+			case 'search':
 				$html.="<div class='input-group'>";
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
 				$html.="<div class='input-group-addon'><i class='fa fa-search'></i></div>";
@@ -493,8 +519,8 @@ if(!function_exists("findForm")) {
 				$html.="<div class='input-group-addon'><i class='fa fa-key'></i></div>";
 				$html.="</div>";
 				break;
-				
-			case 'text': case 'range': 
+
+			case 'text': case 'range':
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
 				break;
 
@@ -502,14 +528,14 @@ if(!function_exists("findForm")) {
 				$fieldHash=md5($formKey.time());
 				if(isset($fieldinfo['multiple']) && $fieldinfo['multiple']==true) {
 					$html.="<div name='{$formKey}' class='file-input file-input-attachment file-field-{$fieldinfo['type']} file-input-multiple' $xtraAttributes><div class='file-preview'>";
-				
+
 					$html.="<div class='file-drop' data-fhash='{$fieldHash}'><div class='file-upload'>";
 					$html.="<i class='fa fa-cloud-upload'></i>";
 					$html.="<input type='file' class='form-file-field hidden' >";
 					$html.="</div></div>";
-				
+
 					$html.="<div class='file-preview-thumbnails' data-fhash='{$fieldHash}' >";
-					
+
 					if(isset($data[$formKey]) && strlen($data[$formKey])>0) {
 						$mediaArr=explode(",",$data[$formKey]);
 						foreach($mediaArr as $m) {
@@ -526,19 +552,19 @@ if(!function_exists("findForm")) {
 							}
 						}
 					}
-					
+
 					$html.="</div>";
 					$html.="</div></div>";
 				} else {
 					$html.="<div name='{$formKey}' class='file-input file-input-attachment file-field-{$fieldinfo['type']}' $xtraAttributes><div class='file-preview'>";
-				
+
 					$html.="<div class='file-drop' data-fhash='{$fieldHash}'><div class='file-upload'>";
 					$html.="<i class='fa fa-cloud-upload'></i>";
 					$html.="<input type='file' class='form-file-field hidden' >";
 					$html.="</div></div>";
-				
+
 					$html.="<div class='file-preview-thumbnails' data-fhash='{$fieldHash}' >";
-					
+
 					if(isset($data[$formKey]) && strlen($data[$formKey])>0) {
 						$media=searchMedia($data[$formKey]);
 						if($media) {
@@ -549,25 +575,25 @@ if(!function_exists("findForm")) {
 							$html.="<input name='{$formKey}' type='hidden' class='hidden' value='{$media['raw']}' >";
 							$html.="</div>";
 						} else {
-							
+
 						}
 					}
-					
+
 					$html.="</div>";
 					$html.="</div></div>";
 				}
 				break;
-			
+
 			case 'photo':case 'photos':case 'image':case 'avatar':case 'gallery':
 				$fieldHash=md5($formKey.time());
-				
+
 				if($fieldinfo['type']=="avatar") {
 					$fieldinfo['multiple']=false;
 				}
-				
+
 				if(isset($fieldinfo['multiple']) && $fieldinfo['multiple']==true) {
 					$html.="<div name='{$formKey}' class='file-input file-field-{$fieldinfo['type']} file-input-multiple' $xtraAttributes><div class='file-preview'>";
-					
+
 					if($fieldinfo['type']=="gallery") {
 						$html.="<div class='file-gallery' data-fhash='{$fieldHash}'><div class='file-upload'>";
 						$html.="<i class='fa fa-paperclip'></i>";
@@ -578,9 +604,9 @@ if(!function_exists("findForm")) {
 						$html.="<input type='file' class='form-file-field hidden' >";
 						$html.="</div></div>";
 					}
-				
+
 					$html.="<div class='file-preview-thumbnails' data-fhash='{$fieldHash}' >";
-					
+
 					if(isset($data[$formKey]) && strlen($data[$formKey])>0) {
 						$mediaArr=explode(",",$data[$formKey]);
 						foreach($mediaArr as $m) {
@@ -600,12 +626,12 @@ if(!function_exists("findForm")) {
 							}
 						}
 					}
-					
+
 					$html.="</div>";
 					$html.="</div></div>";
 				} else {
 					$html.="<div name='{$formKey}' class='file-input file-field-{$fieldinfo['type']}' $xtraAttributes><div class='file-preview'>";
-				
+
 					if($fieldinfo['type']=="gallery") {
 						$html.="<div class='file-gallery' data-fhash='{$fieldHash}'><div class='file-upload'>";
 						$html.="<i class='fa fa-paperclip'></i>";
@@ -616,9 +642,9 @@ if(!function_exists("findForm")) {
 						$html.="<input type='file' class='form-file-field hidden' >";
 						$html.="</div></div>";
 					}
-				
+
 					$html.="<div class='file-preview-thumbnails' data-fhash='{$fieldHash}' >";
-					
+
 					if(isset($data[$formKey]) && strlen($data[$formKey])>0) {
 						$media=searchMedia($data[$formKey]);
 						if($media) {
@@ -632,19 +658,19 @@ if(!function_exists("findForm")) {
 							$html.="<input name='{$formKey}' type='hidden' class='hidden' value='{$media['raw']}' >";
 							$html.="</div>";
 						} else {
-							
+
 						}
 					}
-					
+
 					$html.="</div>";
 					$html.="</div></div>";
 				}
 				break;
-			
+
 			case 'jsonfield':
 				if(!isset($fieldinfo['columns'])) $fieldinfo['columns']="key,value";
 				if(!is_array($fieldinfo['columns'])) $fieldinfo['columns']=array_flip(explode(",",$fieldinfo['columns']));
-					
+
 				$html.="<div class='table-responsive'>";
 				$html.="<table class='table table-condensed jsonField' name='{$formKey}'>";
 				if(isset($fieldinfo['noheader']) && $fieldinfo['noheader']) {
@@ -661,7 +687,7 @@ if(!function_exists("findForm")) {
 				}
 				$html.="<th width=25px></th>";
 				$html.="</tr></thead>";
-				
+
 				$html.="<tbody>";
 				if(isset($data[$formKey]) && strlen($data[$formKey])>2) {
 					$data[$formKey]=json_decode(stripslashes($data[$formKey]),true);
@@ -676,7 +702,7 @@ if(!function_exists("findForm")) {
 					}
 				}
 				$html.="</tbody>";
-				
+
 				$html.="<tfoot>";
 				$html.="<tr>";
 				$html.="<th colspan=1000 class='text-center cmdAction' cmd='addJSONKeyField'><i class='fa fa-plus'></i></th>";
@@ -687,7 +713,7 @@ if(!function_exists("findForm")) {
 				//$html.="<div class='input-group-addon'></div>";
 				$html.="</div>";
 				break;
-			
+
 			case 'widget':
 				if(isset($fieldinfo['src'])) {
 					ob_start();
@@ -708,22 +734,22 @@ if(!function_exists("findForm")) {
 					$html.="Source '".basename($fieldinfo['src'])."' not found.";
 				}
 				break;
-				
+
 			case 'static':
 				$content=$fieldinfo['placeholder'];
 				if(isset($data[$formKey]) && strlen($data[$formKey])>1) $content=$data[$formKey];
-				
+
 				$html.="<div class='form-control-static field-{$formKey}' $xtraAttributes>{$content}</div>";
 				break;
-			
+
 			default:
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='text'>";
 				break;
 		}
-		
+
 		return $html;
 	}
-	
+
 	function autoReferenceSystem($formConfig,$refid) {
 		if(isset($formConfig['source']['refmaster'])) {
 			$dCount = _db()->_selectQ($formConfig['source']['table'], "count(*) as cnt", ["md5({$formConfig['source']['refcol']})"=>$refid])->_GET();
@@ -766,7 +792,7 @@ if(!function_exists("searchMedia")) {
 			$fs=_fs();
 		}
 		$mediaDir=$fs->pwd();
-		
+
 		if(file_exists($media)) {
 			$ext=explode(".",$media);
 			$mediaName=explode("_",basename($media));
@@ -801,7 +827,7 @@ if(!function_exists("searchMedia")) {
 if(!function_exists("getFileIcon")) {
 	function getFileIcon($file) {
 		if($file==null || strlen($file)<=0) return "";
-	
+
 		$ext=explode(".",$file);
 		$ext=strtolower(end($ext));
 
@@ -840,15 +866,15 @@ if(!function_exists("getFileIcon")) {
 if(!function_exists("processFormHook")) {
 	function processFormHook($hookState,$formParams) {
 		$formParams=array_merge(["data"=>[],"where"=>[],"config"=>[],"mode"=>"new"],$formParams);
-		
+
 		$_ENV['FORM-HOOK-PARAMS']=$formParams;
-		
+
 		$mode=$formParams['mode'];
 		$formConfig=$formParams['config'];
-		
+
 		if($mode=="new") $mode="insert";
 		if($mode=="edit") $mode="update";
-		
+
 		$type=strtolower($hookState."-".$mode);
 		switch($type) {
 			case "preload-insert":
