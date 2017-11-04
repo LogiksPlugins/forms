@@ -17,7 +17,7 @@ $(function() {
 		}
 	});
 
-	$("form select.nodb").each(function() {
+	$("form .nodb").each(function() {
 		$(this).attr("name","");
 	});
 
@@ -348,14 +348,24 @@ function loadAjaxChain(srcSelect) {
 		}
 	}
 	if(ajxURL!=null && ajxURL.length>0) {
-		$(srcSelect).closest("form").find("*[name='"+target+"']").load(ajxURL,function(ans) {
-			noOpts=$(this).attr("no-options");
-			$(this).prepend("<option value=''>"+noOpts+"</option>");
-			$(this).val($(this).data("value"));
-			if($(this).hasClass("ajaxchain")) {
-				loadAjaxChain(this);
-			}
-		});
+		if($(target).is("select")) {
+			$(srcSelect).closest("form").find("*[name='"+target+"']").load(ajxURL,function(ans) {
+				noOpts=$(this).attr("no-options");
+				$(this).prepend("<option value=''>"+noOpts+"</option>");
+				$(this).val($(this).data("value"));
+				if($(this).hasClass("ajaxchain")) {
+					loadAjaxChain(this);
+				}
+			});
+		} else {
+			$(srcSelect).closest("form").find("*[name='"+target+"']").load(ajxURL,function(ans) {
+				//$(this).val(ans.Data);
+				ans=$.parseJSON(ans);
+				keys=Object.keys(ans.Data);
+				$(this).val(ans.Data[keys[0]]);
+				$(this).html("");
+			});
+		}
 	}
 }
 function slugify(text) {

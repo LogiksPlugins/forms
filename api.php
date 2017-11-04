@@ -444,7 +444,7 @@ if(!function_exists("findForm")) {
 			case 'currency':
 				if(!isset($fieldinfo['currency_type'])) $fieldinfo['currency_type']="usd";
 				$html.="<div class='input-group'>";
-				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
+				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='number'>";
 				$html.="<div class='input-group-addon'><i class='fa fa-usd fa-{$fieldinfo['currency_type']}'></i></div>";
 				$html.="</div>";
 				break;
