@@ -406,7 +406,7 @@ function processInput($cols,$formConfig,$data) {
 			if(isset($data[$field['concat']['field']])) {
 				$concatData=$data[$field['concat']['field']];
 			}
-			if(isset($data[$field['concat']['separator']])) {
+			if(isset($field['concat']['separator']) && isset($data[$field['concat']['separator']])) {
 				$concatSeparator=$data[$field['concat']['separator']];
 			}
 
