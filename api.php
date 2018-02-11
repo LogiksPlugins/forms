@@ -97,7 +97,15 @@ if(!function_exists("findForm")) {
 								"icon"=>"<i class='fa fa-angle-left form-icon right'></i>"
 							];
 		}
-
+		$formConfig['actions']['escape']=[
+								"type"=>"button",
+								"label"=>"Close",
+								"icon"=>"<i class='fa fa-times form-icon right'></i>",
+								"extras"=>'data-dismiss="modal"'
+							];
+		
+		$formConfig['reloadlink']=_link(substr($_SERVER['REQUEST_URI'],1));
+		
 		switch ($mode) {
 			case 'update':
 			case 'edit':
@@ -111,6 +119,11 @@ if(!function_exists("findForm")) {
 			case 'insert':
 			case 'new':
 			default:
+// 				$formConfig['actions']["submitnew"]=[
+// 							"type"=>"submitnew",
+// 							"label"=>"Submit & New",
+// 							"icon"=>"<i class='fa fa-save form-icon right'></i>"
+// 						];
 				$formConfig['actions']["submit"]=[
 							"type"=>"submit",
 							"label"=>"Submit",
@@ -215,8 +228,9 @@ if(!function_exists("findForm")) {
 			}
 
 			if(!isset($button['type'])) $button['type']="button";
+			if(!isset($button['extras'])) $button['extras']="";
 
-			$html.="<button type='{$button['type']}' cmd='{$key}' class='{$button['class']}'>{$icon}{$label}</button>";
+			$html.="<button type='{$button['type']}' cmd='{$key}' class='{$button['class']}' {$button['extras']}>{$icon}{$label}</button>";
 		}
 		return $html;
 	}
@@ -230,6 +244,10 @@ if(!function_exists("findForm")) {
 		foreach ($fields as $field) {
 			if(!isset($field['fieldkey'])) {
 				continue;
+			}
+			if(isset($field['policy']) && strlen($field['policy'])>0) {
+				$allow=checkUserPolicy($field['policy']);
+				if(!$allow) continue;
 			}
 
 			if(isset($field['vmode'])) {
@@ -279,7 +297,11 @@ if(!function_exists("findForm")) {
 	function getFormField($fieldinfo,$data,$dbKey="app") {
 		$formKey=$fieldinfo['fieldkey'];
 		if(!isset($data[$formKey])) {
-			if(isset($fieldinfo['default'])) {
+			if(isset($_REQUEST[$formKey])) {
+				$data[$formKey]=$_REQUEST[$formKey];
+				$fieldinfo['readonly']=true;
+				$fieldinfo['type']="text";
+			} elseif(isset($fieldinfo['default'])) {
 				$data[$formKey]=$fieldinfo['default'];
 			} else {
 				$data[$formKey]="";
@@ -357,6 +379,19 @@ if(!function_exists("findForm")) {
 
 				$_SESSION['FORMAUTOCOMPLETE'][$_ENV['FORMKEY']][$formKey]=$autoSrc;
 				$xtraAttributes[]="ajaxchain-target='{$fieldinfo['ajaxchain']['target']}'";
+			}
+		}
+		
+		if(isset($fieldinfo['autocomplete']) && isset($fieldinfo['autocomplete']['target'])>0) {
+			if(isset($fieldinfo['autocomplete']['scmd'])) {
+				$class.=" autocomplete autocompletescmd";
+				$xtraAttributes[]="autocomplete-target='{$fieldinfo['autocomplete']['target']}' autocomplete-scmd='{$fieldinfo['autocomplete']['scmd']}'";
+			} elseif(isset($fieldinfo['autocomplete']['src'])) {
+				$class.=" autocomplete autocompleteself";
+				$autoSrc=$fieldinfo['autocomplete']['src'];
+
+				$_SESSION['FORMAUTOCOMPLETE'][$_ENV['FORMKEY']][$formKey]=$autoSrc;
+				$xtraAttributes[]="autocomplete-target='{$fieldinfo['autocomplete']['target']}'";
 			}
 		}
 

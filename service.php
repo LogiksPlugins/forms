@@ -62,11 +62,18 @@ switch($_REQUEST["action"]) {
 
 			$data=$data->_limit($src['limit'],0)->_GET();
 
-			$fData=[];
-	    foreach ($data as $key => $row) {
-	      $fData[$row['title']]=$row['value'];
-	    }
-			$data=$fData;
+			if(isset($_REQUEST['type']) && strtolower($_REQUEST['type'])=="raw") {
+		
+			} elseif(isset($_REQUEST['type']) && strtolower($_REQUEST['type'])=="single") {
+				$data=$data[0];
+			} else {
+				$fData=[];
+				foreach ($data as $key => $row) {
+					$fData[$row['title']]=$row['value'];
+				}
+				$data=$fData;
+			}
+			
 		} elseif(isset($src['file']) && file_exists(APPROOT.$src['file'])) {
 			$data=include_once APPROOT.$src['file'];
 		}
@@ -250,11 +257,12 @@ switch($_REQUEST["action"]) {
 							if($sql->_run()) {
 								$whereNew=['id'=>_db($dbKey)->get_insertID()];
 								finalizeSubmit($formConfig,$cols,$whereNew);
-
+								
 								$formConfig['mode']="update";
 								$_SESSION['FORM'][$formKey]['mode']="update";
 								$_SESSION['FORM'][$formKey]['source']['where_auto']=$whereNew;
-
+								
+								$_REQUEST['hashid']=md5($whereNew['id']);
 								displayFormMsg($cols,'success',$formConfig['gotolink']);
 							} else {
 								$msg=_db($dbKey)->get_error();
@@ -277,6 +285,15 @@ switch($_REQUEST["action"]) {
 							$sql=_db($dbKey)->_updateQ($source['table'],$cols,$where);
 							//displayFormMsg($sql->_SQL());exit();
 							if($sql->_run()) {
+								if(isset($where['md5(id)'])) {
+									$_REQUEST['hashid']=$where['md5(id)'];
+								} else {
+									$sqlData=_db($dbKey)->_selectQ($source['table'],'md5(id) as hashid',$where)->_GET();
+									if(isset($sqlData[0]) && isset($sqlData[0]['hashid'])) {
+										$_REQUEST['hashid']=$sqlData[0]['hashid'];
+									}
+								}
+								
 								finalizeSubmit($formConfig,$cols,$where);
 								displayFormMsg($cols,'success',$formConfig['gotolink']);
 							} else {
@@ -460,6 +477,10 @@ function displayFormMsg($msg,$type='error',$gotoLink="") {
 			if(isset($_REQUEST['submitType']) && $_REQUEST['submitType']=="ajax") {
 				printServiceMsg(['type'=>'success','msg'=>$msg]);
 			} else {
+				if($gotoLink!=null && strlen($gotoLink)>0) {
+					$gotoLink=_replace(str_replace("{","#",str_replace("}","#",$gotoLink)));
+				}
+				
 				echo "MSG:Submitted/Updated Successfully";
 				foreach($msg as $a=>$b) {
 					if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$b)) {

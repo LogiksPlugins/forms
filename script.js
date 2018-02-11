@@ -1,3 +1,4 @@
+var reloadAfterSubmit=false;
 $(function() {
 	$("form select[data-value]").each(function() {this.value=$(this).data('value');});
 
@@ -6,7 +7,7 @@ $(function() {
 	});
 
 	//Chain selectors
-	$("form select.ajaxchain").each(function() {
+	$("form .ajaxchain").each(function() {
 		$(this).change(function(e) {
 			loadAjaxChain(this);
 		});
@@ -14,6 +15,19 @@ $(function() {
 			if($(this).val()!=null && $(this).val().length>0) {
 				loadAjaxChain(this);
 			}
+		} else {
+			if($(this).val()!=null && $(this).val().length>0) {
+				loadAjaxChain(this);
+			}
+		}
+	});
+	
+	$("form .autocomplete").each(function() {
+		$(this).change(function(e) {
+			loadAutocomplete(this);
+		});
+		if($(this).val()!=null && $(this).val().length>0) {
+			loadAutocomplete(this);
 		}
 	});
 
@@ -42,6 +56,9 @@ $(function() {
 		if(glink!=null && glink.length>0) {
 			window.location=glink;
 		}
+	});
+	$("form.form").delegate("button[cmd=submitnew]","click",function() {
+		reloadAfterSubmit=true;
 	});
 
 	//$("form.validate").valid();
@@ -118,7 +135,7 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 	if(msgType==null) msgType="SUCCESS";
 	else msgType=msgType.toUpperCase();
 	//console.warn(msgObj);
-
+	
 	if($("form[data-formkey='"+formid+"']").length>0) {
 		formBox=$("form[data-formkey='"+formid+"']");
 		switch(msgType) {
@@ -152,12 +169,39 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 		if(postsubmit!=null && typeof window['postsubmit']=="function") {
 			window['postsubmit'](formid,msgObj,msgType);
 		}
-		gotoLink=formBox.data('glink');
+		if(gotoLink==null || gotoLink.length<=0) {
+			gotoLink=formBox.data('glink');
+		}
+		if(reloadAfterSubmit) {
+			gotoLink=formBox.data('relink');
+		}
+		reloadAfterSubmit=false;
+		
 		if(gotoLink!=null && gotoLink.length>0) {
 			if(gotoLink.substr(0,7)=="http://" || gotoLink.substr(0,8)=="https://") {
-				window.location=gotoLink;
+				gotoLink=gotoLink;
+				
+				if(formBox.closest(".modal-dialog").length==1) {
+					$(".modal").modal("hide");
+					showLoader();
+					lgksOverlayURL(gotoLink,title,function() {
+							hideLoader();
+						});
+				} else {
+					window.location=gotoLink;
+				}
 			} else {
-				window.location=_link(gotoLink);
+				if(formBox.closest(".modal-dialog").length==1) {
+					gotoLink=_link("popup/"+gotoLink);
+					$(".modal").modal("hide");
+					showLoader();
+					lgksOverlayURL(gotoLink,title,function() {
+							hideLoader();
+						});
+				} else {
+					gotoLink=_link("modules/"+gotoLink);
+					window.location=gotoLink;
+				}
 			}
 			gotoLink=null;
 		} else {
@@ -323,6 +367,82 @@ function initFileFields() {
 		lgksAlert("Form Gallery Support Not Found, use photo type instead.");
 	});
 }
+function loadAutocomplete(srcSelect) {
+	ajxURL=null;
+	target=$(srcSelect).attr("autocomplete-target");
+	name=$(srcSelect).attr("name");
+	
+	if(target==null) {
+		if($(srcSelect).hasClass("autocompletescmd")) {
+            scmd=$(srcSelect).attr("autocomplete-scmd");
+
+            scmd=scmd.split("/");
+            if(scmd[1]==null) scmd[1]="";
+
+            ajxURL=_service(scmd[0],scmd[1])+"&type=single&refid="+$(srcSelect).val()+"&srcname="+name;
+        } else if($(srcSelect).hasClass("autocompleteself")) {
+            formKey=$(srcSelect).closest("form").data('formkey');
+            ajxURL=_service("forms","autocomplete")+"&type=single&refid="+$(srcSelect).val()+"&srcname="+name+"&formid="+formKey;
+        }
+
+        if(ajxURL!=null && ajxURL.length>0) {
+            processAJAXQuery(ajxURL, function(data) {
+                $.each(data.Data,function(k,v) {
+                    $(srcSelect).closest("form").find("*[name='"+k+"']").val(v);
+                });
+            },"json");
+        }
+	} else {
+		target=target.split(",");
+		$.each(target, function(k,nm) {
+			if($("*[name='"+nm+"']").is("select")) {
+				if($(srcSelect).hasClass("autocompletescmd")) {
+						scmd=$(srcSelect).attr("autocomplete-scmd");
+
+						scmd=scmd.split("/");
+						if(scmd[1]==null) scmd[1]="";
+
+						ajxURL=_service(scmd[0],scmd[1])+"&type=raw&refid="+$(srcSelect).val()+"&srcname="+name;
+				} else if($(srcSelect).hasClass("autocompleteself")) {
+						formKey=$(srcSelect).closest("form").data('formkey');
+						ajxURL=_service("forms","autocomplete")+"&type=raw&refid="+$(srcSelect).val()+"&srcname="+name+"&formid="+formKey;
+				}
+				if(ajxURL!=null && ajxURL.length>0) {
+						processAJAXQuery(ajxURL, function(data) {
+							html=[];
+							$.each(data.Data,function(k1,v1) {
+								if(v1[nm]==null) {
+									if(v1['value']!=null) v1[nm]=v1['value'];
+									else return;
+								}
+								html.push("<option value='"+v1[nm]+"'>"+v1.title+"</option>");
+							});
+							$(srcSelect).closest("form").find("select[name='"+nm+"']").html(html);
+						},"json");
+				}
+			} else {
+				if($(srcSelect).hasClass("autocompletescmd")) {
+						scmd=$(srcSelect).attr("autocomplete-scmd");
+
+						scmd=scmd.split("/");
+						if(scmd[1]==null) scmd[1]="";
+
+						ajxURL=_service(scmd[0],scmd[1])+"&type=single&refid="+$(srcSelect).val()+"&srcname="+name;
+				} else if($(srcSelect).hasClass("autocompleteself")) {
+						formKey=$(srcSelect).closest("form").data('formkey');
+						ajxURL=_service("forms","autocomplete")+"&type=single&refid="+$(srcSelect).val()+"&srcname="+name+"&formid="+formKey;
+				}
+				if(ajxURL!=null && ajxURL.length>0) {
+						processAJAXQuery(ajxURL, function(data) {
+								$.each(data.Data,function(k,v) {
+										$(srcSelect).closest("form").find("*[name='"+k+"']").val(v);
+								});
+						},"json");
+				}
+			}
+		});
+	}
+}
 function loadAjaxChain(srcSelect) {
 	ajxURL=null;
 	target=$(srcSelect).attr("ajaxchain-target");
@@ -348,7 +468,7 @@ function loadAjaxChain(srcSelect) {
 		}
 	}
 	if(ajxURL!=null && ajxURL.length>0) {
-		if($(target).is("select")) {
+		if($("*[name='"+target+"']").is("select")) {
 			$(srcSelect).closest("form").find("*[name='"+target+"']").load(ajxURL,function(ans) {
 				noOpts=$(this).attr("no-options");
 				$(this).prepend("<option value=''>"+noOpts+"</option>");
@@ -360,10 +480,14 @@ function loadAjaxChain(srcSelect) {
 		} else {
 			$(srcSelect).closest("form").find("*[name='"+target+"']").load(ajxURL,function(ans) {
 				//$(this).val(ans.Data);
-				ans=$.parseJSON(ans);
-				keys=Object.keys(ans.Data);
-				$(this).val(ans.Data[keys[0]]);
-				$(this).html("");
+				try {
+					ans=$.parseJSON(ans);
+					keys=Object.keys(ans.Data);
+					$(this).val(ans.Data[keys[0]]);
+					$(this).html("");
+				} catch(e) {
+					
+				}
 			});
 		}
 	}

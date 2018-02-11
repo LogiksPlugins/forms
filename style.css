@@ -71,7 +71,7 @@
 .formbox .multiselect-native-select > .btn-group .multiselect-selected-text, .formbox .multiselect-native-select button.multiselect .multiselect-selected-text {
   overflow-x: hidden;
   display: inline-block;
-  width: 100%;
+  width: 94%;
 }
 .formbox .jsonField tbody td {
   padding: 2px !important;
@@ -227,4 +227,15 @@ form .file-preview-thumb:hover .fa-close,form .file-queue-thumb:hover .fa-close 
 }
 form .file-input.file-input-attachment .filename {
   display:inline;
+}
+
+.form-actions button.btn[cmd='escape'] {
+  display:none;
+}
+
+.modal-dialog .form-actions button.btn[cmd='cancel'] {
+  display:none;
+}
+.modal-dialog .form-actions button.btn[cmd='escape'] {
+  display:inline-block;
 }
