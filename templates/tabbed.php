@@ -13,7 +13,7 @@ if(count($fieldGroups)>1) {
 		}
 	}
 	echo '</ul>';
-	echo '<form class="form validate '.$formConfig['mode'].'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" >';
+	echo '<form class="form validate '.$formConfig['mode'].'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'" >';
 	echo '<div class="tab-content">';
 	foreach ($groups as $nx=>$fkey) {
 		if($nx==0) {
@@ -36,7 +36,7 @@ if(count($fieldGroups)>1) {
 	echo '</form>';
 } else {
 	echo '<div class="formbox"><div class="formbox-content">';
-	echo '<form class="form validate '.$formConfig['mode'].'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'">';
+	echo '<form class="form validate '.$formConfig['mode'].'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'" >';
 	echo "<div class='row'>";
 	echo getFormFieldset($formConfig['fields'],$formData,$formConfig['dbkey'],$formConfig['mode']);
 	echo "</div>";
@@ -46,5 +46,4 @@ if(count($fieldGroups)>1) {
 	echo '</div></div>';
 	echo '</form></div></div>';
 }
-
 ?>

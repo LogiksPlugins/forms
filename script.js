@@ -52,11 +52,12 @@ $(function() {
 	});
 
 	$("form.form").delegate("button[cmd=cancel]","click",function() {
-		glink=$(this).closest("form.form").data("glink");
-		if(glink!=null && glink.length>0) {
-			window.location=glink;
+		clink=$(this).closest("form.form").data("clink");
+		if(clink!=null && clink.length>0) {
+			window.location=clink;
 		}
 	});
+	
 	$("form.form").delegate("button[cmd=submitnew]","click",function() {
 		reloadAfterSubmit=true;
 	});

@@ -89,22 +89,29 @@ if(!function_exists("findForm")) {
 		}
 
 		if(!isset($formConfig['actions'])) $formConfig['actions']=[];
+		
+		$formConfig['reloadlink']=_link(substr($_SERVER['REQUEST_URI'],1));
+		
+		if(!isset($formConfig['gotolink'])) $formConfig['gotolink']=_link(substr($_SERVER['REQUEST_URI'],1));
+		
+		if(isset($formConfig['reportlink'])) {
+			$formConfig['cancellink']=_link($formConfig['reportlink']);
+		} else {
+			$formConfig['cancellink']=$formConfig['reloadlink'];
+		}
 
-		if(isset($formConfig['gotolink']) && strlen($formConfig['gotolink'])>0) {
-			$formConfig['actions']['cancel']=[
+		$formConfig['actions']['cancel']=[
 								"type"=>"button",
 								"label"=>"Cancel",
 								"icon"=>"<i class='fa fa-angle-left form-icon right'></i>"
 							];
-		}
+		
 		$formConfig['actions']['escape']=[
 								"type"=>"button",
 								"label"=>"Close",
 								"icon"=>"<i class='fa fa-times form-icon right'></i>",
 								"extras"=>'data-dismiss="modal"'
 							];
-		
-		$formConfig['reloadlink']=_link(substr($_SERVER['REQUEST_URI'],1));
 		
 		switch ($mode) {
 			case 'update':
