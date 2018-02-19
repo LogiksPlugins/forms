@@ -308,6 +308,14 @@ switch($_REQUEST["action"]) {
 					}
 					displayFormMsg("ALL GOOD");
 					break;
+				case "php":
+					$file=APPROOT.$formConfig['source']['file'];
+					if(file_exists($file) && is_file($file)) {
+						include_once($file);
+					} else {
+						displayFormMsg("Sorry, Form Submit Source File Not Found.");
+					}
+					break;
 				default:
 					displayFormMsg("Sorry, Form Source Type Not Supported.");
 					break;
