@@ -500,6 +500,8 @@ function displayFormMsg($msg,$type='error',$gotoLink="") {
 	exit();
 }
 function handleFileUpload($formConfig,$fs) {
+	if(!isset($_FILES) || count($_FILES)<=0) return [];
+	
 	$formuid=$formConfig['formuid'];
 	$date=date("Y-m-d");
 	$attachmentFolder="formsStorage/{$formuid}/";
@@ -511,8 +513,7 @@ function handleFileUpload($formConfig,$fs) {
 
 	$a=$fs->cd($attachmentFolder,true);
 	$attachmentFolderAbsolute=$fs->pwd();
-	//printArray($_FILES);
-
+	
 	$files=[];
 	$date=date("Y-m-d-H-i-s");
 
@@ -621,3 +622,4 @@ function handleFileUpload($formConfig,$fs) {
 	return $files;
 }
 ?>
+
