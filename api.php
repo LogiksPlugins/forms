@@ -204,7 +204,7 @@ if(!function_exists("findForm")) {
 				$formConfig['template'],
 				__DIR__."/templates/{$formConfig['template']}.php"
 			];
-
+		
 // 		printArray($formConfig);return;
 		foreach ($templateArr as $f) {
 			if(file_exists($f) && is_file($f)) {
@@ -212,8 +212,16 @@ if(!function_exists("findForm")) {
 
 				include __DIR__."/vendors/autoload.php";
 				echo _css(explode(",",FORM_CSS));
+				if(isset($formConfig['style']) && strlen($formConfig['style'])>0) {
+					echo _css(["forms/{$formConfig['style']}"]);
+				}
+				
 				include $f;
+				
 				echo _js(explode(",",FORM_JS));
+				if(isset($formConfig['script']) && strlen($formConfig['script'])>0) {
+					echo _js(["forms/{$formConfig['script']}"]);
+				}
 				return true;
 			}
 		}
@@ -245,7 +253,7 @@ if(!function_exists("findForm")) {
 		if(!is_array($fields)) return false;
 		//printArray($fields);
 
-		$noLabelFields=["widget","source"];
+		$noLabelFields=["widget","source","module"];
 
 		$html="<fieldset>";
 		foreach ($fields as $field) {
@@ -255,6 +263,10 @@ if(!function_exists("findForm")) {
 			if(isset($field['policy']) && strlen($field['policy'])>0) {
 				$allow=checkUserPolicy($field['policy']);
 				if(!$allow) continue;
+			}
+			
+			if(isset($field['form']) && !$field['form']) {
+				continue;
 			}
 
 			if(isset($field['vmode'])) {
@@ -326,6 +338,9 @@ if(!function_exists("findForm")) {
 
 		if(isset($fieldinfo['class']) && strlen($fieldinfo['class'])>0) {
 			$class.=" ".$fieldinfo['class'];
+		}
+		if(isset($fieldinfo['search']) && $fieldinfo['search']==true) {
+			$class.=" search";
 		}
 		if(isset($fieldinfo['disabled']) && $fieldinfo['disabled']==true) {
 			$xtraAttributes[]="disabled";
@@ -513,6 +528,12 @@ if(!function_exists("findForm")) {
 				$html.="<div class='input-group'>";
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
 				$html.="<div class='input-group-addon'><i class='fa fa-mobile'></i></div>";
+				$html.="</div>";
+				break;
+			case 'tags':case 'tag':
+				$html.="<div class='input-group'>";
+				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='tags'>";
+				$html.="<div class='input-group-addon'><i class='fa fa-tags'></i></div>";
 				$html.="</div>";
 				break;
 			case 'url':
@@ -766,17 +787,44 @@ if(!function_exists("findForm")) {
 					$html.="Widget '{$fieldinfo['src']}' not found.";
 				}
 				break;
-			case 'source':
-				if(isset($fieldinfo['src']) && file_exists($fieldinfo['src'])) {
-					ob_start();
-					include $fieldinfo['src'];
-					$html.=ob_get_contents();
-					ob_clean();
+			case 'module':
+				if(isset($fieldinfo['src'])) {
+					$src=explode(".",$fieldinfo['src']);
+					if(count($src)>1 && strlen($src[1])>0) {
+						ob_start();
+						loadModuleComponent($src[0],$src[1]);
+						$html.=ob_get_contents();
+						ob_clean();
+					} else {
+						ob_start();
+						loadModules($fieldinfo['src']);
+						$html.=ob_get_contents();
+						ob_clean();
+					}
 				} else {
-					$html.="Source '".basename($fieldinfo['src'])."' not found.";
+					$html.="Module '{$fieldinfo['src']}' not found.";
 				}
 				break;
-
+			case 'source':
+				if(isset($fieldinfo['src'])) {
+					if(file_exists($fieldinfo['src'])) {
+						ob_start();
+						include $fieldinfo['src'];
+						$html.=ob_get_contents();
+						ob_clean();
+					} elseif(file_exists(APPROOT.$fieldinfo['src'])) {
+						ob_start();
+						include APPROOT.$fieldinfo['src'];
+						$html.=ob_get_contents();
+						ob_clean();
+					} else {
+						$html.="Source '".basename($fieldinfo['src'])."' not found.";
+					}
+				} else {
+					$html.="Source '".basename($fieldinfo['src'])."' not defined.";
+				}
+				break;
+				
 			case 'static':
 				$content=$fieldinfo['placeholder'];
 				if(isset($data[$formKey]) && strlen($data[$formKey])>1) $content=$data[$formKey];

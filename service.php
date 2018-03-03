@@ -142,184 +142,174 @@ switch($_REQUEST["action"]) {
 
 		$formConfig=$_SESSION['FORM'][$formKey];
 		processFormHook("dataposted",["config"=>$formConfig,"mode"=>$formConfig['mode']]);
-
-		if(isset($formConfig['submit']) && isset($formConfig['submit']['type'])) {
-			switch($formConfig['submit']['type']) {
-				case "php":
-					$file=APPROOT.$formConfig['submit']['file'];
-					if(file_exists($file) && is_file($file)) {
-						include_once($file);
-					} else {
-						displayFormMsg("Sorry, Form Submit Source File Not Found.");
-					}
-					break;
-				default:
-					displayFormMsg("Sorry, Form Submit Type Not Supported.");
-			}
+		
+		if(!isset($formConfig['source']) || !isset($formConfig['source']['type'])) {
+			displayFormMsg("Sorry, Form Submit Source Not Found.");
+		}
+		
+		if(isset($_REQUEST['forsite']) && in_array($_REQUEST['forsite'],$_SESSION['SESS_ACCESS_SITES'])) {
+			$fs=_fs($_REQUEST['forsite'],[
+					"driver"=>"local",
+					"basedir"=>ROOT.APPS_FOLDER.$_REQUEST['forsite']."/".APPS_USERDATA_FOLDER
+				]);
 		} else {
-			if(isset($_REQUEST['forsite']) && in_array($_REQUEST['forsite'],$_SESSION['SESS_ACCESS_SITES'])) {
-				$fs=_fs($_REQUEST['forsite'],[
-						"driver"=>"local",
-						"basedir"=>ROOT.APPS_FOLDER.$_REQUEST['forsite']."/".APPS_USERDATA_FOLDER
-					]);
-			} else {
-	// 			$fs=_fs(SITENAME,[
-	// 					"driver"=>"local",
-	//         	"basedir"=>ROOT.APPS_FOLDER.SITENAME."/".APPS_USERDATA_FOLDER
-	// 				]);
-				$fs=_fs();
-				$fs->cd(APPS_USERDATA_FOLDER);
-			}
+// 			$fs=_fs(SITENAME,[
+// 					"driver"=>"local",
+//         	"basedir"=>ROOT.APPS_FOLDER.SITENAME."/".APPS_USERDATA_FOLDER
+// 				]);
+			$fs=_fs();
+			$fs->cd(APPS_USERDATA_FOLDER);
+		}
 
 // 			printArray($formConfig);
-			//printArray($_POST);exit();
-			$files=handleFileUpload($formConfig,$fs);
+		//printArray($_POST);exit();
+		$files=handleFileUpload($formConfig,$fs);
 
-			$source=$formConfig['source'];
-			switch ($source['type']) {
-				case 'sql':
-					$cols=array_keys($formConfig['fields']);
-					$where=$source['where'];
-					if(!is_array($where)) $where=explode(",", $where);
+		$source=$formConfig['source'];
+		switch ($source['type']) {
+			case 'sql':
+				$cols=array_keys($formConfig['fields']);
+				$where=$source['where'];
+				if(!is_array($where)) $where=explode(",", $where);
 
-					$oriData=$_POST;
-					$oriData=array_merge($formConfig['data'],$oriData);
+				$oriData=$_POST;
+				$oriData=array_merge($formConfig['data'],$oriData);
 
-					if($formConfig['mode']=="update" || $formConfig['mode']=="edit") {
-						$where=array_flip($where);
-						foreach ($where as $key => $value) {
-							if(isset($_POST[$key])) {
-								//$where[$key]=$_POST[$key];
-								unset($_POST[$key]);
-							}
-							if(isset($cols[$key])) {
-								//$where[$key]=$_POST[$key];
-								unset($cols[$key]);
-							}
-
-							if(array_key_exists($key, $formConfig['data'])) {
-								$where[$key]=$formConfig['data'][$key];
-							} else {
-								unset($where[$key]);
-							}
-						}
-						if(isset($formConfig['source']['where_auto']) && is_array($formConfig['source']['where_auto'])) {
-							$where=array_merge($where,$formConfig['source']['where_auto']);
-						}
-
-						if(count($where)<=0) {
-							displayFormMsg("Incomplete submit condition");
-						}
-					}
-
-					$cols=array_flip($cols);
-					foreach ($cols as $key => $value) {
+				if($formConfig['mode']=="update" || $formConfig['mode']=="edit") {
+					$where=array_flip($where);
+					foreach ($where as $key => $value) {
 						if(isset($_POST[$key])) {
-	// 						if(isset($formConfig['fields'][$key]['disabled']) && $formConfig['fields'][$key]['disabled']) {
-	// 							unset($cols[$key]);
-	// 							continue;
-	// 						}
-							if(isset($formConfig['fields'][$key]['nofill']) && $formConfig['fields'][$key]['nofill']) {
-								unset($cols[$key]);
-								continue;
-							}
-							/*if(array_key_exists($key, $formConfig['data']) && md5($formConfig['data'][$key])==md5($_POST[$key])) {
-								unset($cols[$key]);
-								unset($_POST[$key]);
-								continue;
-							}*/
-							$cols[$key]=$_POST[$key];
+							//$where[$key]=$_POST[$key];
 							unset($_POST[$key]);
-						} else {
+						}
+						if(isset($cols[$key])) {
+							//$where[$key]=$_POST[$key];
 							unset($cols[$key]);
 						}
+
+						if(array_key_exists($key, $formConfig['data'])) {
+							$where[$key]=$formConfig['data'][$key];
+						} else {
+							unset($where[$key]);
+						}
 					}
-					if(count($cols)<=0) {
-						displayFormMsg("No change found",'info');
+					if(isset($formConfig['source']['where_auto']) && is_array($formConfig['source']['where_auto'])) {
+						$where=array_merge($where,$formConfig['source']['where_auto']);
 					}
-					//validation
-					$cols=validateInput($cols,$formConfig['fields']);
-					$cols=processInput($cols,$formConfig,$oriData);
 
-					//Merge With fixed data that needs autofilling
-					$cols=mergeFixedData($cols,$formConfig,$oriData);
+					if(count($where)<=0) {
+						displayFormMsg("Incomplete submit condition");
+					}
+				}
 
-					//printArray($cols);exit();
+				$cols=array_flip($cols);
+				foreach ($cols as $key => $value) {
+					if(isset($_POST[$key])) {
+// 						if(isset($formConfig['fields'][$key]['disabled']) && $formConfig['fields'][$key]['disabled']) {
+// 							unset($cols[$key]);
+// 							continue;
+// 						}
+						if(isset($formConfig['fields'][$key]['nofill']) && $formConfig['fields'][$key]['nofill']) {
+							unset($cols[$key]);
+							continue;
+						}
+						/*if(array_key_exists($key, $formConfig['data']) && md5($formConfig['data'][$key])==md5($_POST[$key])) {
+							unset($cols[$key]);
+							unset($_POST[$key]);
+							continue;
+						}*/
+						$cols[$key]=$_POST[$key];
+						unset($_POST[$key]);
+					} else {
+						unset($cols[$key]);
+					}
+				}
+				if(count($cols)<=0) {
+					displayFormMsg("No change found",'info');
+				}
+				//validation
+				$cols=validateInput($cols,$formConfig['fields']);
+				$cols=processInput($cols,$formConfig,$oriData);
 
-					//insert/update detection
-					$dbKey=$formConfig['dbkey'];
-					switch ($formConfig['mode']) {
-						case 'new':
-						case 'insert':
-							processFormHook("preSubmit",["config"=>$formConfig,"data"=>$cols,"mode"=>"new"]);
-							$sql=_db($dbKey)->_insertQ1($source['table'],$cols);
+				//Merge With fixed data that needs autofilling
+				$cols=mergeFixedData($cols,$formConfig,$oriData);
 
-							if($sql->_run()) {
-								$whereNew=['id'=>_db($dbKey)->get_insertID()];
-								finalizeSubmit($formConfig,$cols,$whereNew);
-								
-								$formConfig['mode']="update";
-								$_SESSION['FORM'][$formKey]['mode']="update";
-								$_SESSION['FORM'][$formKey]['source']['where_auto']=$whereNew;
-								
-								$_REQUEST['hashid']=md5($whereNew['id']);
-								displayFormMsg($cols,'success',$formConfig['gotolink']);
+				//printArray($cols);exit();
+
+				//insert/update detection
+				$dbKey=$formConfig['dbkey'];
+				switch ($formConfig['mode']) {
+					case 'new':
+					case 'insert':
+						processFormHook("preSubmit",["config"=>$formConfig,"data"=>$cols,"mode"=>"new"]);
+						$sql=_db($dbKey)->_insertQ1($source['table'],$cols);
+
+						if($sql->_run()) {
+							$whereNew=['id'=>_db($dbKey)->get_insertID()];
+							finalizeSubmit($formConfig,$cols,$whereNew);
+							
+							$formConfig['mode']="update";
+							$_SESSION['FORM'][$formKey]['mode']="update";
+							$_SESSION['FORM'][$formKey]['source']['where_auto']=$whereNew;
+							
+							$_REQUEST['hashid']=md5($whereNew['id']);
+							displayFormMsg($cols,'success',$formConfig['gotolink']);
+						} else {
+							$msg=_db($dbKey)->get_error();
+							$msgMicro=explode(" ", strtolower($msg));
+							if($msgMicro[0]=="duplicate") {
+								$msgX=$msgMicro[count($msgMicro)-1]." is unique and a record already exists.";
+								echo $msg;
+								displayFormMsg($msgX,'error');
 							} else {
-								$msg=_db($dbKey)->get_error();
-								$msgMicro=explode(" ", strtolower($msg));
-								if($msgMicro[0]=="duplicate") {
-									$msgX=$msgMicro[count($msgMicro)-1]." is unique and a record already exists.";
-									echo $msg;
-									displayFormMsg($msgX,'error');
-								} else {
-									echo $msg;
-									displayFormMsg("Error updating database, try again later",'error');
-								}
-							}
-							break;
-
-						case 'edit':
-						case 'update':
-							processFormHook("preSubmit",["config"=>$formConfig,"data"=>$cols,"where"=>$where,"mode"=>"edit"]);
-
-							$sql=_db($dbKey)->_updateQ($source['table'],$cols,$where);
-							//displayFormMsg($sql->_SQL());exit();
-							if($sql->_run()) {
-								if(isset($where['md5(id)'])) {
-									$_REQUEST['hashid']=$where['md5(id)'];
-								} else {
-									$sqlData=_db($dbKey)->_selectQ($source['table'],'md5(id) as hashid',$where)->_GET();
-									if(isset($sqlData[0]) && isset($sqlData[0]['hashid'])) {
-										$_REQUEST['hashid']=$sqlData[0]['hashid'];
-									}
-								}
-								
-								finalizeSubmit($formConfig,$cols,$where);
-								displayFormMsg($cols,'success',$formConfig['gotolink']);
-							} else {
-								echo _db($dbKey)->get_error();
+								echo $msg;
 								displayFormMsg("Error updating database, try again later",'error');
 							}
-							break;
+						}
+						break;
 
-						default:
-							displayFormMsg("Form mode could not be detected",'error');
-							break;
-					}
-					displayFormMsg("ALL GOOD");
-					break;
-				case "php":
-					$file=APPROOT.$formConfig['source']['file'];
-					if(file_exists($file) && is_file($file)) {
-						include_once($file);
-					} else {
-						displayFormMsg("Sorry, Form Submit Source File Not Found.");
-					}
-					break;
-				default:
-					displayFormMsg("Sorry, Form Source Type Not Supported.");
-					break;
-			}
+					case 'edit':
+					case 'update':
+						processFormHook("preSubmit",["config"=>$formConfig,"data"=>$cols,"where"=>$where,"mode"=>"edit"]);
+
+						$sql=_db($dbKey)->_updateQ($source['table'],$cols,$where);
+						//displayFormMsg($sql->_SQL());exit();
+						if($sql->_run()) {
+							if(isset($where['md5(id)'])) {
+								$_REQUEST['hashid']=$where['md5(id)'];
+							} else {
+								$sqlData=_db($dbKey)->_selectQ($source['table'],'md5(id) as hashid',$where)->_GET();
+								if(isset($sqlData[0]) && isset($sqlData[0]['hashid'])) {
+									$_REQUEST['hashid']=$sqlData[0]['hashid'];
+								}
+							}
+							
+							finalizeSubmit($formConfig,$cols,$where);
+							displayFormMsg($cols,'success',$formConfig['gotolink']);
+						} else {
+							echo _db($dbKey)->get_error();
+							displayFormMsg("Error updating database, try again later",'error');
+						}
+						break;
+
+					default:
+						displayFormMsg("Form mode could not be detected",'error');
+						break;
+				}
+				displayFormMsg("ALL GOOD");
+				break;
+			case "php":
+				$file=APPROOT.$formConfig['source']['file'];
+				if(file_exists($file) && is_file($file)) {
+					$data=include_once($file);
+					displayFormMsg($data,'success',$formConfig['gotolink']);
+				} else {
+					displayFormMsg("Sorry, Form Submit Source File Not Found.");
+				}
+				break;
+			default:
+				displayFormMsg("Sorry, Form Source Type Not Supported.");
+				break;
 		}
 	break;
 	default:
@@ -600,10 +590,6 @@ function handleFileUpload($formConfig,$fs) {
 					}
 				}
 				$finalFileName="{$key}/{$date}/".md5($formuid.$_SESSION['SESS_USER_ID'].time())."_{$finfo['name']}";
-
-				// if(isset($fields[$key]['filepath'])) {
-				// } else {
-				// }
 
 				$x=$fs->upload($finfo['tmp_name'],$attachmentFolderAbsolute.$finalFileName);
 				if($x) {

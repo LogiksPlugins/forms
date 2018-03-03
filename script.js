@@ -3,8 +3,21 @@ $(function() {
 	$("form select[data-value]").each(function() {this.value=$(this).data('value');});
 
 	$("form select.multiple").each(function() {
-
+		
 	});
+	$('input[type=tags]').tagsinput({
+  
+	});
+	
+	$(".select-group select:not(.multiple).search").each(function() {
+		$(this).data("show-subtext",true);
+		$(this).data("live-search",true);
+
+		$(this).selectpicker({
+			//style: 'btn-info'
+		});
+	});
+	//$(this).selectpicker("refresh");
 
 	//Chain selectors
 	$("form .ajaxchain").each(function() {
@@ -474,6 +487,12 @@ function loadAjaxChain(srcSelect) {
 				noOpts=$(this).attr("no-options");
 				$(this).prepend("<option value=''>"+noOpts+"</option>");
 				$(this).val($(this).data("value"));
+				
+				if($(this).data("selectpicker")!=null) {
+					try {
+						$(this).selectpicker("refresh");
+					} catch(e) {}
+				}
 				if($(this).hasClass("ajaxchain")) {
 					loadAjaxChain(this);
 				}
