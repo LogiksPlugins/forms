@@ -622,4 +622,3 @@ function handleFileUpload($formConfig,$fs) {
 	return $files;
 }
 ?>
-

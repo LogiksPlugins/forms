@@ -90,9 +90,9 @@ if(!function_exists("findForm")) {
 
 		if(!isset($formConfig['actions'])) $formConfig['actions']=[];
 		
-		$formConfig['reloadlink']=_link(substr($_SERVER['REQUEST_URI'],1));
+		$formConfig['reloadlink']=SiteLocation.substr($_SERVER['REQUEST_URI'],1);
 		
-		if(!isset($formConfig['gotolink'])) $formConfig['gotolink']=_link(substr($_SERVER['REQUEST_URI'],1));
+		if(!isset($formConfig['gotolink'])) $formConfig['gotolink']=$formConfig['reloadlink'];
 		
 		if(isset($formConfig['reportlink'])) {
 			$formConfig['cancellink']=_link($formConfig['reportlink']);
@@ -403,17 +403,20 @@ if(!function_exists("findForm")) {
 				$xtraAttributes[]="ajaxchain-target='{$fieldinfo['ajaxchain']['target']}'";
 			}
 		}
-		
-		if(isset($fieldinfo['autocomplete']) && isset($fieldinfo['autocomplete']['target'])>0) {
-			if(isset($fieldinfo['autocomplete']['scmd'])) {
-				$class.=" autocomplete autocompletescmd";
-				$xtraAttributes[]="autocomplete-target='{$fieldinfo['autocomplete']['target']}' autocomplete-scmd='{$fieldinfo['autocomplete']['scmd']}'";
-			} elseif(isset($fieldinfo['autocomplete']['src'])) {
-				$class.=" autocomplete autocompleteself";
-				$autoSrc=$fieldinfo['autocomplete']['src'];
+		if(isset($fieldinfo['autocomplete'])) {
+			if(is_array($fieldinfo['autocomplete']) && isset($fieldinfo['autocomplete']['target'])>0) {
+				if(isset($fieldinfo['autocomplete']['scmd'])) {
+					$class.=" autocomplete autocompletescmd";
+					$xtraAttributes[]="autocomplete-target='{$fieldinfo['autocomplete']['target']}' autocomplete-scmd='{$fieldinfo['autocomplete']['scmd']}'";
+				} elseif(isset($fieldinfo['autocomplete']['src'])) {
+					$class.=" autocomplete autocompleteself";
+					$autoSrc=$fieldinfo['autocomplete']['src'];
 
-				$_SESSION['FORMAUTOCOMPLETE'][$_ENV['FORMKEY']][$formKey]=$autoSrc;
-				$xtraAttributes[]="autocomplete-target='{$fieldinfo['autocomplete']['target']}'";
+					$_SESSION['FORMAUTOCOMPLETE'][$_ENV['FORMKEY']][$formKey]=$autoSrc;
+					$xtraAttributes[]="autocomplete-target='{$fieldinfo['autocomplete']['target']}'";
+				}
+			} elseif($fieldinfo['autocomplete']===false) {
+				$xtraAttributes[]="autocomplete='off'";
 			}
 		}
 
@@ -499,14 +502,16 @@ if(!function_exists("findForm")) {
 				break;
 
 			case 'currency':
-				if(!isset($fieldinfo['currency_type'])) $fieldinfo['currency_type']="usd";
+				if(!isset($fieldinfo['currency_type'])) $fieldinfo['currency_type']="mxx";
+				if($fieldinfo['placeholder']==null || strlen($fieldinfo['placeholder'])<=0) $fieldinfo['placeholder']=_ling("0.00");
 				$html.="<div class='input-group'>";
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='number'>";
-				$html.="<div class='input-group-addon'><i class='fa fa-usd fa-{$fieldinfo['currency_type']}'></i></div>";
+				$html.="<div class='input-group-addon'><i class='fa fa-money fa-{$fieldinfo['currency_type']}'></i></div>";
 				$html.="</div>";
 				break;
 			case 'creditcard':case 'debitcard':case 'moneycard':
 				if(!isset($fieldinfo['card_type'])) $fieldinfo['card_type']="credit-card";
+				if($fieldinfo['placeholder']==null || strlen($fieldinfo['placeholder'])<=0) $fieldinfo['placeholder']=_ling("XXXX XXXX XXXX XXXX");
 				$html.="<div class='input-group'>";
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
 				$html.="<div class='input-group-addon'><i class='fa fa-credit-card fa-{$fieldinfo['card_type']}'></i></div>";
@@ -574,6 +579,18 @@ if(!function_exists("findForm")) {
 				$html.="<div class='input-group'>";
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
 				$html.="<div class='input-group-addon'><i class='fa fa-search'></i></div>";
+				$html.="</div>";
+				break;
+			case "suggest":
+				$suggestid=uniqid("S-");
+				$html.="<div class='input-group'>";
+				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}' list='{$suggestid}'>";
+				$html.="<datalist id='{$suggestid}'>";
+				if(isset($_ENV['FORMKEY']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'])) {
+					$html.=createDataSelectorFromUniques($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'],$formKey,$formKey);
+				}
+				$html.="</datalist>";
+				$html.="<div class='input-group-addon'><i class='fa fa-caret-down'></i></div>";
 				$html.="</div>";
 				break;
 			case 'password':
