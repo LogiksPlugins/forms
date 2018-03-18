@@ -17,3 +17,4 @@ nicIconPath="<?=$wPath?>nicedit/nicEditorIcons.gif";
 
 <link href='<?=$wPath?>dropdownSearch/bootstrap-select.css' rel='stylesheet' type='text/css' />
 <script src='<?=$wPath?>dropdownSearch/bootstrap-select.js' type='text/javascript' language='javascript'></script>
+<script src='<?=$wPath?>dropdownSearch/ajax-bootstrap-select.js' type='text/javascript' language='javascript'></script>

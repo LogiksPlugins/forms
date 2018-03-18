@@ -12,6 +12,78 @@ include_once __DIR__."/api.php";
 if(!defined("APPS_USERDATA_FOLDER")) define("APPS_USERDATA_FOLDER","usermedia/");
 
 switch($_REQUEST["action"]) {
+	case "dropsearch":
+		$formKey=$_REQUEST['formid'];
+		if(!isset($_REQUEST['srcname']) || !isset($_SESSION['FORM'][$formKey]['fields'][$_REQUEST['srcname']])) {
+			printServiceMsg([]);
+			return;
+		}
+		//$src=$_SESSION['FORMAUTOCOMPLETE'][$formKey][$_REQUEST['srcname']];
+		$src=$_SESSION['FORM'][$formKey]['fields'][$_REQUEST['srcname']];
+		
+		if(!isset($src['type'])) {
+			printServiceMsg([]);
+			return;
+		}
+		
+		switch(strtolower($src['type'])) {
+			case "dataselectorfromtable":
+				if(isset($src['table']) || isset($src['columns'])) {
+					if(!is_array($src['columns'])) $cols=explode(",",$src['columns']);
+					else $cols=$src['columns'];
+					
+					$whr=[];
+					if(isset($_POST['q'])) {
+						foreach($cols as $a=>$b) {
+							$b=explode(" as ",$b);
+							$cols=$b[0];
+							$whr[$b[0]]=[$_POST['q'],"SW"];
+						}
+					} elseif(isset($_POST['v'])) {
+						foreach($cols as $a=>$b) {
+							$b=explode(" as ",$b);
+							$cols=$b[0];
+							$whr[$b[0]]=$_POST['v'];
+						}
+					}
+					
+					$sqlData=_db()->_selectQ($src['table'],$src['columns'],["blocked"=>"false"])->_WHERE($whr,"AND","OR");
+					$sqlData=$sqlData->_limit(10)->_GET();
+					
+					printServiceMsg($sqlData);
+				}
+				break;
+			case "dataselectorfromuniques":
+				if(isset($src['table']) || isset($src['columns'])) {
+					if(!is_array($src['columns'])) $cols=explode(",",$src['columns']);
+					else $cols=$src['columns'];
+					
+					$whr=[];
+					if(isset($_POST['q'])) {
+						foreach($cols as $a=>$b) {
+							$b=explode(" as ",$b);
+							$cols=$b[0];
+							$whr[$b[0]]=[$_POST['q'],"SW"];
+						}
+					} elseif(isset($_POST['v'])) {
+						foreach($cols as $a=>$b) {
+							$b=explode(" as ",$b);
+							$cols=$b[0];
+							$whr[$b[0]]=$_POST['v'];
+						}
+					}
+					
+					$sqlData=_db()->_selectQ($src['table'],$src['columns'],["blocked"=>"false"])->_WHERE($whr,"AND","OR");
+					$sqlData=$sqlData->_limit(10)->_GET();
+					
+					printServiceMsg($sqlData);
+				}
+				break;
+			default:
+				printServiceMsg([]);
+				return;
+		}
+		break;
 	case "autocomplete":
 		$formKey=$_REQUEST['formid'];
 		if(!isset($_SESSION['FORMAUTOCOMPLETE'][$formKey])) {
@@ -65,7 +137,8 @@ switch($_REQUEST["action"]) {
 			if(isset($_REQUEST['type']) && strtolower($_REQUEST['type'])=="raw") {
 		
 			} elseif(isset($_REQUEST['type']) && strtolower($_REQUEST['type'])=="single") {
-				$data=$data[0];
+				if(isset($data[0])) $data=$data[0];
+				else $data=[];
 			} else {
 				$fData=[];
 				foreach ($data as $key => $row) {

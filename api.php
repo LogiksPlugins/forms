@@ -455,8 +455,12 @@ if(!function_exists("findForm")) {
 						$html.="<option value=''>{$noOption}</option>";
 					}
 				}
-
-				$html.=generateSelectOptions($fieldinfo,$data[$formKey],$dbKey);
+				
+				if(isset($fieldinfo['search']) && $fieldinfo['search']==true) {
+					
+				} else {
+					$html.=generateSelectOptions($fieldinfo,$data[$formKey],$dbKey);
+				}
 
 				$html.="</select>";
 				$html.="</div>";

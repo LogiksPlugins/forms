@@ -10,15 +10,9 @@ $(function() {
 	});
 	
 	$(".select-group select:not(.multiple).search").each(function() {
-		$(this).data("show-subtext",true);
-		$(this).data("live-search",true);
-
-		$(this).selectpicker({
-			//style: 'btn-info'
-		});
+		loadDropSearch(this);
 	});
-	//$(this).selectpicker("refresh");
-
+	
 	//Chain selectors
 	$("form .ajaxchain").each(function() {
 		$(this).change(function(e) {
@@ -510,6 +504,65 @@ function loadAjaxChain(srcSelect) {
 				}
 			});
 		}
+	}
+}
+function loadDropSearch(srcSelect) {
+	$(srcSelect).data("show-subtext",true);
+	$(srcSelect).data("live-search",true);
+
+	name=$(srcSelect).attr("name");
+	formKey=$(srcSelect).closest("form").data('formkey');
+	
+	val=$(srcSelect).data('value');
+	
+	var options = {
+			values: "a, b, c",
+			ajax: {
+				url: _service("forms","dropsearch")+"&srcname="+name+"&formid="+formKey,
+				type: "POST",
+				dataType: "json",
+				// Use "{{{q}}}" as a placeholder and Ajax Bootstrap Select will automatically replace it with the value of the search query.
+				data: {
+					q: "{{{q}}}"
+				}
+			},
+			locale: {
+				emptyTitle: "Select and Begin Typing"
+			},
+			log: 3,
+			preprocessData: function(data) {
+				fData=[];
+				$.each(data.Data,function(k,v) {
+					fData.push({
+							text:v.title,
+							value:v.value,
+							data: {
+								subtext: v.value
+							}
+						});
+				});
+				return fData;
+			}
+		};
+	
+	if(val!=null && (""+val).length>0) {
+		processAJAXPostQuery(_service("forms","dropsearch")+"&srcname="+name+"&formid="+formKey,"&v="+val,function(data) {
+			if(data.Data!=null && data.Data[0]!=null) {
+				noOpt=$(srcSelect).attr("no-options")
+				$(srcSelect).html("<option value='"+data.Data[0].value+"' selectted>"+data.Data[0].title+"</option>");
+			}
+			
+			$(srcSelect).selectpicker({
+					//style: 'btn-info'
+				}).ajaxSelectPicker(options);
+		//    $(srcSelect).trigger("change");
+			
+		},"json");
+	} else {
+		$(srcSelect).selectpicker({
+				//style: 'btn-info'
+			}).ajaxSelectPicker(options);
+	//    $(srcSelect).trigger("change");
 	}
 }
 function slugify(text) {
