@@ -455,11 +455,13 @@ if(!function_exists("findForm")) {
 						$html.="<option value=''>{$noOption}</option>";
 					}
 				}
+				if(isset($fieldinfo['dbkey'])) $dkey1=$fieldinfo['dbkey'];
+				else $dkey1=$dbKey;
 				
 				if(isset($fieldinfo['search']) && $fieldinfo['search']==true) {
 					
 				} else {
-					$html.=generateSelectOptions($fieldinfo,$data[$formKey],$dbKey);
+					$html.=generateSelectOptions($fieldinfo,$data[$formKey],$dkey1);
 				}
 
 				$html.="</select>";
