@@ -29,8 +29,17 @@ switch($_REQUEST["action"]) {
 		switch(strtolower($src['type'])) {
 			case "dataselectorfromtable":
 				if(isset($src['table']) || isset($src['columns'])) {
-					if(!is_array($src['columns'])) $cols=explode(",",$src['columns']);
-					else $cols=$src['columns'];
+					if(!is_array($src['columns'])) {
+						$searchColumns=preg_replace("/[a-zA-Z0-9]+\([a-zA-Z0-9-_'\",\[\] ]+\)[a-zA-Z0-9-_ ]+,/", "", $src['columns']);
+						$cols=explode(",",$searchColumns);
+					} else {
+						$cols=$src['columns'];
+						foreach($cols as $k=>$a) {
+							if(strpos($a,"(")>0) {
+								unset($cols[$k]);
+							}
+						}
+					}
 					
 					$whr=[];
 					if(isset($_POST['q'])) {
@@ -55,8 +64,17 @@ switch($_REQUEST["action"]) {
 				break;
 			case "dataselectorfromuniques":
 				if(isset($src['table']) || isset($src['columns'])) {
-					if(!is_array($src['columns'])) $cols=explode(",",$src['columns']);
-					else $cols=$src['columns'];
+					if(!is_array($src['columns'])) {
+						$searchColumns=preg_replace("/[a-zA-Z0-9]+\([a-zA-Z0-9-_'\",\[\] ]+\)[a-zA-Z0-9-_ ]+,/", "", $src['columns']);
+						$cols=explode(",",$searchColumns);
+					} else {
+						$cols=$src['columns'];
+						foreach($cols as $k=>$a) {
+							if(strpos($a,"(")>0) {
+								unset($cols[$k]);
+							}
+						}
+					}
 					
 					$whr=[];
 					if(isset($_POST['q'])) {
