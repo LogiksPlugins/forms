@@ -432,6 +432,12 @@ if(!function_exists("findForm")) {
 		} else {
 			$xtraAttributes[]="data-name='{$formKey}'";
 		}
+		
+		if(!isset($data[$formKey])) {
+			if(isset($fieldinfo['default'])) {
+				$data[$formKey]=$fieldinfo['default'];
+			}
+		}
 
 		$xtraAttributes=trim(implode(" ", $xtraAttributes));
 
@@ -1059,3 +1065,4 @@ if(!function_exists("processFormHook")) {
 	}
 }
 ?>
+
