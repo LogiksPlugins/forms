@@ -316,8 +316,8 @@ if(!function_exists("findForm")) {
 	function getFormField($fieldinfo,$data,$dbKey="app") {
 		$formKey=$fieldinfo['fieldkey'];
 		if(!isset($data[$formKey])) {
-			if(isset($_REQUEST[$formKey])) {
-				$data[$formKey]=$_REQUEST[$formKey];
+			if(isset($_GET[$formKey])) {
+				$data[$formKey]=$_GET[$formKey];
 				$fieldinfo['readonly']=true;
 				$fieldinfo['type']="text";
 			} elseif(isset($fieldinfo['default'])) {
