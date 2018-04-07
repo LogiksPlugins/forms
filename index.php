@@ -40,6 +40,7 @@ if(isset($_REQUEST['src']) && strlen($_REQUEST['src'])>0) {
 		}
 // 		echo "</div>";
 		echo _js(["forms"]);
+		echo "<script>if(typeof initFormUI=='function') initFormUI(); else $(function() {initFormUI();});</script>";
 	} else {
 		echo "<h1 class='errormsg'>Sorry, form '{$_REQUEST['src']}' not found.</h1>";
 	}

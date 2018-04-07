@@ -1,5 +1,5 @@
 var reloadAfterSubmit=false;
-$(function() {
+function initFormUI() {
 	$("form select[data-value]").each(function() {this.value=$(this).data('value');});
 
 	$("form select.multiple").each(function() {
@@ -138,7 +138,7 @@ $(function() {
 			//     }
 			// }
 		});
-});
+}
 function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 	if(msgType==null) msgType="SUCCESS";
 	else msgType=msgType.toUpperCase();
@@ -610,3 +610,4 @@ function getFAClass(f) {
 			return "fa-file";
 	}
 }
+
