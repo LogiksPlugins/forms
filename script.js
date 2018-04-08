@@ -610,4 +610,3 @@ function getFAClass(f) {
 			return "fa-file";
 	}
 }
-

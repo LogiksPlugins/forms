@@ -469,7 +469,6 @@ if(!function_exists("findForm")) {
 				} else {
 					$html.=generateSelectOptions($fieldinfo,$data[$formKey],$dkey1);
 				}
-
 				$html.="</select>";
 				$html.="</div>";
 				break;
@@ -1065,4 +1064,3 @@ if(!function_exists("processFormHook")) {
 	}
 }
 ?>
-
