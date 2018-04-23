@@ -18,6 +18,14 @@ switch($_REQUEST["action"]) {
 			printServiceMsg([]);
 			return;
 		}
+		if(isset($_POST['v']) && ($_POST['v']=="0" || strlen($_POST['v'])<=0)) {
+	      	printServiceMsg([]);
+			return;
+	    }
+	    if(isset($_POST['q']) && strlen($_POST['q'])<=0) {
+	      printServiceMsg([]);
+				return;
+	    }
 		//$src=$_SESSION['FORMAUTOCOMPLETE'][$formKey][$_REQUEST['srcname']];
 		$src=$_SESSION['FORM'][$formKey]['fields'][$_REQUEST['srcname']];
 		

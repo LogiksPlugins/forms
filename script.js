@@ -555,14 +555,14 @@ function loadDropSearch(srcSelect) {
 			$(srcSelect).selectpicker({
 					//style: 'btn-info'
 				}).ajaxSelectPicker(options);
-		//    $(srcSelect).trigger("change");
+		   $(srcSelect).trigger("change");
 			
 		},"json");
 	} else {
 		$(srcSelect).selectpicker({
 				//style: 'btn-info'
 			}).ajaxSelectPicker(options);
-	//    $(srcSelect).trigger("change");
+	   $(srcSelect).trigger("change");
 	}
 }
 function slugify(text) {
