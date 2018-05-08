@@ -11,4 +11,5 @@ echo '<div class="form-actions form-actions-padding"><div class="text-right">';
 echo getFormActions($formConfig['actions']);
 echo '</div></div>';
 echo '</form></div></div>';
+echo "<script>if(typeof initFormUI=='function') initFormUI(); else $(function() {initFormUI();});</script>";
 ?>

@@ -46,4 +46,5 @@ if(count($fieldGroups)>1) {
 	echo '</div></div>';
 	echo '</form></div></div>';
 }
+echo "<script>if(typeof initFormUI=='function') initFormUI(); else $(function() {initFormUI();});</script>";
 ?>

@@ -212,13 +212,13 @@ if(!function_exists("findForm")) {
 
 				include __DIR__."/vendors/autoload.php";
 				echo _css(explode(",",FORM_CSS));
+				echo _js(explode(",",FORM_JS));
 				if(isset($formConfig['style']) && strlen($formConfig['style'])>0) {
 					echo _css(["forms/{$formConfig['style']}"]);
 				}
 				
 				include $f;
 				
-				echo _js(explode(",",FORM_JS));
 				if(isset($formConfig['script']) && strlen($formConfig['script'])>0) {
 					echo _js(["forms/{$formConfig['script']}"]);
 				}
