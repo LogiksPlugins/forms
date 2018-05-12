@@ -68,6 +68,12 @@ function initFormUI() {
 	$("form.form").delegate("button[cmd=submitnew]","click",function() {
 		reloadAfterSubmit=true;
 	});
+  
+  $("form.form").delegate("button[cmd],a[cmd]","click",function(e) {
+			e.preventDefault();
+			cmd=$(this).attr('cmd');
+			runFormCommand(cmd, this);
+		});
 
 	//$("form.validate").valid();
 
@@ -374,6 +380,93 @@ function initFileFields() {
 	$("form").delegate(".file-input .file-gallery","click",function(e) {
 		lgksAlert("Form Gallery Support Not Found, use photo type instead.");
 	});
+}
+function runFormCommand(cmd, src) {
+  cmdOriginal=cmd;
+  cmd=cmd.split("@");
+  cmd=cmd[0];
+
+  hash=$(src).closest(".formbox").find("form").data('formkey');
+  gkey=$(src).closest(".formbox").find("form").data('formkey');
+  if(gkey==null) return;
+  
+  $(".modal").modal("hide");
+
+  switch(cmd) {
+    case "forms":case "reports":case "infoview":
+      title=$(src).text();
+      if(title==null || title.length<=0) {
+        title=$(src).attr("title");
+      }
+      if(title==null || title.length<=0) {
+        title="Dialog";
+      }
+
+      cmdX=cmdOriginal.split("@");console.log(cmd,cmdX);
+      if(cmdX[1]!=null) {
+        cmdX[1]=cmdX[1].replace("{hashid}",hash).replace("{gkey}",gkey);
+
+        showLoader();
+        lgksOverlayURL(_link("popup/"+cmd+"/"+cmdX[1]),title,function() {
+            hideLoader();
+          },{"className":"overlayBox reportPopup"});
+      }
+    break;
+    case "page":
+      title=$(src).text();
+      if(title==null || title.length<=0) {
+        title=$(src).attr("title");
+      }
+      if(title==null || title.length<=0) {
+        title="Dialog";
+      }
+
+      cmdX=cmdOriginal.split("@");
+      if(cmdX[1]!=null) {
+        cmdX[1]=cmdX[1].replace("{hashid}",hash).replace("{gkey}",gkey);
+        window.location=_link("modules/"+cmdX[1]);
+      }
+      break;
+    case "module":case "popup":
+      title=$(src).text();
+      if(title==null || title.length<=0) {
+        title=$(src).attr("title");
+      }
+      if(title==null || title.length<=0) {
+        title="Dialog";
+      }
+
+      cmdX=cmdOriginal.split("@");
+      if(cmdX[1]!=null) {
+        cmdX[1]=cmdX[1].replace("{hashid}",hash).replace("{gkey}",gkey);
+
+        if(cmd=="module" || cmd=="modules") {
+          top.openLinkFrame(title,_link("modules/"+cmdX[1]),true);
+        } else {
+          showLoader();
+          lgksOverlayURL(_link("popup/"+cmdX[1]),title,function() {
+              hideLoader();
+            },{"className":"overlayBox reportPopup"});
+        }
+      }
+    break;
+    case "ui":
+      cmdX=cmdOriginal.split("@");
+      if(cmdX[1]!=null) {
+        cmd=cmdX[1];
+        gkey=$(src).closest(".reportTable").data('gkey');
+        if(gkey==null) return;
+        $.cookie("RPTVIEW-"+gkey,cmd,{ path: '/' });
+        window.location.reload();
+      }
+    break;
+    default:
+      if(typeof window[cmd]=="function") {
+        window[cmd](recordRow, rpt, src);
+      } else {
+        console.warn("Report CMD not found : "+cmd);
+      }
+  }
 }
 function loadAutocomplete(srcSelect) {
 	ajxURL=null;
