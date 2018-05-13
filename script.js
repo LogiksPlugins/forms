@@ -69,11 +69,14 @@ function initFormUI() {
 		reloadAfterSubmit=true;
 	});
   
-  $("form.form").delegate("button[cmd],a[cmd]","click",function(e) {
-			e.preventDefault();
-			cmd=$(this).attr('cmd');
-			runFormCommand(cmd, this);
-		});
+	$("form.form").delegate("button[cmd],a[cmd]","click",function(e) {
+		cmd=$(this).attr('cmd');
+		if(cmd==null || cmd=="submit" || cmd=="submitnew" || cmd=="update" || cmd=="cancel" || cmd=="escape") {
+			return;
+		}
+		e.preventDefault();
+		runFormCommand(cmd, this);
+	});
 
 	//$("form.validate").valid();
 
