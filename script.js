@@ -389,8 +389,11 @@ function runFormCommand(cmd, src) {
   cmd=cmd.split("@");
   cmd=cmd[0];
 
-  hash=$(src).closest(".formbox").find("form").data('formkey');
-  gkey=$(src).closest(".formbox").find("form").data('formkey');
+//   hash=$(src).closest(".formbox").find("form").data('formkey');
+//   gkey=$(src).closest(".formbox").find("form").data('formkey');
+  formDiv=$(src).closest("form.form");
+  hash=formDiv.data('formkey');
+  gkey=formDiv.data('formkey');
   if(gkey==null) return;
   
   $(".modal").modal("hide");
@@ -465,9 +468,9 @@ function runFormCommand(cmd, src) {
     break;
     default:
       if(typeof window[cmd]=="function") {
-        window[cmd](recordRow, rpt, src);
+        window[cmd](formDiv, src);
       } else {
-        console.warn("Report CMD not found : "+cmd);
+        console.warn("Action CMD not found : "+cmd);
       }
   }
 }
