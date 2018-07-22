@@ -158,13 +158,13 @@ if(!function_exists("findForm")) {
 						$whereCondition["guid"]=$_SESSION['SESS_GUID'];
 					}
 
-					$formConfig['fields'] = array_filter($formConfig['fields'], function($key){
-											return strpos($key, '__') !== 0;
-									}, ARRAY_FILTER_USE_KEY );
+					$tempFields = array_filter($formConfig['fields'], function($value,$key){
+											return ((strpos($key, '__') !== 0) && !(isset($value['nodb']) && $value['nodb']));
+									}, ARRAY_FILTER_USE_BOTH );
 
 // 					printArray($formConfig['fields']);exit();
 
-					$sql=_db($dbKey)->_selectQ($source['table'],array_keys($formConfig['fields']),$whereCondition);
+					$sql=_db($dbKey)->_selectQ($source['table'],array_keys($tempFields),$whereCondition);
 // 					echo $sql->_SQL();exit();
 					//echo $sql->_SQL();printArray([$formConfig['fields'],$whereCondition]);
 
