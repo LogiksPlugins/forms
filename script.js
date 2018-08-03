@@ -408,7 +408,7 @@ function runFormCommand(cmd, src) {
         title="Dialog";
       }
 
-      cmdX=cmdOriginal.split("@");console.log(cmd,cmdX);
+      cmdX=cmdOriginal.split("@");
       if(cmdX[1]!=null) {
         cmdX[1]=cmdX[1].replace("{hashid}",hash).replace("{gkey}",gkey);
 

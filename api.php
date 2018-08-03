@@ -93,9 +93,9 @@ if(!function_exists("findForm")) {
 		$formConfig['reloadlink']=SiteLocation.substr($_SERVER['REQUEST_URI'],1);
 		
 		if(!isset($formConfig['gotolink'])) $formConfig['gotolink']=$formConfig['reloadlink'];
-    if(substr($formConfig['gotolink'],0,5)!="http:" && substr($formConfig['gotolink'],0,6)!="https:") {
-      $formConfig['gotolink']=_link($formConfig['gotolink']);
-    }
+	    // if(substr($formConfig['gotolink'],0,5)!="http:" && substr($formConfig['gotolink'],0,6)!="https:") {
+	    //   $formConfig['gotolink']=_link($formConfig['gotolink']);
+	    // }
 
 		if(isset($formConfig['reportlink'])) {
 			$formConfig['cancellink']=_link($formConfig['reportlink']);
@@ -103,9 +103,9 @@ if(!function_exists("findForm")) {
 			$formConfig['cancellink']=$formConfig['reloadlink'];
 		}
     
-    $formConfig['cancellink']=_replace($formConfig['cancellink']);
-    $formConfig['gotolink']=_replace($formConfig['gotolink']);
-    $formConfig['reloadlink']=_replace($formConfig['reloadlink']);
+	    $formConfig['cancellink']=_replace($formConfig['cancellink']);
+	    $formConfig['gotolink']=_replace($formConfig['gotolink']);
+	    $formConfig['reloadlink']=_replace($formConfig['reloadlink']);
 
 		$formConfig['actions']['cancel']=[
 								"type"=>"button",
