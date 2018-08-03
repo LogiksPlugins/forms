@@ -209,14 +209,22 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 				}
 			} else {
 				if(formBox.closest(".modal-dialog").length==1) {
-					gotoLink=_link("popup/"+gotoLink);
+					if(gotoLink.substr(0,1)=="@") {
+						gotoLink=_link(gotoLink.substr(1));
+					} else {
+						gotoLink=_link("popup/"+gotoLink);
+					}
 					$(".modal").modal("hide");
 					showLoader();
 					lgksOverlayURL(gotoLink,title,function() {
 							hideLoader();
 						});
 				} else {
-					gotoLink=_link("modules/"+gotoLink);
+					if(gotoLink.substr(0,1)=="@") {
+						gotoLink=_link(gotoLink.substr(1));
+					} else {
+						gotoLink=_link("modules/"+gotoLink);
+					}
 					window.location=gotoLink;
 				}
 			}
