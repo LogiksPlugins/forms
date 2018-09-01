@@ -193,6 +193,8 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 			gotoLink=formBox.data('relink');
 		}
 		reloadAfterSubmit=false;
+
+		title = "...";
 		
 		if(gotoLink!=null && gotoLink.length>0) {
 			if(gotoLink.substr(0,7)=="http://" || gotoLink.substr(0,8)=="https://") {
