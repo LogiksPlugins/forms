@@ -221,13 +221,13 @@ if(!function_exists("findForm")) {
 				echo _css(explode(",",FORM_CSS));
 				echo _js(explode(",",FORM_JS));
 				if(isset($formConfig['style']) && strlen($formConfig['style'])>0) {
-					echo _css(["forms/{$formConfig['style']}"]);
+					echo _css(["forms/{$formConfig['style']}",$formConfig['style']]);
 				}
 				
 				include $f;
 				
 				if(isset($formConfig['script']) && strlen($formConfig['script'])>0) {
-					echo _js(["forms/{$formConfig['script']}"]);
+					echo _js(["forms/{$formConfig['script']}",$formConfig['script']]);
 				}
 				return true;
 			}
