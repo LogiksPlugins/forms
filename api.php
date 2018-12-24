@@ -913,7 +913,7 @@ if(!function_exists("findForm")) {
 		}
 	}
 
-	function getFormFieldData($key,$data) {
+	function getFormFieldData($key) {
 		if(isset($_SESSION['FORM']) &&
 			isset($_SESSION['FORM'][$_ENV['FORMKEY']]) &&
 			isset($_SESSION['FORM'][$_ENV['FORMKEY']]['data']) &&
@@ -925,7 +925,7 @@ if(!function_exists("findForm")) {
 		}
 	}
 	
-	function updateFormFieldData($key,$data) {
+	function setFormFieldData($key,$data) {
 		$_SESSION['FORM'][$_ENV['FORMKEY']]['data'][$key] = $data;
 		return $data;
 	}
