@@ -223,6 +223,10 @@ if(!function_exists("findForm")) {
 				if(isset($formConfig['style']) && strlen($formConfig['style'])>0) {
 					echo _css(["forms/{$formConfig['style']}",$formConfig['style']]);
 				}
+
+				if(isset($_SESSION['FORM'][$_ENV['FORMKEY']]) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['data'])) {
+					$formConfig['data'] = $_SESSION['FORM'][$_ENV['FORMKEY']]['data'];
+				}
 				
 				include $f;
 				
@@ -907,6 +911,23 @@ if(!function_exists("findForm")) {
 		} else {
 			trigger_logikserror("RefAutoCreate is enabled, but refmaster not defined.");
 		}
+	}
+
+	function getFormFieldData($key,$data) {
+		if(isset($_SESSION['FORM']) &&
+			isset($_SESSION['FORM'][$_ENV['FORMKEY']]) &&
+			isset($_SESSION['FORM'][$_ENV['FORMKEY']]['data']) &&
+			isset($_SESSION['FORM'][$_ENV['FORMKEY']]['data'][$key])
+			) {
+			return $_SESSION['FORM'][$_ENV['FORMKEY']]['data'][$key];
+		} else {
+			return false;
+		}
+	}
+	
+	function updateFormFieldData($key,$data) {
+		$_SESSION['FORM'][$_ENV['FORMKEY']]['data'][$key] = $data;
+		return $data;
 	}
 }
 if(!function_exists("searchMedia")) {
