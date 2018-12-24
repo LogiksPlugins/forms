@@ -226,6 +226,7 @@ if(!function_exists("findForm")) {
 
 				if(isset($_SESSION['FORM'][$_ENV['FORMKEY']]) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['data'])) {
 					$formConfig['data'] = $_SESSION['FORM'][$_ENV['FORMKEY']]['data'];
+					$formData = $formConfig['data'];
 				}
 				
 				include $f;
