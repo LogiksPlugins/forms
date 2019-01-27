@@ -51,7 +51,19 @@ if(!function_exists("findForm")) {
 		}
 
 		if($params==null) $params=[];
-		$formConfig=array_merge($formConfig,$params);
+		$formConfig=array_replace_recursive($formConfig,$params);
+		
+		if(isset($_SESSION['FORM_CONFIG']) && is_array($_SESSION['FORM_CONFIG'])) {
+			if(isset($_SESSION['FORM_CONFIG'][$mode])) {
+				$globalParams = $_SESSION['FORM_CONFIG'][$mode];
+			} else {
+				if(isset($_SESSION['FORM_CONFIG']['edit'])) unset($_SESSION['FORM_CONFIG']['edit']);
+				if(isset($_SESSION['FORM_CONFIG']['new'])) unset($_SESSION['FORM_CONFIG']['new']);
+				
+				$globalParams = $_SESSION['FORM_CONFIG'];
+			}
+			$formConfig=array_replace_recursive($formConfig,$globalParams);
+		}
 
 		if(!isset($formConfig['formkey'])) $formConfig['formkey']=md5(session_id().time());
 
