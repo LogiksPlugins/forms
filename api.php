@@ -328,7 +328,12 @@ if(!function_exists("findForm")) {
 				$html.="<span class='span-required'>*</span>";
 			}
 			if(isset($field['tips']) && strlen($field['tips'])>1) {
-				$html.="<a href='{$field['tips']}' target=_blank class='field-tips pull-right fa fa-question-circle'></a>";
+				if(substr($field['tips'], 0,7)=="http://" || substr($field['tips'], 0,8)=="https://")
+					$html.="<a href='{$field['tips']}' target=_blank class='field-tips pull-right fa fa-question-circle'></a>";
+				elseif(strlen($field['tips'])<=25)
+					$html.="<span title='{$field['tips']}' class='field-tips pull-right fa fa-question-circle'> {$field['tips']}</span>";
+				else
+					$html.="<span title='{$field['tips']}' class='field-tips pull-right fa fa-question-circle'> ".substr($field['tips'], 0,20)."...</span>";
 			}
 			$html.="</label>";
 			$html.=getFormField($field,$data,$dbKey);
