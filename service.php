@@ -65,6 +65,9 @@ switch($_REQUEST["action"]) {
 					}
 					
 					$sqlData=_db()->_selectQ($src['table'],$src['columns'],["blocked"=>"false"])->_WHERE($whr,"AND","OR");
+					if(isset($src['where']) && $src['where']) {
+						$sqlData->_where($src['where']);
+					}
 					$sqlData=$sqlData->_limit(10)->_GET();
 					
 					printServiceMsg($sqlData);
