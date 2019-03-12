@@ -256,7 +256,7 @@ if(!function_exists("findForm")) {
 		$html="";
 		foreach ($formActions as $key => $button) {
 			if(!isset($button['class'])) $button['class']="btn btn-primary";
-			if(isset($button['label'])) $label=$button['label'];
+			if(isset($button['label'])) $label=_ling($button['label']);
 			else $label=toTitle(_ling($key));
 
 			if(isset($button['icon']))  $icon=$button['icon'];
