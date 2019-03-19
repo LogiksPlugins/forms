@@ -62,7 +62,8 @@ if(!function_exists("findForm")) {
 				
 				$globalParams = $_SESSION['FORM_CONFIG'];
 			}
-			$formConfig=array_replace_recursive($formConfig,$globalParams);
+			// $formConfig=array_replace_recursive($formConfig,$globalParams);
+			$formConfig=array_merge_recursive($formConfig,$globalParams);
 		}
 
 		if(!isset($formConfig['formkey'])) $formConfig['formkey']=md5(session_id().time());
