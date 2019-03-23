@@ -10,6 +10,7 @@
     "marketid": "",
     "homepage": "https://github.com/LogiksPlugins/forms",
     "bugs": "https://github.com/LogiksPlugins/forms/issues",
+    "docs": "https://github.com/LogiksPlugins/forms/wiki",
     "private": false,
     "dependencies": {
         "core": "+4.0.0"
