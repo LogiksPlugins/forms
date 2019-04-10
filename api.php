@@ -1101,7 +1101,11 @@ if(!function_exists("processFormHook")) {
 			}
 			if(isset($postCFG['method'])) {
 				if(!is_array($postCFG['method'])) $postCFG['method']=explode(",",$postCFG['method']);
-				foreach($postCFG['method'] as $m) call_user_func($m,$_ENV['FORM-HOOK-PARAMS']);
+				foreach($postCFG['method'] as $m) {
+					if(function_exists($m)) {
+						call_user_func($m,$_ENV['FORM-HOOK-PARAMS']);
+					}
+				}
 			}
 			if(isset($postCFG['file'])) {
 				if(!is_array($postCFG['file'])) $postCFG['file']=explode(",",$postCFG['file']);
