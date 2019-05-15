@@ -7,6 +7,12 @@ if(!function_exists("findForm")) {
 	define("FORM_CSS",'bootstrap.datetimepicker,forms');
 	define("FORM_JS",'jquery.validate,moment,bootstrap.datetimepicker,forms');
 
+	$_SESSION['SESS_CURRENT_YEAR'] = date("Y");
+	$_SESSION['SESS_CURRENT_MONTH'] = date("m");
+	$_SESSION['SESS_CURRENT_MONTH_NAME'] = date("M");
+	$_SESSION['SESS_CURRENT_DATE'] = date("Y-m-d");
+	$_SESSION['SESS_CURRENT_DAY'] = date("D");
+
 	function findForm($file) {
 		$fileName=$file;
 		if(!file_exists($file)) {
