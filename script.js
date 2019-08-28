@@ -552,7 +552,11 @@ function loadAutocomplete(srcSelect) {
 				if(ajxURL!=null && ajxURL.length>0) {
 						processAJAXQuery(ajxURL, function(data) {
 								$.each(data.Data,function(k,v) {
-										$(srcSelect).closest("form").find("*[name='"+k+"']").val(v);
+										if($(srcSelect).closest("form").find("*[name='"+k+"']").hasClass("form-control-static")) {
+											$(srcSelect).closest("form").find("*[name='"+k+"']").html(v);
+										} else {
+											$(srcSelect).closest("form").find("*[name='"+k+"']").val(v);
+										}
 								});
 						},"json");
 				}

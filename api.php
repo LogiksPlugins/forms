@@ -909,7 +909,7 @@ if(!function_exists("findForm")) {
 				$content=$fieldinfo['placeholder'];
 				if(isset($data[$formKey]) && strlen($data[$formKey])>1) $content=$data[$formKey];
 
-				$html.="<div class='form-control-static field-{$formKey}' $xtraAttributes>{$content}</div>";
+				$html.="<div class='form-control-static field-{$formKey}' name='{$formKey}' $xtraAttributes>{$content}</div>";
 				break;
 
 			default:
