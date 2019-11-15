@@ -560,7 +560,12 @@ if(!function_exists("findForm")) {
 			case 'date': case 'datetime': case 'month': case 'year': case 'time'://case 'datetime-local': case 'week':
 				if($fieldinfo['type']!="time") {
 					if($data[$formKey]==null || strlen($data[$formKey])<=1 || $data[$formKey]==0) $data[$formKey]="";
-					else $data[$formKey]=_pDate($data[$formKey],"d/m/Y");
+					else {
+						$data[$formKey] = str_replace("T"," ",current(explode("Z", $data[$formKey])));
+						if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/",$data[$formKey])) {
+							$data[$formKey]=_pDate($data[$formKey],"d/m/Y");
+						}
+					}
 				}
 				$html.="<div class='input-group'>";
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='text'>";
