@@ -370,10 +370,11 @@ if(!function_exists("findForm")) {
 		if(!isset($data[$formKey])) {
 			if(isset($_GET[$formKey])) {
 				$data[$formKey]=$_GET[$formKey];
-				$fieldinfo['readonly']=true;
-				$fieldinfo['type']="text";
 				if(isset($_GET['form_allow_edit']) && $_GET['form_allow_edit']=="true") {
 					$fieldinfo['readonly']=false;
+				} else {
+					$fieldinfo['readonly']=true;
+					$fieldinfo['type']="text";
 				}
 			} elseif(isset($fieldinfo['default'])) {
 				$data[$formKey]=$fieldinfo['default'];
