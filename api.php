@@ -69,6 +69,14 @@ if(!function_exists("findForm")) {
 			return false;
 		}
 
+		if(isset($formConfig['policy']) && strlen($formConfig['policy'])>0) {
+	      $allow=checkUserPolicy($formConfig['policy']);
+	      if(!$allow) {
+	        trigger_logikserror("Sorry, you are not allowed to access this form");
+	        return false;
+	      }
+	    }
+
 		if($params==null) $params=[];
 		$formConfig=array_replace_recursive($formConfig,$params);
 		
