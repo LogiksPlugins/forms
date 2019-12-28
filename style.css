@@ -81,6 +81,13 @@
 .formbox .jsonField tbody td .fa {
   margin-top: 10px;
 }
+.formbox .col-newline {
+  clear: left;
+}
+.formbox .col-endofline {
+  clear: right;
+}
+
 form .form-actions button {
   margin-left:20px;
 }

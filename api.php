@@ -322,9 +322,6 @@ if(!function_exists("findForm")) {
 			}
 
 			if(!isset($field['important'])) $field['important'] = false;
-			elseif($field['important']) {
-				$field['width'] = 12;
-			}
 
 			if(isset($field['vmode'])) {
 				if(!is_array($field['vmode'])) {
@@ -345,10 +342,19 @@ if(!function_exists("findForm")) {
 			if(!isset($field['width'])) $field['width']=6;
 
 			if(isset($field['hidden']) && $field['hidden']==true) {
-				$html.="<div class='col-sm-{$field['width']} col-lg-{$field['width']} field-container hidden'>";
+				$colClass = "col-sm-{$field['width']} col-lg-{$field['width']} field-container hidden";
 			} else {
-				$html.="<div class='col-sm-{$field['width']} col-lg-{$field['width']} field-container'>";
+				$colClass = "col-sm-{$field['width']} col-lg-{$field['width']} field-container";
+
+				if(!isset($field['newline']) && $field['newline']) {
+					$colClass .= " col-newline";
+				}
+				if(!isset($field['endofline']) && $field['endofline']) {
+					$colClass .= " col-endofline";
+				}
 			}
+
+			$html.="<div class='{$colClass}'>";
 
 			if(!isset($field['type'])) $field['type']="text";
 
