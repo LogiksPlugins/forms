@@ -8,7 +8,7 @@ echo getFormFieldset($formConfig['fields'],$formData,$formConfig['dbkey'],$formC
 echo "</div>";
 echo '<hr class="hr-normal">';
 echo '<div class="form-actions form-actions-padding"><div class="text-right">';
-echo getFormActions($formConfig['actions']);
+echo getFormActions($formConfig['actions'],$formConfig);
 echo '</div></div>';
 echo '</form></div></div>';
 echo "<script>if(typeof initFormUI=='function') initFormUI(); else $(function() {initFormUI();});</script>";

@@ -241,8 +241,12 @@ if(!function_exists("findForm")) {
 		if($formConfig['mode']==null || strlen($formConfig['mode'])<=0) {
 			$formConfig['mode']="new";
 		}
-		
-		if(!isset($formConfig['simpleform'])) $formConfig['simpleform'] = "false";
+
+		if(!isset($formConfig['simpleform'])) $formConfig['simpleform'] = false;
+		if($formConfig['mode']!="new") {
+			$formConfig['simpleform'] = false;
+			$formConfig['disable_simpleform'] = true;
+		}
 
 		$formKey=$formConfig['formkey'];
 		$_SESSION['FORM'][$formKey]=$formConfig;
@@ -282,9 +286,15 @@ if(!function_exists("findForm")) {
 		trigger_logikserror("Form Template Not Found",null,404);
 	}
 
-	function getFormActions($formActions=[]) {
+	function getFormActions($formActions=[],$formConfig=[]) {
 		$html="";
-		$html .= "<label class='pull-left form-simplicity'><input type='checkbox' class='form-control form-complex pull-left'>Show All Fields</label>";
+		if(!isset($formConfig['disable_simpleform']) || !$formConfig['disable_simpleform']) {
+			if(isset($formConfig['simpleform']) && !$formConfig['simpleform']) {
+
+			} else {
+				$html .= "<label class='pull-left form-simplicity'><input type='checkbox' class='form-control form-complex pull-left'>Show All Fields</label>";
+			}
+		}
 		foreach ($formActions as $key => $button) {
 			if(!isset($button['class'])) $button['class']="btn btn-primary";
 			if(isset($button['label'])) $label=_ling($button['label']);

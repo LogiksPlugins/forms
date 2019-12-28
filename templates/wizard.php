@@ -54,7 +54,7 @@ if(count($fieldGroups)>1) {
 	echo '</div>';
 	echo '<hr class="hr-normal">';
 	echo '<div class="form-actions form-actions-padding"><div class="text-right">';
-	echo getFormActions($formConfig['actions']);
+	echo getFormActions($formConfig['actions'],$formConfig);
 	echo '</div></div>';
 	echo '</form>';
 } else {
@@ -65,7 +65,7 @@ if(count($fieldGroups)>1) {
 	echo "</div>";
 	echo '<hr class="hr-normal">';
 	echo '<div class="form-actions form-actions-padding"><div class="text-right">';
-	echo getFormActions($formConfig['actions']);
+	echo getFormActions($formConfig['actions'],$formConfig);
 	echo '</div></div>';
 	echo '</form></div></div>';
 }
