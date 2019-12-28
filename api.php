@@ -321,6 +321,11 @@ if(!function_exists("findForm")) {
 				continue;
 			}
 
+			if(!isset($field['important'])) $field['important'] = false;
+			elseif($field['important']) {
+				$field['width'] = 12;
+			}
+
 			if(isset($field['vmode'])) {
 				if(!is_array($field['vmode'])) {
 					$field['vmode']=explode(",",$field['vmode']);
@@ -347,7 +352,13 @@ if(!function_exists("findForm")) {
 
 			if(!isset($field['type'])) $field['type']="text";
 
-			$html.="<div class='form-group'>";
+
+			if($field['important']) {
+				$html.="<div class='form-group important-field'>";
+			} else {
+				$html.="<div class='form-group'>";
+			}
+			
 			if(!in_array($field['type'],$noLabelFields)) {
 				$html.="<label>{$field['label']}";
 			}
