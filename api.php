@@ -346,10 +346,10 @@ if(!function_exists("findForm")) {
 			} else {
 				$colClass = "col-sm-{$field['width']} col-lg-{$field['width']} field-container";
 
-				if(!isset($field['newline']) && $field['newline']) {
+				if(isset($field['newline']) && $field['newline']) {
 					$colClass .= " col-newline";
 				}
-				if(!isset($field['endofline']) && $field['endofline']) {
+				if(isset($field['endofline']) && $field['endofline']) {
 					$colClass .= " col-endofline";
 				}
 			}
