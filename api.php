@@ -282,6 +282,7 @@ if(!function_exists("findForm")) {
 
 	function getFormActions($formActions=[]) {
 		$html="";
+		$html .= "<label class='pull-left form-simplicity'><input type='checkbox' class='form-control form-complex pull-left'>Show All Fields</label>";
 		foreach ($formActions as $key => $button) {
 			if(!isset($button['class'])) $button['class']="btn btn-primary";
 			if(isset($button['label'])) $label=_ling($button['label']);

@@ -88,6 +88,16 @@
   clear: right;
 }
 
+.formbox .form-simplicity {
+  /*width: auto;*/
+  text-align: left;
+  margin-left: -20px;
+  line-height: 20px;
+}
+.formbox .form-simplicity input {
+  margin-right: 5px;
+}
+
 form .form-actions button {
   margin-left:20px;
 }
