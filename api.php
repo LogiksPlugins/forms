@@ -242,7 +242,8 @@ if(!function_exists("findForm")) {
 			$formConfig['mode']="new";
 		}
 
-		if(!isset($formConfig['simpleform'])) $formConfig['simpleform'] = false;
+		if(!isset($formConfig['simpleform'])) $formConfig['simpleform'] = true;
+		
 		if($formConfig['mode']!="new") {
 			$formConfig['simpleform'] = false;
 			$formConfig['disable_simpleform'] = true;
