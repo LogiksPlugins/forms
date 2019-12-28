@@ -352,6 +352,9 @@ if(!function_exists("findForm")) {
 				if(isset($field['endofline']) && $field['endofline']) {
 					$colClass .= " col-endofline";
 				}
+				if($field['important']) {
+					$colClass .= " col-important";
+				}
 			}
 
 			$html.="<div class='{$colClass}'>";
