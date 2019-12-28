@@ -242,8 +242,8 @@ if(!function_exists("findForm")) {
 			$formConfig['mode']="new";
 		}
 
-		if(!isset($formConfig['simpleform'])) $formConfig['simpleform'] = true;
-		
+		if(!isset($formConfig['simpleform'])) $formConfig['simpleform'] = false;
+
 		if($formConfig['mode']!="new") {
 			$formConfig['simpleform'] = false;
 			$formConfig['disable_simpleform'] = true;
@@ -290,11 +290,7 @@ if(!function_exists("findForm")) {
 	function getFormActions($formActions=[],$formConfig=[]) {
 		$html="";
 		if(!isset($formConfig['disable_simpleform']) || !$formConfig['disable_simpleform']) {
-			if(isset($formConfig['simpleform']) && !$formConfig['simpleform']) {
-
-			} else {
-				$html .= "<label class='pull-left form-simplicity'><input type='checkbox' class='form-control form-complex pull-left'>Show All Fields</label>";
-			}
+			$html .= "<label class='pull-left form-simplicity'><input type='checkbox' class='form-control form-complex pull-left'>Show All Fields</label>";
 		}
 		foreach ($formActions as $key => $button) {
 			if(!isset($button['class'])) $button['class']="btn btn-primary";
