@@ -93,6 +93,13 @@ function initFormUI() {
 			});
 		}
 	});
+	if($("form.form").hasClass("simple-form")) {
+		$("input[name]:not(.required),select[name]:not(.required),textarea[name]:not(.required)",".formbox fieldset").each(function() {
+				if(!$(this).closest(".field-container").hasClass("field-hidden")) {
+					$(this).closest(".field-container").removeClass("hidden");
+				}
+			});
+	}
 
 	//$("form.validate").valid();
 
