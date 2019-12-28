@@ -80,6 +80,7 @@ function initFormUI() {
 
 	if($("form.form .form-actions .form-simplicity input").length>0) {
 		$("form.form .form-actions .form-simplicity input").change(function() {
+			$.cookie('FORMS_SHOW_ALL_FIELDS',$(this).is(":checked"));
 			if($(this).is(":checked")) {
 				$("input[name]:not(.required),select[name]:not(.required),textarea[name]:not(.required)",".formbox fieldset").each(function() {
 					if(!$(this).closest(".field-container").hasClass("field-hidden")) {
@@ -102,7 +103,15 @@ function initFormUI() {
 					}
 				});
 		} else {
-			$("form.form .form-actions .form-simplicity input")[0].checked=true;
+			if($.cookie('FORMS_SHOW_ALL_FIELDS')) {
+				$("form.form .form-actions .form-simplicity input")[0].checked=true;
+			} else {
+				$("input[name]:not(.required),select[name]:not(.required),textarea[name]:not(.required)",".formbox fieldset").each(function() {
+					if(!$(this).closest(".field-container").hasClass("field-hidden")) {
+						$(this).closest(".field-container").addClass("hidden");
+					}
+				});
+			}
 		}
 	}
 
