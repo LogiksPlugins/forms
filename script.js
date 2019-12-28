@@ -103,7 +103,7 @@ function initFormUI() {
 					}
 				});
 		} else {
-			if($.cookie('FORMS_SHOW_ALL_FIELDS')) {
+			if($.cookie('FORMS_SHOW_ALL_FIELDS')=="true") {
 				$("form.form .form-actions .form-simplicity input")[0].checked=true;
 			} else {
 				$("input[name]:not(.required),select[name]:not(.required),textarea[name]:not(.required)",".formbox fieldset").each(function() {
