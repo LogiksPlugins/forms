@@ -241,7 +241,8 @@ if(!function_exists("findForm")) {
 		if($formConfig['mode']==null || strlen($formConfig['mode'])<=0) {
 			$formConfig['mode']="new";
 		}
-		if(!$formConfig['simpleform']) $formConfig['simpleform'] = "false";
+		
+		if(!isset($formConfig['simpleform'])) $formConfig['simpleform'] = "false";
 
 		$formKey=$formConfig['formkey'];
 		$_SESSION['FORM'][$formKey]=$formConfig;
