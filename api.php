@@ -343,7 +343,7 @@ if(!function_exists("findForm")) {
 			if(!isset($field['width'])) $field['width']=6;
 
 			if(isset($field['hidden']) && $field['hidden']==true) {
-				$colClass = "col-sm-{$field['width']} col-lg-{$field['width']} field-container hidden";
+				$colClass = "col-sm-{$field['width']} col-lg-{$field['width']} field-container field-hidden hidden";
 			} else {
 				$colClass = "col-sm-{$field['width']} col-lg-{$field['width']} field-container";
 

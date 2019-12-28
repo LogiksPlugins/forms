@@ -78,6 +78,22 @@ function initFormUI() {
 		runFormCommand(cmd, this);
 	});
 
+	$("form.form .form-actions .form-simplicity input").change(function() {
+		$(this.checked) {
+			$("input[name]:not(.required),select[name]:not(.required),textarea[name]:not(.required)",".formbox fieldset").each(function() {
+				if(!$(this).closest(".field-container").hasClass("field-hidden")) {
+					$(this).closest(".field-container").removeClass("hidden");
+				}
+			});
+		} else {
+			$("input[name]:not(.required),select[name]:not(.required),textarea[name]:not(.required)",".formbox fieldset").each(function() {
+				if(!$(this).closest(".field-container").hasClass("field-hidden")) {
+					$(this).closest(".field-container").addClass("hidden");
+				}
+			});
+		}
+	});
+
 	//$("form.validate").valid();
 
 	$("form.validate").validate({
