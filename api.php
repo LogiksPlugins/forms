@@ -691,7 +691,7 @@ if(!function_exists("findForm")) {
 				$html.="<div class='input-group-addon'><i class='fa fa-search'></i></div>";
 				$html.="</div>";
 				break;
-			case "suggest":
+			case "suggest":case "autosuggest":
 				$suggestid=uniqid("S-");
 				$html.="<div class='input-group'>";
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}' list='{$suggestid}'>";
