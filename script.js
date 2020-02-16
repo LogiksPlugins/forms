@@ -275,7 +275,8 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 			formBox.show();
 		}
 	} else {
-		console.warn(formid+">>"+msgType+">>"+msgObj);
+		//console.warn(formid+">>"+msgType+">>"+msgObj);
+		lgksToast("<i class='glyphicon glyphicon-info-sign'></i>Error with form, try reloading");
 	}
 }
 function initJSONFields() {
