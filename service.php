@@ -582,12 +582,14 @@ function displayFormMsg($msg,$type='error',$gotoLink="") {
 				}
 				
 				echo "MSG:Submitted/Updated Successfully";
-				foreach($msg as $a=>$b) {
-					if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$b)) {
-						$msg[$a]=_pDate($b,"d/m/Y");
+				if(is_array($msg)) {
+					foreach($msg as $a=>$b) {
+						if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$b)) {
+							$msg[$a]=_pDate($b,"d/m/Y");
+						}
 					}
+					$msg=json_encode($msg);
 				}
-				$msg=json_encode($msg);
 				echo "<script>parent.formsSubmitStatus('$formid',$msg,'success','$gotoLink');</script>";
 			}
 			break;
