@@ -23,8 +23,8 @@ switch($_REQUEST["action"]) {
 			return;
 	    }
 	    if(isset($_POST['q']) && strlen($_POST['q'])<=0) {
-	      printServiceMsg([]);
-				return;
+	      	printServiceMsg([]);
+			return;
 	    }
 		//$src=$_SESSION['FORMAUTOCOMPLETE'][$formKey][$_REQUEST['srcname']];
 		$src=$_SESSION['FORM'][$formKey]['fields'][$_REQUEST['srcname']];
@@ -63,8 +63,12 @@ switch($_REQUEST["action"]) {
 							$whr[$b[0]]=$_POST['v'];
 						}
 					}
+
+					if(!isset($src['where'])) {
+						$src['where'] = ["blocked" => "false"];
+					}
 					
-					$sqlData=_db()->_selectQ($src['table'],$src['columns'],["blocked"=>"false"])->_WHERE($whr,"AND","OR");
+					$sqlData=_db()->_selectQ($src['table'],$src['columns'],$src['where'])->_WHERE($whr,"AND","OR");
 					if(isset($src['where']) && $src['where']) {
 						$sqlData->_where($src['where']);
 					}
@@ -101,8 +105,12 @@ switch($_REQUEST["action"]) {
 							$whr[$b[0]]=$_POST['v'];
 						}
 					}
+
+					if(!isset($src['where'])) {
+						$src['where'] = ["blocked" => "false"];
+					}
 					
-					$sqlData=_db()->_selectQ($src['table'],$src['columns'],["blocked"=>"false"])->_WHERE($whr,"AND","OR");
+					$sqlData=_db()->_selectQ($src['table'],$src['columns'],$src['where'])->_WHERE($whr,"AND","OR");
 					$sqlData=$sqlData->_limit(10)->_GET();
 					
 					printServiceMsg($sqlData);
