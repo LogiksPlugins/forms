@@ -12,6 +12,7 @@ if(!function_exists("findForm")) {
 	$_SESSION['SESS_CURRENT_MONTH_NAME'] = date("M");
 	$_SESSION['SESS_CURRENT_DATE'] = date("Y-m-d");
 	$_SESSION['SESS_CURRENT_DAY'] = date("D");
+	$_SESSION['SESS_CURRENT_TIME'] = date("H:i:s");
 
 	function findForm($file) {
 		$fileName=$file;
