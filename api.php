@@ -352,7 +352,11 @@ if(!function_exists("findForm")) {
 
 			if(!isset($field['width'])) $field['width']=6;
 
-			if(isset($field['hidden']) && $field['hidden']==true) {
+			if(isset($field['onlyview']) && $field['onlyview']===true) {
+				continue;
+			}
+
+			if(isset($field['hidden']) && $field['hidden']===true) {
 				$colClass = "col-sm-{$field['width']} col-lg-{$field['width']} field-container field-hidden hidden";
 			} else {
 				$colClass = "col-sm-{$field['width']} col-lg-{$field['width']} field-container";
@@ -383,7 +387,7 @@ if(!function_exists("findForm")) {
 				$html.="<label>{$field['label']}";
 			}
 
-			if(isset($field['required']) && $field['required']==true) {
+			if(isset($field['required']) && $field['required']===true) {
 				$html.="<span class='span-required'>*</span>";
 			}
 			if(isset($field['tips']) && strlen($field['tips'])>1) {
