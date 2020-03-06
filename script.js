@@ -205,17 +205,21 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 				lgksToast("<i class='glyphicon glyphicon-comment'></i>&nbsp;"+msgObj);
 			break;
 			case "SUCCESS":
-				lgksToast("<i class='glyphicon glyphicon-comment'></i>&nbsp;Successfully update database.");
-				$.each(msgObj,function(k,v) {
-					try {
-						if(formBox.find("input[name='"+k+"'],textarea[name='"+k+"'],select[name='"+k+"']").attr("type")=="file") {
-							formBox.find("input[name='"+k+"'],textarea[name='"+k+"'],select[name='"+k+"']").val('');
-						} else {
-							formBox.find("input[name='"+k+"'],textarea[name='"+k+"'],select[name='"+k+"']").val(v);
+				if(typeof msgObj == "string") {
+					lgksToast("<i class='glyphicon glyphicon-comment'></i>&nbsp;"+msgObj);
+				} else {
+					lgksToast("<i class='glyphicon glyphicon-comment'></i>&nbsp;Successfully update database.");
+					$.each(msgObj,function(k,v) {
+						try {
+							if(formBox.find("input[name='"+k+"'],textarea[name='"+k+"'],select[name='"+k+"']").attr("type")=="file") {
+								formBox.find("input[name='"+k+"'],textarea[name='"+k+"'],select[name='"+k+"']").val('');
+							} else {
+								formBox.find("input[name='"+k+"'],textarea[name='"+k+"'],select[name='"+k+"']").val(v);
+							}
+						} catch($e) {
 						}
-					} catch($e) {
-					}
-				});
+					});
+				}
 			break;
 			default:
 				lgksToast("<i class='glyphicon glyphicon-info-sign'></i>&nbsp;"+msgObj);
