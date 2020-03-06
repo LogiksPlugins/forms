@@ -598,7 +598,7 @@ function displayFormMsg($msg,$type='error',$gotoLink="") {
 					}
 					$msg=json_encode($msg);
 				}
-				echo "<script>parent.formsSubmitStatus('$formid',$msg,'success','$gotoLink');</script>";
+				echo "<script>parent.formsSubmitStatus('$formid','$msg','success','$gotoLink');</script>";
 			}
 			break;
 		default:
