@@ -240,7 +240,13 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 		title = "...";
 		
 		if(gotoLink!=null && gotoLink.length>0) {
-			if(gotoLink.substr(0,7)=="http://" || gotoLink.substr(0,8)=="https://") {
+			if(gotoLink=="closepopup") {
+				if(formBox.closest(".modal-dialog").length==1) {
+					$(".modal").modal("hide");
+				}
+			} else if(gotoLink=="closewindow") {
+				window.close();
+			} else if(gotoLink.substr(0,7)=="http://" || gotoLink.substr(0,8)=="https://") {
 				gotoLink=gotoLink;
 				
 				if(formBox.closest(".modal-dialog").length==1) {
