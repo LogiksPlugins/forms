@@ -372,6 +372,10 @@ if(!function_exists("findForm")) {
 				}
 			}
 
+			if(isset($field['class']) && strlen($field['class'])>0) {
+				$colClass .= " {$field['class']}";
+			}
+
 			$html.="<div class='{$colClass}'>";
 
 			if(!isset($field['type'])) $field['type']="text";
