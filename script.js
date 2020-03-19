@@ -242,7 +242,11 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 		if(gotoLink!=null && gotoLink.length>0) {
 			if(gotoLink=="closepopup") {
 				if(formBox.closest(".modal-dialog").length==1) {
-					$(".modal").modal("hide");
+					formBox.closest(".modal-dialog").closest(".modal").modal("hide").detach();
+				}
+			} else if(gotoLink=="hidepopup") {
+				if(formBox.closest(".modal-dialog").length==1) {
+					formBox.closest(".modal-dialog").closest(".modal").modal("hide").hide();
 				}
 			} else if(gotoLink=="closewindow") {
 				window.close();
@@ -250,7 +254,7 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 				gotoLink=gotoLink;
 				
 				if(formBox.closest(".modal-dialog").length==1) {
-					$(".modal").modal("hide");
+					formBox.closest(".modal-dialog").closest(".modal").modal("hide").hide();
 					showLoader();
 					lgksOverlayURL(gotoLink,title,function() {
 							hideLoader();
