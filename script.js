@@ -225,10 +225,6 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 				lgksToast("<i class='glyphicon glyphicon-info-sign'></i>&nbsp;"+msgObj);
 		}
 
-		postsubmit=formBox.data('postsubmit');
-		if(postsubmit!=null && typeof window['postsubmit']=="function") {
-			window['postsubmit'](formid,msgObj,msgType);
-		}
 		if(gotoLink==null || gotoLink.length<=0) {
 			gotoLink=formBox.data('glink');
 		}
@@ -236,6 +232,11 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 			gotoLink=formBox.data('relink');
 		}
 		reloadAfterSubmit=false;
+
+		postsubmit=formBox.data('postsubmit');
+		if(postsubmit!=null && typeof window[postsubmit]=="function") {
+			window[postsubmit](formid,msgObj,msgType,gotoLink);
+		}
 
 		title = "...";
 		
