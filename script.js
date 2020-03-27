@@ -5,9 +5,11 @@ function initFormUI() {
 	$("form select.multiple").each(function() {
 		
 	});
-	$('input[type=tags]').tagsinput({
-  
-	});
+	if(typeof $.fn.tagsinput == "function") {
+		$('input[type=tags]').tagsinput({
+	  
+		});
+	}
 	
 	$(".select-group select:not(.multiple).search").each(function() {
 		loadDropSearch(this);
@@ -81,7 +83,7 @@ function initFormUI() {
 	if($("form.form .form-actions .form-simplicity input").length>0) {
 		if($("input[name].required,select[name].required,textarea[name].required",".formbox fieldset").length>0) {
 			$("form.form .form-actions .form-simplicity input").change(function() {
-				if(typeof $.cookie == "function") $.cookie('FORMS_SHOW_ALL_FIELDS',$(this).is(":checked"));
+				$.cookie('FORMS_SHOW_ALL_FIELDS',$(this).is(":checked"));
 				if($(this).is(":checked")) {
 					$("input[name]:not(.required),select[name]:not(.required),textarea[name]:not(.required)",".formbox fieldset").each(function() {
 						if(!$(this).closest(".field-container").hasClass("field-hidden")) {
@@ -104,7 +106,7 @@ function initFormUI() {
 						}
 					});
 			} else {
-				if(typeof $.cookie == "function" && $.cookie('FORMS_SHOW_ALL_FIELDS')=="true") {
+				if($.cookie('FORMS_SHOW_ALL_FIELDS')=="true") {
 					$("form.form .form-actions .form-simplicity input")[0].checked=true;
 				} else {
 					$("input[name]:not(.required),select[name]:not(.required),textarea[name]:not(.required)",".formbox fieldset").each(function() {
@@ -225,6 +227,10 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 				lgksToast("<i class='glyphicon glyphicon-info-sign'></i>&nbsp;"+msgObj);
 		}
 
+		postsubmit=formBox.data('postsubmit');
+		if(postsubmit!=null && typeof window['postsubmit']=="function") {
+			window['postsubmit'](formid,msgObj,msgType);
+		}
 		if(gotoLink==null || gotoLink.length<=0) {
 			gotoLink=formBox.data('glink');
 		}
@@ -233,21 +239,12 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 		}
 		reloadAfterSubmit=false;
 
-		postsubmit=formBox.data('postsubmit');
-		if(postsubmit!=null && typeof window[postsubmit]=="function") {
-			window[postsubmit](formid,msgObj,msgType,gotoLink);
-		}
-
 		title = "...";
 		
 		if(gotoLink!=null && gotoLink.length>0) {
 			if(gotoLink=="closepopup") {
 				if(formBox.closest(".modal-dialog").length==1) {
-					formBox.closest(".modal-dialog").closest(".modal").modal("hide").detach();
-				}
-			} else if(gotoLink=="hidepopup") {
-				if(formBox.closest(".modal-dialog").length==1) {
-					formBox.closest(".modal-dialog").closest(".modal").modal("hide").hide();
+					$(".modal").modal("hide");
 				}
 			} else if(gotoLink=="closewindow") {
 				window.close();
@@ -255,7 +252,7 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 				gotoLink=gotoLink;
 				
 				if(formBox.closest(".modal-dialog").length==1) {
-					formBox.closest(".modal-dialog").closest(".modal").modal("hide").hide();
+					$(".modal").modal("hide");
 					showLoader();
 					lgksOverlayURL(gotoLink,title,function() {
 							hideLoader();
@@ -315,12 +312,14 @@ function initJSONFields() {
 		}
 	});
 
-	$( "form .jsonField tbody" ).sortable({
-		appendTo:"form .jsonField tbody",
-		axis: "y",
-		handle: ".reorderRow"
-	});
-	$( "form .jsonField tbody" ).disableSelection();
+	if(typeof $.fn.sortable == "function") {
+		$( "form .jsonField tbody" ).sortable({
+			appendTo:"form .jsonField tbody",
+			axis: "y",
+			handle: ".reorderRow"
+		});
+		$( "form .jsonField tbody" ).disableSelection();
+	}
 }
 function initAdvFields() {
 	$("textarea.field-richtextarea").each(function() {
@@ -335,7 +334,8 @@ function initAdvFields() {
 	$("textarea.field-markup").each(function() {
 		rid=$(this).attr("name");
 		$(this).css("width","100%");$(this).attr("id",rid);
-		new SimpleMDE({
+		if(typeof SimpleMDE == "function") {
+			new SimpleMDE({
 					element: document.getElementById(rid),
 					autoDownloadFontAwesome: false,
 					promptURLs: true,
@@ -350,47 +350,68 @@ function initAdvFields() {
 						//table: ["", "\n\n| Column 1 | Column 2 | Column 3 |\n| -------- | -------- | -------- |\n| Text     | Text      | Text     |\n\n"],
 					},
 			});
+		}
 	});
 
-	$(".select-group select.field-dropdown.multiple").each(function() {
-			rid=$(this).attr("name");
-			$(this).css("width","100%");$(this).attr("id",rid);
-			vx=$(this).data("value");
-			if(vx!=null && vx.length>0) {
-				vx=vx.split(",");
-				$(this).val(vx);
-			}
-			$(this).multiselect();
-		});
+	if(typeof $.fn.multiselect) {
+		$(".select-group select.field-dropdown.multiple").each(function() {
+				rid=$(this).attr("name");
+				$(this).css("width","100%");$(this).attr("id",rid);
+				vx=$(this).data("value");
+				if(vx!=null && vx.length>0) {
+					vx=vx.split(",");
+					$(this).val(vx);
+				}
+				$(this).multiselect();
+			});
+	}
 }
 function initDateFields() {
-	$("input.field-date").each(function() {
-		$(this).datetimepicker({
-				format: 'DD/MM/YYYY'
-			});
-		});
-	$("input.field-datetime").each(function() {$(this).datetimepicker({
-				format: 'DD/MM/YYYY HH:ss'
-			});
-		});
-	$("input.field-year").each(function() {
-			//$(this).val("");
+	if(typeof $.fn.datetimepicker == "function") {
+		$("input.field-date").each(function() {
 			$(this).datetimepicker({
-				format: 'YYYY'
+					format: 'DD/MM/YYYY'
+				});
 			});
-		});
-	$("input.field-month").each(function() {
-			//$(this).val("");
-			$(this).datetimepicker({
-				format: 'DD/MM'
+		$("input.field-datetime").each(function() {$(this).datetimepicker({
+					format: 'DD/MM/YYYY HH:ss'
+				});
 			});
-		});
-	$("input.field-time").each(function() {
-			//$(this).val("");
-			$(this).datetimepicker({
-				format: 'HH:ss'
+		$("input.field-year").each(function() {
+				//$(this).val("");
+				$(this).datetimepicker({
+					format: 'YYYY'
+				});
 			});
+		$("input.field-month").each(function() {
+				//$(this).val("");
+				$(this).datetimepicker({
+					format: 'DD/MM'
+				});
+			});
+		$("input.field-time").each(function() {
+				//$(this).val("");
+				$(this).datetimepicker({
+					format: 'HH:ss'
+				});
+			});
+	} else {
+		$(".field-date").attr("type","date");
+		$(".field-datetime").attr("type","datetime-local");
+		$(".field-month").attr("type","month");
+    	$(".field-time").attr("type", "time");
+
+    	$(".field-year").each(function() {
+		    if($(this).attr("required")!=null)
+		        htmlYear = "<select class='form-control select field-year required' name='"+$(this).attr("name")+"' required no-options='Select Year'>";
+		    else
+		        htmlYear = "<select class='form-control select field-year' name='"+$(this).attr("name")+"'>";
+
+		    for(i=1900;i<2100;i++) htmlYear += "<option>"+i+"</option>";
+		    htmlYear += "</select><div class='input-group-addon'><i class='fa fa-calendar'></i></div>";
+		    $(this).parent().html(htmlYear)
 		});
+	}
 }
 function initFileFields() {
 	$("form").delegate(".file-input .fa-close","click",function(e) {
@@ -415,9 +436,12 @@ function initFileFields() {
 		$(this).find("input[type=file]")[0].click();
 	});
 
-	$("form .file-preview-thumbnails").sortable({
-      revert: true
-    });
+	if(typeof $.fn.sortable == "function") {
+		$("form .file-preview-thumbnails").sortable({
+	      revert: true
+	    });
+	}
+	
 
 	$("form").delegate(".file-input .file-drop input[type=file]","change",function(e) {
 		vx=$(this).val();

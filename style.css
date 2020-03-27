@@ -26,12 +26,15 @@
 
 }
 .formbox .form-icon.left, .form-actions .form-icon.left {
-    margin-left: 5px;
+  margin-left: 5px;
   margin-top: 2px;
 }
 .formbox .form-icon.right, .form-actions .form-icon.right {
-    margin-right: 5px;
+  margin-right: 5px;
   margin-top: 2px;
+}
+.form-actions .form-control {
+  box-shadow: none;
 }
 
 .formbox .span-required {
