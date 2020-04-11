@@ -611,7 +611,7 @@ function displayFormMsg($msg,$type='error',$gotoLink="") {
 				echo "<script>parent.formsSubmitStatus('$formid','$msg','success','$gotoLink');</script>";
 			}
 	}
-	exit();
+	//exit();
 }
 function handleFileUpload($formConfig,$fs) {
 	if(!isset($_FILES) || count($_FILES)<=0) return [];

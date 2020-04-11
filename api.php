@@ -13,6 +13,7 @@ if(!function_exists("findForm")) {
 	$_SESSION['SESS_CURRENT_DATE'] = date("Y-m-d");
 	$_SESSION['SESS_CURRENT_DAY'] = date("D");
 	$_SESSION['SESS_CURRENT_TIME'] = date("H:i:s");
+	$_SESSION['SESS_CURRENT_TIMESTAMP'] = date("Y-m-d H:i:s");
 
 	function findForm($file) {
 		$fileName=$file;
@@ -433,6 +434,7 @@ if(!function_exists("findForm")) {
 		if(!isset($fieldinfo['type'])) $fieldinfo['type']="text";
 		if(!isset($fieldinfo['label'])) $fieldinfo['label']=_ling($formKey);
 		if(!isset($fieldinfo['placeholder'])) $fieldinfo['placeholder']="";
+		if(!isset($fieldinfo['title'])) $fieldinfo['title']="";
 
 		$html="";
 
@@ -523,6 +525,16 @@ if(!function_exists("findForm")) {
 			}
 		}
 
+		if(isset($fieldinfo['pattern'])) {
+			$xtraAttributes[]="pattern='{$fieldinfo['pattern']}'";
+			if(strlen($fieldinfo['title'])<0) {
+				$fieldinfo['title'] = "Please fill the data as per required format";
+			}
+		}
+		if(strlen($fieldinfo['title'])>0) {
+			$xtraAttributes[]="title='{$fieldinfo['title']}'";
+		}
+
 		if(!isset($fieldinfo['no-option'])) {
 			$fieldinfo['no-option']="Select ".toTitle($formKey);
 		}
@@ -604,7 +616,7 @@ if(!function_exists("findForm")) {
 			case 'radio': case 'checkbox':
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
 				break;
-			case 'date': case 'datetime': case 'month': case 'year': case 'time'://case 'datetime-local': case 'week':
+			case 'date': case 'datetime': case 'month': case 'year': //case 'datetime-local': case 'week':
 				if($fieldinfo['type']!="time") {
 					if($data[$formKey]==null || strlen($data[$formKey])<=1 || $data[$formKey]==0) $data[$formKey]="";
 					else {
@@ -617,6 +629,12 @@ if(!function_exists("findForm")) {
 				$html.="<div class='input-group'>";
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='text'>";
 				$html.="<div class='input-group-addon'><i class='fa fa-calendar'></i></div>";
+				$html.="</div>";
+				break;
+			case 'time':
+				$html.="<div class='input-group'>";
+				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='text'>";
+				$html.="<div class='input-group-addon'><i class='fa fa-clock-o'></i></div>";
 				$html.="</div>";
 				break;
 
@@ -644,13 +662,13 @@ if(!function_exists("findForm")) {
 				break;
 			case 'tel':case 'phone':
 				$html.="<div class='input-group'>";
-				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
+				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='tel'>";
 				$html.="<div class='input-group-addon'><i class='fa fa-phone'></i></div>";
 				$html.="</div>";
 				break;
 			case 'mobile':
 				$html.="<div class='input-group'>";
-				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}'>";
+				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='tel'>";
 				$html.="<div class='input-group-addon'><i class='fa fa-mobile'></i></div>";
 				$html.="</div>";
 				break;
@@ -1037,6 +1055,7 @@ if(!function_exists("searchMedia")) {
 				]);
 		} else {
 			$fs=_fs();
+			$fs->cd(APPS_USERDATA_FOLDER);
 		}
 		$mediaDir=$fs->pwd();
 

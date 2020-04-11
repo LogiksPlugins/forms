@@ -92,7 +92,8 @@
 }
 
 .formbox .form-simplicity {
-  /*width: auto;*/
+  width: auto;
+  max-width: 50%;
   text-align: left;
   margin-left: -20px;
   line-height: 20px;
