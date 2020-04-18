@@ -1,0 +1,293 @@
+{
+	"schema":"1.0",
+	"title":"Test Form",
+	"category":"Test",
+	"privilege":"*",
+	"blocked":false,
+	"hooks": {
+		"preload": {
+			"helpers": ["countries"]
+		}
+	},
+	"source": {
+		"type": "sql",
+		"table": "uitest_tbl",
+		"where": ["md5(id)"]
+	},
+	"forcefill": {
+		"guid": "#SESS_GUID#"
+	},
+	"gotolink": "infoview/uitest/{hashid}?",
+	"fields": {
+		"field_textfield": {
+			"label": "Simple Text Field",
+			"required": true
+		},
+		"field_dataSelectorFromTable": {
+			"label": "DB Dropdown",
+			"group": "Dropdown",
+			"required": true,
+			"dbkey": "core",
+			"type": "dataSelectorFromTable",
+			"table": "lgks_users",
+			"columns": "name as title, id as value",
+			"where": {
+				"blocked": "false"
+			},
+			"no-option": "Select User Name"
+		},
+		"field_dataSelectorFromTable_multiple": {
+			"label": "DB Dropdown - Multi",
+			"group": "Dropdown",
+			"multiple": true,
+			"dbkey": "core",
+			"type": "dataSelectorFromTable",
+			"table": "lgks_users",
+			"columns": "name as title, id as value",
+			"where": {
+				"blocked": "false"
+			},
+			"no-option": "Select User Name"
+		},
+		"field_dataSelectorFromTable_search": {
+			"label": "Search Dropdown",
+			"group": "Dropdown",
+			"search": true,
+			"dbkey": "core",
+			"type": "dataSelectorFromTable",
+			"table": "lgks_users",
+			"columns": "name as title, id as value",
+			"where": {
+				"blocked": "false"
+			},
+			"no-option": "Select User Name"
+		},
+		"field_selectAJAX": {
+			"label": "AJAX Dropdown",
+			"group": "Dropdown",
+			"dbkey": "core",
+			"type": "selectAJAX",
+			"table": "lgks_users",
+			"columns": "name as title, id as value",
+			"where": {
+				"blocked": "false"
+			},
+			"no-option": "Select User Name"
+		},
+		"field_autosuggest": {
+			"label": "Autosuggest Dropdown",
+			"group": "Info",
+			"type": "autosuggest",
+			"source": {
+				"table": "profiletbl",
+				"where": {
+					"blocked": "false"
+				}
+			},
+			"no-option": "Select User Name"
+		},
+		"field_select": {
+			"label": "select",
+			"group": "Info",
+			"type": "select",
+			"options": {
+				"A": "A1",
+				"B": "B1",
+				"C": "C1",
+				"D": "D1",
+				"E": "E1"
+			}
+		},
+		"field_radiolist": {
+			"label": "radiolist",
+			"group": "Info",
+			"type": "radiolist",
+			"options": {
+				"A": "A1",
+				"B": "B1",
+				"C": "C1",
+				"D": "D1",
+				"E": "E1"
+			}
+		},
+		"field_textarea": {
+			"label": "textarea",
+			"group": "Info",
+			"type": "textarea"
+		},
+		"field_richtextarea": {
+			"label": "richtextarea",
+			"group": "Info",
+			"type": "richtextarea"
+		},
+		"field_markup": {
+			"label": "markup",
+			"group": "Info",
+			"type": "markup"
+		},
+		"field_color": {
+			"label": "color",
+			"group": "Info",
+			"type": "color"
+		},
+		"field_checkbox": {
+			"label": "checkbox",
+			"group": "Info",
+			"type": "checkbox"
+		},
+		"field_date": {
+			"label": "date",
+			"group": "Info",
+			"type": "date"
+		},
+		"field_datetime": {
+			"label": "datetime",
+			"group": "Info",
+			"type": "datetime"
+		},
+		"field_month": {
+			"label": "month",
+			"group": "Info",
+			"type": "month"
+		},
+		"field_year": {
+			"label": "year",
+			"group": "Info",
+			"type": "year"
+		},
+		"field_time": {
+			"label": "time",
+			"group": "Info",
+			"type": "time"
+		},
+		"field_currency": {
+			"label": "currency",
+			"group": "Info",
+			"type": "currency"
+		},
+		"field_creditcard": {
+			"label": "creditcard",
+			"group": "Info",
+			"type": "creditcard"
+		},
+		"field_debitcard": {
+			"label": "debitcard",
+			"group": "Info",
+			"type": "debitcard"
+		},
+		"field_moneycard": {
+			"label": "moneycard",
+			"group": "Info",
+			"type": "moneycard"
+		},
+		"field_email": {
+			"label": "email",
+			"group": "Info",
+			"type": "email"
+		},
+		"field_tel": {
+			"label": "tel",
+			"group": "Info",
+			"type": "tel"
+		},
+		"field_phone": {
+			"label": "phone",
+			"group": "Info",
+			"type": "phone"
+		},
+		"field_mobile": {
+			"label": "mobile",
+			"group": "Info",
+			"type": "mobile"
+		},
+		"field_url": {
+			"label": "url",
+			"group": "Info",
+			"type": "url"
+		},
+		"field_number": {
+			"label": "number",
+			"group": "Info",
+			"type": "number"
+		},
+		"field_barcode": {
+			"label": "barcode",
+			"group": "Info",
+			"type": "barcode"
+		},
+		"field_qrcode": {
+			"label": "qrcode",
+			"group": "Info",
+			"type": "qrcode"
+		},
+		"field_search": {
+			"label": "search",
+			"group": "Info",
+			"type": "search"
+		},
+		"field_password": {
+			"label": "password",
+			"group": "Info",
+			"type": "password"
+		},
+		"field_tags": {
+			"label": "tags",
+			"group": "Info",
+			"type": "tags"
+		},
+		"field_social@facebook": {
+			"label": "social@facebook",
+			"group": "Info",
+			"type": "social@facebook"
+		},
+		"field_static": {
+			"label": "static",
+			"group": "Info",
+			"type": "static",
+			"placeholder": "Hello World"
+		},
+		"field_jsonfield": {
+			"label": "jsonfield",
+			"group": "Info",
+			"type": "jsonfield"
+		},
+		"field_photo": {
+			"label": "photo",
+			"group": "Info",
+			"type": "photo"
+		},
+		"field_photo-multiple": {
+			"label": "photo-multiple",
+			"group": "Info",
+			"type": "photo",
+			"multiple": true
+		},
+		"field_gallery": {
+			"label": "gallery",
+			"group": "Info",
+			"type": "gallery"
+		},
+		"field_gallery-multiple": {
+			"label": "gallery-multiple",
+			"group": "Info",
+			"type": "gallery",
+			"multiple": true
+		},
+		"field_avatar": {
+			"label": "avatar",
+			"group": "Info",
+			"type": "avatar"
+		},
+		"field_file": {
+			"label": "file",
+			"group": "Info",
+			"type": "file"
+		},
+		"field_file-multiple": {
+			"label": "file-multiple",
+			"group": "Info",
+			"type": "file",
+			"multiple": true
+		}
+	}
+}

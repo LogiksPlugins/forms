@@ -736,6 +736,11 @@ function loadDropSearch(srcSelect) {
 				return fData;
 			}
 		};
+
+	if(typeof $.fn.sortable != "selectpicker") {
+		$(srcSelect).load(_service("forms","ajaxdropdown","select")+"&srcname="+name+"&formid="+formKey);
+		return;
+	}
 	
 	if(val!=null && (""+val).length>0) {
 		processAJAXPostQuery(_service("forms","dropsearch")+"&srcname="+name+"&formid="+formKey,"&v="+val,function(data) {

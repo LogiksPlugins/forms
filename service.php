@@ -12,6 +12,77 @@ include_once __DIR__."/api.php";
 if(!defined("APPS_USERDATA_FOLDER")) define("APPS_USERDATA_FOLDER","usermedia/");
 
 switch($_REQUEST["action"]) {
+	case "ajaxdropdown":
+		$formKey=$_REQUEST['formid'];
+		if(!isset($_REQUEST['srcname']) || !isset($_SESSION['FORM'][$formKey]['fields'][$_REQUEST['srcname']])) {
+			printServiceMsg([]);
+			return;
+		}
+
+		$src=$_SESSION['FORM'][$formKey]['fields'][$_REQUEST['srcname']];
+		
+		if(!isset($src['type'])) {
+			printServiceMsg([]);
+			return;
+		}
+
+		switch(strtolower($src['type'])) {
+			case "dataselectorfromtable":
+				if(isset($src['table']) || isset($src['columns'])) {
+					if(!is_array($src['columns'])) {
+						$searchColumns=preg_replace("/[a-zA-Z0-9]+\([a-zA-Z0-9-_'\",\[\] ]+\)[a-zA-Z0-9-_ ]+,/", "", $src['columns']);
+						$cols=explode(",",$searchColumns);
+					} else {
+						$cols=$src['columns'];
+						foreach($cols as $k=>$a) {
+							if(strpos($a,"(")>0) {
+								unset($cols[$k]);
+							}
+						}
+					}
+					
+					if(!isset($src['where'])) {
+						$src['where'] = ["blocked" => "false"];
+					}
+					
+					$sqlData=_db()->_selectQ($src['table'],$src['columns'],$src['where']);
+					if(isset($src['where']) && $src['where']) {
+						$sqlData->_where($src['where']);
+					}
+					$sqlData=$sqlData->_limit(10)->_GET();
+					
+					printServiceMsg($sqlData);
+				}
+				break;
+			case "dataselectorfromuniques":
+				if(isset($src['table']) || isset($src['columns'])) {
+					if(!is_array($src['columns'])) {
+						$searchColumns=preg_replace("/[a-zA-Z0-9]+\([a-zA-Z0-9-_'\",\[\] ]+\)[a-zA-Z0-9-_ ]+,/", "", $src['columns']);
+						$cols=explode(",",$searchColumns);
+					} else {
+						$cols=$src['columns'];
+						foreach($cols as $k=>$a) {
+							if(strpos($a,"(")>0) {
+								unset($cols[$k]);
+							}
+						}
+					}
+					
+					if(!isset($src['where'])) {
+						$src['where'] = ["blocked" => "false"];
+					}
+					
+					$sqlData=_db()->_selectQ($src['table'],$src['columns'],$src['where']);
+					$sqlData=$sqlData->_limit(10)->_GET();
+					
+					printServiceMsg($sqlData);
+				}
+				break;
+			default:
+				printServiceMsg([]);
+				return;
+		}
+		break;
 	case "dropsearch":
 		$formKey=$_REQUEST['formid'];
 		if(!isset($_REQUEST['srcname']) || !isset($_SESSION['FORM'][$formKey]['fields'][$_REQUEST['srcname']])) {
