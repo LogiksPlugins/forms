@@ -15,7 +15,8 @@
 		"where": ["md5(id)"]
 	},
 	"forcefill": {
-		"guid": "#SESS_GUID#"
+		"guid": "#SESS_GUID#",
+		"autogen_no":"#AUTOGEN:MT,100000000000,999999999999#"
 	},
 	"gotolink": "infoview/uitest/{hashid}?",
 	"fields": {

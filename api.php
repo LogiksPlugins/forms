@@ -1215,4 +1215,69 @@ if(!function_exists("processFormHook")) {
 		}
 	}
 }
+if(function_exists("generateAutoNumber")) {
+	function generateAutoNumber($key, $value) {
+		$value = substr($value, 9);
+		$value = str_replace("#", "", $value);
+		$valueArr = explode(",", $value);
+
+		switch ($valueArr[0]) {
+			case 'RAND':
+				if(isset($valueArr[1])) {
+					if(!isset($valueArr[2])) $valueArr[2] = $valueArr[1] + 10000000;
+					return rand($valueArr[1], $valueArr[2]);
+				}
+				break;
+			case 'MT':
+				if(isset($valueArr[1])) {
+					if(!isset($valueArr[2])) $valueArr[2] = $valueArr[1] + 10000000;
+					return mt_rand($valueArr[1], $valueArr[2]);
+				}
+				break;
+			case "PATTERN":case "REGEX":
+				if(isset($valueArr[1])) {
+					$pattern = $valueArr[1];
+					$count=getConfig('FORM_GENERATE_MIN_PAD_LENGTH');
+		          	if($count===false) $count=5;
+
+		          	$k = rand(1000,9999);
+					$k=str_pad($k, $count, "0", STR_PAD_LEFT);
+
+					prepareRegExForAutoGenerationEnviro($k);
+
+					$lr=new LogiksReplace();
+		          	$str=preg_replace_callback("/\{[a-zA-Z0-9-_]+\}/",array($lr,"replaceFromEnviroment"),$pattern);
+
+		          	return $str;
+				}
+				break;
+		}
+		return rand(100000000000,999999999999);
+	}
+
+	function prepareRegExForAutoGenerationEnviro($k) {
+	    $_REQUEST['k']=$k;
+
+	    $_REQUEST['Y']=date("Y");
+	    $_REQUEST['y']=date("y");
+	    $_REQUEST['M']=date("M");
+	    $_REQUEST['m']=date("m");
+	    $_REQUEST['F']=date("F");
+	    $_REQUEST['n']=date("n");
+	    $_REQUEST['t']=date("t");
+	    $_REQUEST['w']=date("w");
+	    $_REQUEST['d']=date("d");
+	    $_REQUEST['D']=date("D");
+	    
+	    $_REQUEST['g']=date("g");
+	    $_REQUEST['G']=date("G");
+	    $_REQUEST['h']=date("h");
+	    $_REQUEST['H']=date("H");
+	    $_REQUEST['i']=date("i");
+	    $_REQUEST['s']=date("s");
+	    
+	    $_REQUEST['u']=date("u");
+	    $_REQUEST['x']=rand(100,999);
+	}
+}
 ?>

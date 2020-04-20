@@ -558,6 +558,10 @@ function mergeFixedData($cols,$formConfig,$data) {
 
 	if(!isset($formConfig['forcefill'])) $formConfig['forcefill']=[];
 	foreach($formConfig['forcefill'] as $key=>$val) {
+		if(substr($val, 0, 9)=="#AUTOGEN:") {
+			$cols[$key]=generateAutoNumber($key, $val);
+			continue;
+		}
 		$cols[$key]=_replace($val);
 	}
 
@@ -565,7 +569,7 @@ function mergeFixedData($cols,$formConfig,$data) {
 	foreach($formConfig['nofill'] as $key) {
 		unset($cols[$key]);
 	}
-
+	
 	return $cols;
 }
 function processInput($cols,$formConfig,$data) {
