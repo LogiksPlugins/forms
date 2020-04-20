@@ -1215,7 +1215,7 @@ if(!function_exists("processFormHook")) {
 		}
 	}
 }
-if(function_exists("generateAutoNumber")) {
+if(!function_exists("generateAutoNumber")) {
 	function generateAutoNumber($key, $value) {
 		$value = substr($value, 9);
 		$value = str_replace("#", "", $value);

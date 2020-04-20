@@ -477,7 +477,7 @@ switch($_REQUEST["action"]) {
 						displayFormMsg("Form mode could not be detected",'error');
 						break;
 				}
-				displayFormMsg("ALL GOOD");
+				displayFormMsg("Data created successfully",'success');
 				break;
 			case "php":
 				$file=APPROOT.$formConfig['source']['file'];
