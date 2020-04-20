@@ -741,7 +741,7 @@ function loadDropSearch(srcSelect) {
 			}
 		};
 
-	if(typeof $.fn.sortable != "selectpicker") {
+	if(typeof $.fn.selectpicker != "function") {
 		$(srcSelect).load(_service("forms","ajaxdropdown","select")+"&srcname="+name+"&formid="+formKey);
 		return;
 	}
