@@ -425,7 +425,7 @@ if(!function_exists("findForm")) {
 					$fieldinfo['type']="text";
 				}
 			} elseif(isset($fieldinfo['default'])) {
-				$data[$formKey]=$fieldinfo['default'];
+				$data[$formKey]=_replace($fieldinfo['default']);
 			} else {
 				$data[$formKey]="";
 			}
