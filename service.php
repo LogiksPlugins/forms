@@ -453,6 +453,10 @@ switch($_REQUEST["action"]) {
 					case 'update':
 						processFormHook("preSubmit",["config"=>$formConfig,"data"=>$cols,"where"=>$where,"mode"=>"edit"]);
 
+						if(count($where)<=0) {
+							displayFormMsg("Error in where condition, try again !");
+						}
+
 						$sql=_db($dbKey)->_updateQ($source['table'],$cols,$where);
 						//displayFormMsg($sql->_SQL());exit();
 						if($sql->_run()) {
@@ -653,6 +657,7 @@ function displayFormMsg($msg,$type='error',$gotoLink="") {
 				echo "ERR:$msg";
 				echo "<script>parent.formsSubmitStatus('$formid','$msg','error','$gotoLink');</script>";
 			}
+			exit();
 			break;
 		case 'info':
 			if(isset($_REQUEST['submitType']) && $_REQUEST['submitType']=="ajax") {
