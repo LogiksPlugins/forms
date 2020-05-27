@@ -240,48 +240,81 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 		reloadAfterSubmit=false;
 
 		title = "...";
-		
+
+
+		typeofPopup = "iframe";
+		if(formBox.closest(".modal").length>0) {
+			typeofPopup = "modal";
+			formBox.closest(".modal").modal("hide").removeClass("in show").detach();
+		} else if(window!=top) {
+			typeofPopup = "iframe";
+		} else {
+			typeofPopup = "window";
+		}
+
 		if(gotoLink!=null && gotoLink.length>0) {
 			if(gotoLink=="closepopup") {
-				if(formBox.closest(".modal-dialog").length==1) {
-					$(".modal").modal("hide");
+				if(typeofPopup=="modal") {
+					formBox.closest(".modal").modal("hide").removeClass("in show").detach();
+				} else if(typeofPopup=="iframe") {
+					parent.$("iframe").each(function() {
+					    if($(this).attr("src")==window.location.href) {
+					        $(this).closest(".modal").modal("hide").removeClass("in show").detach();
+					    }
+					});
+				} else if(typeofPopup=="window") {
+					window.close();
 				}
-			} else if(gotoLink=="closewindow") {
-				window.close();
-			} else if(gotoLink.substr(0,7)=="http://" || gotoLink.substr(0,8)=="https://") {
-				gotoLink=gotoLink;
-				
-				if(formBox.closest(".modal-dialog").length==1) {
-					$(".modal").modal("hide");
-					showLoader();
-					lgksOverlayURL(gotoLink,title,function() {
-							hideLoader();
-						});
+			} else if(gotoLink=="reset" || gotoLink=="show") {
+				formBox.parent().find(".ajaxloading").detach();
+				formBox.show();
+			} else if(gotoLink!=null && gotoLink.length>0) {
+				if(gotoLink.substr(0,7)=="http://" || gotoLink.substr(0,8)=="https://") {
+					gotoLink=gotoLink;
+					
+					if(formBox.closest(".modal-dialog").length==1) {
+						
+						if(formBox.closest(".modal").length>0) {
+							formBox.closest(".modal").modal("hide").removeClass("in show").detach();
+						}
+						
+						showLoader();
+						lgksOverlayURL(gotoLink,title,function() {
+								hideLoader();
+							});
+					} else {
+						window.location=gotoLink;
+					}
 				} else {
-					window.location=gotoLink;
+					if(formBox.closest(".modal-dialog").length==1) {
+						if(gotoLink.substr(0,1)=="@") {
+							gotoLink=_link(gotoLink.substr(1));
+						} else {
+							gotoLink=_link("popup/"+gotoLink);
+						}
+						
+						if(formBox.closest(".modal").length>0) {
+							formBox.closest(".modal").modal("hide").removeClass("in show").detach();
+						}
+						
+						showLoader();
+						lgksOverlayURL(gotoLink,title,function() {
+								hideLoader();
+							});
+					} else {
+						if(gotoLink.substr(0,1)=="@") {
+							gotoLink=_link(gotoLink.substr(1));
+						} else {
+							gotoLink=_link("modules/"+gotoLink);
+						}
+						window.location=gotoLink;
+					}
 				}
+				gotoLink=null;
 			} else {
-				if(formBox.closest(".modal-dialog").length==1) {
-					if(gotoLink.substr(0,1)=="@") {
-						gotoLink=_link(gotoLink.substr(1));
-					} else {
-						gotoLink=_link("popup/"+gotoLink);
-					}
-					$(".modal").modal("hide");
-					showLoader();
-					lgksOverlayURL(gotoLink,title,function() {
-							hideLoader();
-						});
-				} else {
-					if(gotoLink.substr(0,1)=="@") {
-						gotoLink=_link(gotoLink.substr(1));
-					} else {
-						gotoLink=_link("modules/"+gotoLink);
-					}
-					window.location=gotoLink;
-				}
+				formBox.parent().find(".ajaxloading").detach();
+				formBox.show();
 			}
-			gotoLink=null;
 		} else {
 			formBox.parent().find(".ajaxloading").detach();
 			formBox.show();
