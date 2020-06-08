@@ -520,7 +520,7 @@ if(!function_exists("findForm")) {
 					$_SESSION['FORMAUTOCOMPLETE'][$_ENV['FORMKEY']][$formKey]=$autoSrc;
 					$xtraAttributes[]="autocomplete-target='{$fieldinfo['autocomplete']['target']}'";
 				}
-			} elseif($fieldinfo['autocomplete']===false) {
+			} elseif($fieldinfo['autocomplete']===false || $fieldinfo['autocomplete']=="off") {
 				$xtraAttributes[]="autocomplete='off'";
 			}
 		}
@@ -676,6 +676,24 @@ if(!function_exists("findForm")) {
 				$html.="<div class='input-group'>";
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='tags'>";
 				$html.="<div class='input-group-addon'><i class='fa fa-tags'></i></div>";
+				$html.="</div>";
+				break;
+			case 'flags':case 'flag':
+				$suggestid=uniqid("F-");
+				$html.="<div class='input-group'>";
+				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='text' list='{$suggestid}'>";
+				$html.="<datalist id='{$suggestid}'>";
+				if(isset($fieldinfo['options'])) {
+					if(is_array($fieldinfo['options'])) {
+						foreach($fieldinfo['options'] as $a=>$b) {
+							$html.="<option value='{$a}'>{$b}</option>";
+						}
+					} else {
+						$html.=$fieldinfo['options'];
+					}
+				}
+				$html.="</datalist>";
+				$html.="<div class='input-group-addon'><i class='fa fa-flag'></i></div>";
 				$html.="</div>";
 				break;
 			case 'url':

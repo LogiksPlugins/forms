@@ -83,7 +83,7 @@ function initFormUI() {
 	if($("form.form .form-actions .form-simplicity input").length>0) {
 		if($("input[name].required,select[name].required,textarea[name].required",".formbox fieldset").length>0) {
 			$("form.form .form-actions .form-simplicity input").change(function() {
-				$.cookie('FORMS_SHOW_ALL_FIELDS',$(this).is(":checked"));
+				if($.cookie!=null) $.cookie('FORMS_SHOW_ALL_FIELDS',$(this).is(":checked"));
 				if($(this).is(":checked")) {
 					$("input[name]:not(.required),select[name]:not(.required),textarea[name]:not(.required)",".formbox fieldset").each(function() {
 						if(!$(this).closest(".field-container").hasClass("field-hidden")) {
@@ -106,7 +106,7 @@ function initFormUI() {
 						}
 					});
 			} else {
-				if($.cookie('FORMS_SHOW_ALL_FIELDS')=="true") {
+				if($.cookie!=null && $.cookie('FORMS_SHOW_ALL_FIELDS')=="true") {
 					$("form.form .form-actions .form-simplicity input")[0].checked=true;
 				} else {
 					$("input[name]:not(.required),select[name]:not(.required),textarea[name]:not(.required)",".formbox fieldset").each(function() {
