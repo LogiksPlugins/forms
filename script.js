@@ -256,12 +256,14 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 			if(gotoLink=="closepopup") {
 				if(typeofPopup=="modal") {
 					formBox.closest(".modal").modal("hide").removeClass("in show").detach();
+					if(typeof rpt == "object") rpt.refetchCurrentDataGrid();
 				} else if(typeofPopup=="iframe") {
 					parent.$("iframe").each(function() {
 					    if($(this).attr("src")==window.location.href) {
 					        $(this).closest(".modal").modal("hide").removeClass("in show").detach();
 					    }
 					});
+					if(typeof parent.rpt == "object") parent.rpt.refetchCurrentDataGrid();
 				} else if(typeofPopup=="window") {
 					window.close();
 				}
