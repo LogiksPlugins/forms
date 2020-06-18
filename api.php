@@ -601,11 +601,17 @@ if(!function_exists("findForm")) {
 				$html.="</div>";
 				break;
 
-			case 'textarea': case 'longtext': case 'richtextarea': case 'markup':
-				$data[$formKey]=stripslashes(str_replace("\\r\\n","",$data[$formKey]));
-				$data[$formKey]=stripslashes(str_replace("&amp%3B","&amp;",$data[$formKey]));
+			case 'richtextarea':
+				$data[$formKey]=urldecode($data[$formKey]);
+				
+			case 'textarea': case 'longtext': case 'markup':
+				$data[$formKey]=str_replace("\\r\\n","\n",$data[$formKey]);
+				$data[$formKey]=str_replace("\\n","\n",$data[$formKey]);
+				$data[$formKey]=str_replace("&amp%3B","&amp;",$data[$formKey]);
 				$data[$formKey]=str_replace("%3B","",$data[$formKey]);
-// 				$data[$formKey]=urldecode($data[$formKey]);
+				
+				$data[$formKey]=stripslashes($data[$formKey]);
+
 				$html.="<textarea class='{$class}' $xtraAttributes name='{$formKey}' placeholder='{$fieldinfo['placeholder']}'>".$data[$formKey]."</textarea>";
 				break;
 
