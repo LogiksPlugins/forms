@@ -317,7 +317,7 @@ if(!function_exists("findForm")) {
 		if(!is_array($fields)) return false;
 		//printArray($fields);
 
-		$noLabelFields=["widget","source","module"];
+		$noLabelFields=["widget","source","module","static2"];
 
 		$html="<fieldset>";
 		foreach ($fields as $field) {
@@ -753,6 +753,10 @@ if(!function_exists("findForm")) {
 					} else {
 						$html.=createDataSelectorFromUniques($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'],$formKey,$formKey);
 					}
+				} elseif(isset($fieldinfo['table'])) {
+					if(!isset($fieldinfo['column'])) $fieldinfo['column'] = $formKey;
+					if(!isset($fieldinfo['where'])) $fieldinfo['where'] = [];
+					$html.=createDataSelectorFromUniques($fieldinfo['table'],$fieldinfo['column'],$fieldinfo['column'],$fieldinfo['where']);
 				}
 				$html.="</datalist>";
 				$html.="<div class='input-group-addon'><i class='fa fa-caret-down'></i></div>";
@@ -1008,7 +1012,12 @@ if(!function_exists("findForm")) {
 				break;
 				
 			case 'static':
-				$content=$fieldinfo['placeholder'];
+			case 'static2':
+				if(isset($fieldinfo['content']))
+					$content=$fieldinfo['content'];
+				elseif(isset($fieldinfo['placeholder']))
+					$content=$fieldinfo['placeholder'];
+				
 				if(isset($data[$formKey]) && strlen($data[$formKey])>1) $content=$data[$formKey];
 
 				$html.="<div class='form-control-static field-{$formKey}' name='{$formKey}' $xtraAttributes>{$content}</div>";
