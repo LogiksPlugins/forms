@@ -16,7 +16,8 @@
 	},
 	"forcefill": {
 		"guid": "#SESS_GUID#",
-		"autogen_no":"#AUTOGEN:MT,100000000000,999999999999#"
+		"autogen_no":"#AUTOGEN:MT,100000000000,999999999999#",
+		"rowhash": "#ROWHASH:#field_textfield##field_dataSelectorFromTable#"
 	},
 	"gotolink": "infoview/uitest/{hashid}?",
 	"fields": {
