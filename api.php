@@ -1249,6 +1249,14 @@ if(!function_exists("processFormHook")) {
 	}
 }
 if(!function_exists("generateAutoNumber")) {
+
+	function generateRowHash($key, $value) {
+		$value = substr($value, 9);
+		prepareRegExForAutoGenerationEnviro($key);
+		$value = _replace($value);
+		return md5($value);
+	}
+
 	function generateAutoNumber($key, $value) {
 		$value = substr($value, 9);
 		$value = str_replace("#", "", $value);

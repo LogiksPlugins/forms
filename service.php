@@ -565,6 +565,9 @@ function mergeFixedData($cols,$formConfig,$data) {
 		if(substr($val, 0, 9)=="#AUTOGEN:") {
 			$cols[$key]=generateAutoNumber($key, $val);
 			continue;
+		} elseif(substr($val, 0, 9)=="#ROWHASH:") {
+			$cols[$key]=generateRowHash($key, $val);
+			continue;
 		}
 		$cols[$key]=_replace($val);
 	}
