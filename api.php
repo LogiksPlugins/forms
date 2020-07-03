@@ -1258,8 +1258,9 @@ if(!function_exists("generateAutoNumber")) {
 	}
 
 	function generateAutoNumber($key, $value) {
-		$value = substr($value, 9);
-		$value = str_replace("#", "", $value);
+		$value = str_replace("#AUTOGEN:", "", $value);
+		//$value = substr($value, 9);
+		//$value = str_replace("#", "", $value);
 		$valueArr = explode(",", $value);
 
 		switch ($valueArr[0]) {
@@ -1281,7 +1282,11 @@ if(!function_exists("generateAutoNumber")) {
 					$count=getConfig('FORM_GENERATE_MIN_PAD_LENGTH');
 		          	if($count===false) $count=5;
 
-		          	$k = rand(1000,9999);
+		          	if(isset($_REQUEST['k'])) {
+		          		$k = $_REQUEST['k'];
+		          	} else {
+						$k = rand(1000,9999);
+		          	}
 					$k=str_pad($k, $count, "0", STR_PAD_LEFT);
 
 					prepareRegExForAutoGenerationEnviro($k);
@@ -1292,6 +1297,25 @@ if(!function_exists("generateAutoNumber")) {
 		          	return $str;
 				}
 				break;
+			default:
+				$pattern = $value;
+
+				$count=getConfig('FORM_GENERATE_MIN_PAD_LENGTH');
+	          	if($count===false) $count=5;
+
+	          	if(isset($_REQUEST['k'])) {
+	          		$k = $_REQUEST['k'];
+	          	} else {
+					$k = rand(1000,9999);
+	          	}
+	          	$k=str_pad($k, $count, "0", STR_PAD_LEFT);
+
+				prepareRegExForAutoGenerationEnviro($k);
+
+				$lr=new LogiksReplace();
+	          	$str=preg_replace_callback("/\{[a-zA-Z0-9-_]+\}/",array($lr,"replaceFromEnviroment"),$pattern);
+
+	          	return $str;
 		}
 		return rand(100000000000,999999999999);
 	}
