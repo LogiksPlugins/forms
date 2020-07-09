@@ -1270,6 +1270,9 @@ if(!function_exists("generateAutoNumber")) {
 					return rand($valueArr[1], $valueArr[2]);
 				}
 				break;
+			case "UUID":
+				return uniqid();
+				break;
 			case 'MT':
 				if(isset($valueArr[1])) {
 					if(!isset($valueArr[2])) $valueArr[2] = $valueArr[1] + 10000000;
