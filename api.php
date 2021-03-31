@@ -414,6 +414,8 @@ if(!function_exists("findForm")) {
 	}
 
 	function getFormField($fieldinfo,$data,$dbKey="app") {
+		if($data==null || !is_array($data)) $data = [];
+		
 		$formKey=$fieldinfo['fieldkey'];
 		if(!isset($data[$formKey])) {
 			if(isset($_GET[$formKey])) {
