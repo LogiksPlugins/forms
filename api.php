@@ -941,15 +941,25 @@ if(!function_exists("findForm")) {
 
 				$html.="<tbody>";
 				if(isset($data[$formKey]) && strlen($data[$formKey])>2) {
-					$data[$formKey]=json_decode(stripslashes($data[$formKey]),true);
-					foreach($data[$formKey] as $dx) {
-						$hx=[];
-						$hx[]="<td width=25px><i class='fa fa-bars reorderRow'></i></td>";
-						foreach($dx as $dx1=>$dx2) {
-							$hx[]="<td><input name='{$formKey}[{$dx1}][]' class='form-control' placeholder='{$dx1}' value='{$dx2}' /></td>";
+					$jsonData=json_decode(stripslashes($data[$formKey]),true);
+					if(!$jsonData) {
+						$jsonData=json_decode(stripcslashes($data[$formKey]),true);
+					}
+					if(!$jsonData) {
+						$jsonData=json_decode($data[$formKey],true);
+					}
+					if($jsonData) {
+						foreach($jsonData as $dx) {
+							$hx=[];
+							$hx[]="<td width=25px><i class='fa fa-bars reorderRow'></i></td>";
+							foreach($dx as $dx1=>$dx2) {
+								$hx[]="<td><input name='{$formKey}[{$dx1}][]' class='form-control' placeholder='{$dx1}' value='{$dx2}' /></td>";
+							}
+							$hx[]="<td width=25px><i class='fa fa-times cmdAction' cmd='removeJSONKeyField'></i></td>";
+							$html.="<tr>".implode("",$hx)."</tr>";
 						}
-						$hx[]="<td width=25px><i class='fa fa-times cmdAction' cmd='removeJSONKeyField'></i></td>";
-						$html.="<tr>".implode("",$hx)."</tr>";
+					} else {
+						$html.="<tr><td colspan=10>{$data[$formKey]}</td></tr>";
 					}
 				}
 				$html.="</tbody>";
