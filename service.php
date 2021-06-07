@@ -699,6 +699,7 @@ function displayFormMsg($msg,$type='error',$gotoLink="") {
 				echo "<script>parent.formsSubmitStatus('$formid','$msg','success','$gotoLink');</script>";
 			}
 	}
+	if(isset($_GET['NOEXIT'])) return;
 	exit();
 }
 function handleFileUpload($formConfig,$fs) {
