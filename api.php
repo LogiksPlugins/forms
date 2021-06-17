@@ -388,8 +388,10 @@ if(!function_exists("findForm")) {
 				$html.="<div class='form-group'>";
 			}
 			
-			if(!in_array($field['type'],$noLabelFields)) {
+			if(!in_array($field['type'],$noLabelFields) && substr($field['label'],0,2)!="__") {
 				$html.="<label>{$field['label']}";
+			} else {
+				$html.="<label>";
 			}
 
 			if(isset($field['required']) && $field['required']===true) {
