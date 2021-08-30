@@ -557,6 +557,7 @@ function mergeFixedData($cols,$formConfig,$data) {
 	foreach($formConfig['autofill'] as $key) {
 		if(isset($defaultArr[$key])) {
 			$cols[$key]=$defaultArr[$key];
+			$_REQUEST[$key]=$cols[$key];
 		}
 	}
 
@@ -564,12 +565,15 @@ function mergeFixedData($cols,$formConfig,$data) {
 	foreach($formConfig['forcefill'] as $key=>$val) {
 		if(substr($val, 0, 9)=="#AUTOGEN:") {
 			$cols[$key]=generateAutoNumber($key, $val);
+			$_REQUEST[$key]=$cols[$key];
 			continue;
 		} elseif(substr($val, 0, 9)=="#ROWHASH:") {
 			$cols[$key]=generateRowHash($key, $val);
+			$_REQUEST[$key]=$cols[$key];
 			continue;
 		}
 		$cols[$key]=_replace($val);
+		$_REQUEST[$key]=$cols[$key];
 	}
 
 	if(!isset($formConfig['nofill'])) $formConfig['nofill']=[];
