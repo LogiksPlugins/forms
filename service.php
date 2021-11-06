@@ -284,7 +284,10 @@ switch($_REQUEST["action"]) {
 				switch($formConfig['submit']['type']) {
 					case "php":
 						$file=APPROOT.$formConfig['submit']['file'];
-						if(file_exists($file) && is_file($file)) {
+						if(file_exists($formConfig['submit']['file']) && is_file($formConfig['submit']['file'])) {
+							$data = include_once($formConfig['submit']['file']);
+							displayFormMsg($data,'success',$formConfig['gotolink']);
+						} elseif(file_exists($file) && is_file($file)) {
 							include_once($file);
 						} else {
 							displayFormMsg("Sorry, Form Submit Source File Not Found.");
@@ -472,7 +475,7 @@ switch($_REQUEST["action"]) {
 							finalizeSubmit($formConfig,$cols,$where);
 							displayFormMsg($cols,'success',$formConfig['gotolink']);
 						} else {
-							echo _db($dbKey)->get_error();
+							// echo _db($dbKey)->get_error();
 							displayFormMsg("Error updating database, try again later",'error');
 						}
 						break;
@@ -485,7 +488,10 @@ switch($_REQUEST["action"]) {
 				break;
 			case "php":
 				$file=APPROOT.$formConfig['source']['file'];
-				if(file_exists($file) && is_file($file)) {
+				if(file_exists($formConfig['source']['file']) && is_file($formConfig['source']['file'])) {
+					$data = include_once($formConfig['source']['file']);
+					displayFormMsg($data,'success',$formConfig['gotolink']);
+				} elseif(file_exists($file) && is_file($file)) {
 					$data=include_once($file);
 					displayFormMsg($data,'success',$formConfig['gotolink']);
 				} else {
