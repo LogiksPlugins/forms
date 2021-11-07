@@ -44,6 +44,7 @@ function initFormUI() {
 		$(this).attr("name","");
 	});
 
+	initValidationRules();
 	initDateFields();
 	initAdvFields();
 	initFileFields();
@@ -136,10 +137,10 @@ function initFormUI() {
 		  //onkeyup: false,
 		  //focusCleanup: true,
 		  submitHandler: function(form) {
-				formKey=$(form).data('formkey');
+			formKey=$(form).data('formkey');
 		  	formFrameID="FORMFRAME"+Math.ceil(Math.random()*10000000);
 
-				$("body").find("iframe.formFrame#"+formFrameID).detach();
+			$("body").find("iframe.formFrame#"+formFrameID).detach();
 
 		  	$("body").append("<iframe id='"+formFrameID+"' name='"+formFrameID+"' class='formFrame hidden' style='display:none !important;' ></iframe>");
 		  	$(form).attr("target",formFrameID);
@@ -270,6 +271,10 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 			} else if(gotoLink=="reset" || gotoLink=="show") {
 				formBox.parent().find(".ajaxloading").detach();
 				formBox.show();
+			} else if(gotoLink=="reload") {
+				setTimeout(function() {
+					window.location.reload();
+				}, 500)
 			} else if(gotoLink!=null && gotoLink.length>0) {
 				if(gotoLink.substr(0,7)=="http://" || gotoLink.substr(0,8)=="https://") {
 					gotoLink=gotoLink;
@@ -511,11 +516,17 @@ function initFileFields() {
 	$("form").delegate(".file-input .file-drop-avatar input[type=file]","change",function(e) {
 		attachAvatar(this, e);
 	});
-	
 
 	$("form").delegate(".file-input .file-gallery","click",function(e) {
 		lgksAlert("Form Gallery Support Not Found, use photo type instead.");
 	});
+}
+function initValidationRules() {
+	$.validator.methods.tel = function( value, element ) {
+	    if($(element).hasClass("field-mobile"))
+	        return this.optional(element) || value.length==10 || /^(\+\d{1,3}[- ]?)?\d{10}$/.test( value );
+	    else return true;
+	}
 }
 function attachAvatar(field, event) {
 	//In future Canvas to be used for DB driven photos
