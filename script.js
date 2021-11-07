@@ -471,7 +471,7 @@ function initFileFields() {
 		}
 	});
 
-	$("form").delegate(".file-input .file-drop","click",function(e) {
+	$("form").delegate(".file-input .file-drop, .file-input .file-drop-avatar","click",function(e) {
 		$(this).find("input[type=file]")[0].click();
 	});
 
@@ -508,9 +508,55 @@ function initFileFields() {
 		box.append("<input type='file' class='form-file-field hidden' >");
 	});
 
+	$("form").delegate(".file-input .file-drop-avatar input[type=file]","change",function(e) {
+		attachAvatar(this, e);
+	});
+	
+
 	$("form").delegate(".file-input .file-gallery","click",function(e) {
 		lgksAlert("Form Gallery Support Not Found, use photo type instead.");
 	});
+}
+function attachAvatar(field, event) {
+	//In future Canvas to be used for DB driven photos
+	// console.log(field, event);
+	var input = event.target;
+    var reader = new FileReader();
+
+    reader.onload = function(event){
+       var dataUri = event.target.result;
+       if($(field).closest(".file-input").find("img").length<=0) {
+			$(field).closest(".file-input").find(".file-upload").html("<img src='' alt='avatar' />");
+       }
+       $(field).closest(".file-input").find("img").attr("src", dataUri);
+       
+    };
+
+    reader.onerror = function(event){
+       console.log("File could not be read: " + event.target.error.code);
+    };
+
+    reader.readAsDataURL(input.files[0]);
+}
+function attachPicture(field, event) {
+	// console.log(field, event);
+	var input = event.target;
+    var reader = new FileReader();
+
+    reader.onload = function(event){
+       var dataUri = event.target.result;
+       if($(field).closest(".file-input").find("img").length<=0) {
+			$(field).closest(".file-input").find(".file-upload").html("<img src='' alt='avatar' />");
+       }
+       $(field).closest(".file-input").find("img").attr("src", dataUri);
+       
+    };
+
+    reader.onerror = function(event){
+       console.log("File could not be read: " + event.target.error.code);
+    };
+
+    reader.readAsDataURL(input.files[0]);
 }
 function runFormCommand(cmd, src) {
   cmdOriginal=cmd;

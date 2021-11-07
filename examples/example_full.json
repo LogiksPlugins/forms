@@ -248,6 +248,19 @@
 			"type": "static",
 			"placeholder": "Hello World"
 		},
+		"field_static2": {
+			"label": "static",
+			"group": "Info",
+			"type": "static",
+			"placeholder": "Hello World 2"
+		},
+		"field_header": {
+	        "label": "This is full length header",
+	        "hide_label": true,
+			"group": "Info",
+			"type": "header",
+			"width": 12
+	    },
 		"field_jsonfield": {
 			"label": "jsonfield",
 			"group": "Info",

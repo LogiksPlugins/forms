@@ -137,13 +137,17 @@ form .file-input {
 form .file-input .file-preview {
   
 }
-form .file-input .file-preview .file-drop,form .file-input .file-preview .file-gallery {
+form .file-input .file-preview .file-drop,
+  form .file-input .file-preview .file-gallery,
+  form .file-input .file-preview .file-drop-avatar, {
   display: inline-table;
   margin-right: 10px;
   float: left;
   cursor:pointer;
 }
-form .file-input .file-preview .file-drop .file-upload,form .file-input .file-preview .file-gallery .file-upload {
+form .file-input .file-preview .file-drop .file-upload,
+  form .file-input .file-preview .file-gallery .file-upload,
+  form .file-input .file-preview .file-drop-avatar .file-upload {
   width: 72px;
   height: 72px;
   display: inline-block;
@@ -152,7 +156,9 @@ form .file-input .file-preview .file-drop .file-upload,form .file-input .file-pr
   padding-top: 30px;
   border: 1px dashed #DEDEDE;
 }
-form .file-input .file-preview .file-drop .file-upload i.fa,form .file-input .file-preview .file-gallery .file-upload i.fa {
+form .file-input .file-preview .file-drop .file-upload i.fa,
+  form .file-input .file-preview .file-gallery .file-upload i.fa,
+  form .file-input .file-preview .file-drop-avatar .file-upload i.fa {
   
 }
 form .file-input .file-preview .file-preview-thumbnails {
@@ -277,4 +283,71 @@ form .file-input.file-input-attachment .filename {
 } 
 .bootstrap-select.btn-group .dropdown-menu li {
   clear: both;
+}
+
+.form-panel {
+  margin-bottom: -10px;
+  border: 0px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+.form-panel .formbox {
+  margin-bottom: 2px;
+  position: relative;
+}
+.form-panel .formbox .formbox-content {
+  padding:  10px;
+  border: 0px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+.form-panel fieldset {
+  margin-left: -10px;
+  margin-right: -10px;
+}
+.file-field-avatar {
+  margin-left: -10px;
+  margin-right: -20px;
+}
+.file-field-avatar .file-preview {
+  margin: auto;
+}
+.file-field-avatar .file-preview .file-drop-avatar {
+  float: none !important;
+  display: block !important;
+  margin: 0px !important;
+  cursor: pointer;
+}
+.file-field-avatar .file-preview .file-drop-avatar .file-upload {
+  width: 100% !important;
+  height: 100% !important;
+  padding-top: 35% !important;
+}
+.file-field-avatar .file-preview .file-drop-avatar .file-upload img {
+  margin-top: -35% !important;
+  min-width: 100%;
+  min-height: 100%;
+  width: 100%;
+}
+.file-field-avatar .file-preview .file-drop-avatar .file-upload img.horizontal {
+  width: 100%;
+}
+.file-field-avatar .file-preview .file-drop-avatar .file-upload img.vertical {
+  height: 100%;
+}
+form .form-control-header {
+  background: #F9F9F9;
+  padding: 4px;
+  margin: 0px;
+}
+form .col-sm-12 .form-control-header {
+      margin-bottom: -12px;
+}
+
+@media (max-width:500px) {
+  .formbox .formbox-content {
+    padding: 10px;
+  }
 }

@@ -245,6 +245,7 @@ if(!function_exists("findForm")) {
 		}
 
 		if(!isset($formConfig['simpleform'])) $formConfig['simpleform'] = false;
+		if(!isset($formConfig['disable_simpleform'])) $formConfig['disable_simpleform'] = true;
 
 		if($formConfig['mode']!="new") {
 			$formConfig['simpleform'] = false;
@@ -293,6 +294,8 @@ if(!function_exists("findForm")) {
 		$html="";
 		if(!isset($formConfig['disable_simpleform']) || !$formConfig['disable_simpleform']) {
 			$html .= "<label class='pull-left form-simplicity'><input type='checkbox' class='form-control form-complex pull-left'>Show All Fields</label>";
+		} elseif(isset($formConfig['simpleform']) && $formConfig['simpleform']) {
+			$html .= "<label class='pull-left form-simplicity'><input type='checkbox' class='form-control form-complex pull-left'>Show All Fields</label>";
 		}
 		foreach ($formActions as $key => $button) {
 			if(!isset($button['class'])) $button['class']="btn btn-primary";
@@ -317,7 +320,7 @@ if(!function_exists("findForm")) {
 		if(!is_array($fields)) return false;
 		//printArray($fields);
 
-		$noLabelFields=["widget","source","module","static2"];
+		$noLabelContentFields=["widget","source","module","static2","header","avatar"];
 
 		$html="<fieldset>";
 		foreach ($fields as $field) {
@@ -334,6 +337,10 @@ if(!function_exists("findForm")) {
 			}
 
 			if(!isset($field['important'])) $field['important'] = false;
+			if(!isset($field['hide_label'])) {
+				if(isset($field['type']) && in_array($field['type'], ["avatar"])) $field['hide_label'] = true;
+				else $field['hide_label'] = false;
+			}
 
 			if(isset($field['vmode'])) {
 				if(!is_array($field['vmode'])) {
@@ -358,9 +365,9 @@ if(!function_exists("findForm")) {
 			}
 
 			if(isset($field['hidden']) && $field['hidden']===true) {
-				$colClass = "col-sm-{$field['width']} col-lg-{$field['width']} field-container field-hidden hidden";
+				$colClass = "col-xs-12 col-sm-{$field['width']} col-lg-{$field['width']} field-container field-hidden hidden";
 			} else {
-				$colClass = "col-sm-{$field['width']} col-lg-{$field['width']} field-container";
+				$colClass = "col-xs-12 col-sm-{$field['width']} col-lg-{$field['width']} field-container";
 
 				if(isset($field['newline']) && $field['newline']) {
 					$colClass .= " col-newline";
@@ -388,10 +395,12 @@ if(!function_exists("findForm")) {
 				$html.="<div class='form-group'>";
 			}
 			
-			if(!in_array($field['type'],$noLabelFields) && substr($field['label'],0,2)!="__") {
-				$html.="<label>{$field['label']}";
+			if(!in_array($field['type'],$noLabelContentFields) && substr($field['label'],0,2)!="__") {
+				if($field['hide_label']) $html.="<label class='hidden d-none'>{$field['label']}";
+				else $html.="<label>{$field['label']}";
 			} else {
-				$html.="<label>";
+				if($field['hide_label']) $html.="<label class='hidden d-none'>";
+				else $html.="<label>";
 			}
 
 			if(isset($field['required']) && $field['required']===true) {
@@ -836,8 +845,39 @@ if(!function_exists("findForm")) {
 					$html.="</div></div>";
 				}
 				break;
+			case "avatar":
+				$fieldHash=md5($formKey.time());
+				// $data[$formKey]="http://practice.dev.silkdemo.in/apps/app1/usermedia/profile_images/root.jpg";
 
-			case 'photo':case 'photos':case 'image':case 'avatar':case 'gallery':
+				$fieldinfo['multiple']=false;
+				if(!isset($fieldinfo['avatar_size'])) $fieldinfo['avatar_size'] = 120;
+
+				$html.="<div name='{$formKey}' class='file-input file-field-{$fieldinfo['type']}' $xtraAttributes><div class='file-preview' style='height:{$fieldinfo['avatar_size']}px;width:{$fieldinfo['avatar_size']}px;    margin: auto;'>";
+
+				$html.="<div class='file-drop-avatar' data-fhash='{$fieldHash}'><div class='file-upload'>";
+				if(isset($data[$formKey]) && strlen($data[$formKey])>0) {
+					if(substr($data[$formKey],0,7)=="http://" || substr($data[$formKey],0,8)=="https://") {
+						$media=[
+							"url"=>$data[$formKey]
+						];
+					} else {
+						$media=searchMedia($data[$formKey]);
+					}
+					if($media) {
+						$html.="<img src='{$media['url']}' alt='avatar' />";
+
+					} else {
+						$html.="<i class='fa fa-photo fa-3x'></i>";
+					}
+				} else {
+					$html.="<i class='fa fa-photo fa-3x'></i>";
+				}
+				$html.="</div>";
+				$html.="<input name='{$formKey}' type='file' class='form-file-field hidden d-none' >";
+				$html.="</div>";
+				$html.="</div></div>";
+				break;
+			case 'photo':case 'photos':case 'image':case 'gallery':
 				$fieldHash=md5($formKey.time());
 
 				if($fieldinfo['type']=="avatar") {
@@ -854,7 +894,7 @@ if(!function_exists("findForm")) {
 					} else {
 						$html.="<div class='file-drop' data-fhash='{$fieldHash}'><div class='file-upload'>";
 						$html.="<i class='fa fa-cloud-upload'></i>";
-						$html.="<input type='file' class='form-file-field hidden' >";
+						$html.="<input type='file' class='form-file-field hidden d-none' >";
 						$html.="</div></div>";
 					}
 
@@ -872,7 +912,7 @@ if(!function_exists("findForm")) {
 								} else {
 									$html.="<i class='fileicon fa ".getFileIcon($media['src'])."'></i>";
 								}
-								$html.="<input name='{$formKey}[]' type='hidden' class='hidden' value='{$media['raw']}' >";
+								$html.="<input name='{$formKey}[]' type='hidden' class='hidden d-none' value='{$media['raw']}' >";
 								$html.="</div>";
 							} else {
 
@@ -1033,10 +1073,15 @@ if(!function_exists("findForm")) {
 					$content=$fieldinfo['placeholder'];
 				
 				if(isset($data[$formKey]) && strlen($data[$formKey])>1) $content=$data[$formKey];
-
+			
 				$html.="<div class='form-control-static field-{$formKey}' name='{$formKey}' $xtraAttributes>{$content}</div>";
 				break;
-
+			case 'header':
+				$content = $fieldinfo['label'];
+				if(isset($data[$formKey]) && strlen($data[$formKey])>1) $content=$data[$formKey];
+			
+				$html.="<h3 class='form-control-header field-{$formKey}' name='{$formKey}' $xtraAttributes>{$content}</h3>";
+				break;
 			default:
 				$html.="<input class='{$class}' $xtraAttributes name='{$formKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='text'>";
 				break;
