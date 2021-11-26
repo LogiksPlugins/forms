@@ -881,6 +881,46 @@ if(!function_exists("findForm")) {
 				$html.="</div>";
 				$html.="</div></div>";
 				break;
+			case 'camera':
+				$fieldHash=md5($formKey.time());
+
+				$fieldinfo['multiple']=false;
+
+				$html.="<div id='{$fieldID}' name='{$fieldNameKey}' class='file-input file-field-{$fieldinfo['type']}' $xtraAttributes><div class='file-preview'>";
+
+				if($fieldinfo['type']=="gallery") {
+					$html.="<div class='file-gallery' data-fhash='{$fieldHash}'><div class='file-upload'>";
+					$html.="<i class='fa fa-paperclip'></i>";
+					$html.="</div></div>";
+				} else {
+					$html.="<div class='file-drop' data-fhash='{$fieldHash}'><div class='file-upload'>";
+					$html.="<i class='fa fa-cloud-upload'></i>";
+					$html.="<input type='camera' class='form-file-field hidden' accept='image/*;capture=camera'>";
+					$html.="</div></div>";
+				}
+
+				$html.="<div class='file-preview-thumbnails' data-fhash='{$fieldHash}' >";
+
+				if(isset($data[$formKey]) && strlen($data[$formKey])>0) {
+					$media=searchMedia($data[$formKey]);
+					if($media) {
+						$html.="<div class='file-preview-thumb'>";
+						$html.="<span class='pull-right fa fa-times fa-close'></span>";
+						if($media['ext']=="png" || $media['ext']=="gif" || $media['ext']=="jpg" || $media['ext']=="jpeg") {
+							$html.="<img src='{$media['url']}' />";
+						} else {
+							$html.="<i class='fileicon fa ".getFileIcon($media['src'])."'></i>";
+						}
+						$html.="<input id='{$fieldID}' name='{$fieldNameKey}' type='hidden' class='hidden' value='{$media['raw']}' >";
+						$html.="</div>";
+					} else {
+
+					}
+				}
+
+				$html.="</div>";
+				$html.="</div></div>";
+				break;
 			case 'photo':case 'photos':case 'image':case 'gallery':
 				$fieldHash=md5($formKey.time());
 
@@ -1410,5 +1450,28 @@ if(!function_exists("generateAutoNumber")) {
 	    $_REQUEST['u']=date("u");
 	    $_REQUEST['x']=rand(100,999);
 	}
+
+	function save_base64_image($base64_image_data, $output_file_without_extension, $path_with_end_slash="" ) {
+		//usage:  if( substr( $img_src, 0, 5 ) === "data:" ) {  $filename=save_base64_image($base64_image_data, $output_file_without_extentnion, getcwd() .     "/application/assets/pins/$user_id/"); }      
+		//data is like:    data:image/png;base64,asdfasdfasdf
+		$splited = explode(',', substr( $base64_image_data , 5 ) , 2);
+		$mime=$splited[0];
+		$data=$splited[1];
+
+		$mime_split_without_base64=explode(';', $mime,2);
+		$mime_split=explode('/', $mime_split_without_base64[0],2);
+		if(count($mime_split)==2)
+		{
+		  $extension=$mime_split[1];
+		  if($extension=='jpeg') $extension='jpg';
+		  //if($extension=='javascript')$extension='js';
+		  //if($extension=='text')$extension='txt';
+
+		  $output_file_with_extension=$output_file_without_extension.'.'.$extension;
+		}
+		file_put_contents($path_with_end_slash . $output_file_with_extension, base64_decode($data));
+
+		return $output_file_with_extension;
+  	}
 }
 ?>

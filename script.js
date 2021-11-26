@@ -477,7 +477,9 @@ function initFileFields() {
 	});
 
 	$("form").delegate(".file-input .file-drop, .file-input .file-drop-avatar","click",function(e) {
-		$(this).find("input[type=file]")[0].click();
+		if($(this).find("input[type=file]").length>0) {
+			$(this).find("input[type=file]")[0].click();
+		}
 	});
 
 	if(typeof $.fn.sortable == "function") {
