@@ -764,7 +764,7 @@ if(!function_exists("findForm")) {
 				$html.="<div class='input-group'>";
 				$html.="<input class='{$class}' $xtraAttributes id='{$fieldID}' name='{$fieldNameKey}' value=\"".$data[$formKey]."\" placeholder='{$fieldinfo['placeholder']}' type='{$fieldinfo['type']}' list='{$suggestid}'>";
 				$html.="<datalist id='{$suggestid}'>";
-				if(isset($_ENV['FORMKEY']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'])) {
+				/*if(isset($_ENV['FORMKEY']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'])) {
 					if(isset($fieldinfo['where']) && is_array($fieldinfo['where']) && count($fieldinfo['where'])>0) {
 						$html.=createDataSelectorFromUniques($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'],$formKey,$formKey, $fieldinfo['where']);
 					} else {
@@ -774,7 +774,18 @@ if(!function_exists("findForm")) {
 					if(!isset($fieldinfo['column'])) $fieldinfo['column'] = $formKey;
 					if(!isset($fieldinfo['where'])) $fieldinfo['where'] = [];
 					$html.=createDataSelectorFromUniques($fieldinfo['table'],$fieldinfo['column'],$fieldinfo['column'],$fieldinfo['where']);
-				}
+				}*/
+				if(isset($fieldinfo['table'])) {
+                                        if(!isset($fieldinfo['column'])) $fieldinfo['column'] = $formKey;
+                                        if(!isset($fieldinfo['where'])) $fieldinfo['where'] = [];
+                                        $html.=createDataSelectorFromUniques($fieldinfo['table'],$fieldinfo['column'],$fieldinfo['column'],$fieldinfo['where']);
+                                } elseif(isset($_ENV['FORMKEY']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'])) {
+                                        if(isset($fieldinfo['where']) && is_array($fieldinfo['where']) && count($fieldinfo['where'])>0) {
+                                                $html.=createDataSelectorFromUniques($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'],$formKey,$formKey, $fieldinfo['where']);
+                                        } else {
+                                                $html.=createDataSelectorFromUniques($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'],$formKey,$formKey);
+                                        }
+                                }
 				$html.="</datalist>";
 				$html.="<div class='input-group-addon'><i class='fa fa-caret-down'></i></div>";
 				$html.="</div>";
