@@ -25,9 +25,10 @@ if(isset($_REQUEST['src']) && strlen($_REQUEST['src'])>0) {
 			if(isset($formConfig['source']) && isset($formConfig['source']['refcol'])) {
 				$refid=$formConfig['source']['refcol'];
 			} else {
-				$refid="id";
+				// $refid="id";
+				$refid="md5(id)";
 			}
-			$where=["md5({$refid})"=>$slug['refid']];//,['gotolink'=>$glink]
+			$where=["{$refid}"=>$slug['refid']];//$where=["md5({$refid})"=>$slug['refid']];,['gotolink'=>$glink]
 			
 			if(isset($formConfig['source']['precreate']) && isset($formConfig['source']['precreate'])==true) {
 				autoReferenceSystem($formConfig,$slug['refid']);
