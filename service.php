@@ -425,6 +425,7 @@ switch($_REQUEST["action"]) {
 				switch ($formConfig['mode']) {
 					case 'new':
 					case 'insert':
+					case 'create':
 						processFormHook("preSubmit",["config"=>$formConfig,"data"=>$cols,"mode"=>"new"]);
 						$sql=_db($dbKey)->_insertQ1($source['table'],$cols);
 
