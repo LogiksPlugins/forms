@@ -93,6 +93,9 @@ if(!function_exists("mergeFixedData")) {
 			if($formConfig['mode']=="update" && isset($field['disabled']) && $field['disabled']) {
 				continue;
 			}
+			if(!isset($data[$key])) {
+				continue;
+			}
 			//printArray($data[$key]);echo $key;
 			if(isset($field['type']) && $field['type']=="jsonfield") {
 				$table=[];
