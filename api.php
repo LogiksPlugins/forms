@@ -592,6 +592,11 @@ if(!function_exists("findForm")) {
 					if(!array_key_exists("", $fieldinfo['options']) || $fieldinfo['options']['']===true) {
 						$html.="<option value=''>{$noOption}</option>";
 					}
+					if($typeS!="select") {
+						foreach($fieldinfo['options'] as $a=>$b) {
+							$html.="<option value='{$a}'>{$b}</option>";
+						}
+					}
 				}
 				if(isset($fieldinfo['dbkey'])) $dkey1=$fieldinfo['dbkey'];
 				else $dkey1=$dbKey;
