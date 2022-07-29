@@ -325,6 +325,9 @@ switch($_REQUEST["action"]) {
 		}
 
 		$formConfig=$_SESSION['FORM'][$formKey];
+		$source=$formConfig['source'];
+		if(!isset($source['where'])) $source['where'] = [];
+
 		processFormHook("dataposted",["config"=>$formConfig,"mode"=>$formConfig['mode']]);
 		
 		if(!isset($formConfig['source']) || !isset($formConfig['source']['type'])) {
@@ -349,77 +352,75 @@ switch($_REQUEST["action"]) {
 		//printArray($_POST);exit();
 		$files=handleFileUpload($formConfig,$fs);
 
-		$source=$formConfig['source'];
-		switch ($source['type']) {
-			case 'sql':
-				$cols=array_keys($formConfig['fields']);
-				$where=$source['where'];
-				if(!is_array($where)) $where=explode(",", $where);
+		$cols=array_keys($formConfig['fields']);
+		$where=$source['where'];
+		if(!is_array($where)) $where=explode(",", $where);
 
-				$oriData=$_POST;
-				$oriData=array_merge($formConfig['data'],$oriData);
+		$oriData=$_POST;
+		$oriData=array_merge($formConfig['data'],$oriData);
 
-				if($formConfig['mode']=="update" || $formConfig['mode']=="edit") {
-					$where=array_flip($where);
-					foreach ($where as $key => $value) {
-						if(isset($_POST[$key])) {
-							//$where[$key]=$_POST[$key];
-							unset($_POST[$key]);
-						}
-						if(isset($cols[$key])) {
-							//$where[$key]=$_POST[$key];
-							unset($cols[$key]);
-						}
-
-						if(array_key_exists($key, $formConfig['data'])) {
-							$where[$key]=$formConfig['data'][$key];
-						} else {
-							unset($where[$key]);
-						}
-					}
-					if(isset($formConfig['source']['where_auto']) && is_array($formConfig['source']['where_auto'])) {
-						$where=array_merge($where,$formConfig['source']['where_auto']);
-					}
-
-					if(count($where)<=0) {
-						displayFormMsg("Incomplete submit condition");
-					}
+		if($formConfig['mode']=="update" || $formConfig['mode']=="edit") {
+			$where=array_flip($where);
+			foreach ($where as $key => $value) {
+				if(isset($_POST[$key])) {
+					//$where[$key]=$_POST[$key];
+					unset($_POST[$key]);
+				}
+				if(isset($cols[$key])) {
+					//$where[$key]=$_POST[$key];
+					unset($cols[$key]);
 				}
 
-				$cols=array_flip($cols);
-				foreach ($cols as $key => $value) {
-					if(isset($_POST[$key])) {
+				if(array_key_exists($key, $formConfig['data'])) {
+					$where[$key]=$formConfig['data'][$key];
+				} else {
+					unset($where[$key]);
+				}
+			}
+			if(isset($formConfig['source']['where_auto']) && is_array($formConfig['source']['where_auto'])) {
+				$where=array_merge($where,$formConfig['source']['where_auto']);
+			}
+
+			if(count($where)<=0) {
+				displayFormMsg("Incomplete submit condition");
+			}
+		}
+
+		$cols=array_flip($cols);
+		foreach ($cols as $key => $value) {
+			if(isset($_POST[$key])) {
 // 						if(isset($formConfig['fields'][$key]['disabled']) && $formConfig['fields'][$key]['disabled']) {
 // 							unset($cols[$key]);
 // 							continue;
 // 						}
-						if(isset($formConfig['fields'][$key]['nofill']) && $formConfig['fields'][$key]['nofill']) {
-							unset($cols[$key]);
-							continue;
-						}
-						/*if(array_key_exists($key, $formConfig['data']) && md5($formConfig['data'][$key])==md5($_POST[$key])) {
-							unset($cols[$key]);
-							unset($_POST[$key]);
-							continue;
-						}*/
-						$cols[$key]=$_POST[$key];
-						unset($_POST[$key]);
-					} else {
-						unset($cols[$key]);
-					}
+				if(isset($formConfig['fields'][$key]['nofill']) && $formConfig['fields'][$key]['nofill']) {
+					unset($cols[$key]);
+					continue;
 				}
-				if(count($cols)<=0) {
-					displayFormMsg("No change found",'info');
-				}
-				//validation
-				$cols=validateInput($cols,$formConfig['fields']);
-				$cols=processInput($cols,$formConfig,$oriData);
+				/*if(array_key_exists($key, $formConfig['data']) && md5($formConfig['data'][$key])==md5($_POST[$key])) {
+					unset($cols[$key]);
+					unset($_POST[$key]);
+					continue;
+				}*/
+				$cols[$key]=$_POST[$key];
+				unset($_POST[$key]);
+			} else {
+				unset($cols[$key]);
+			}
+		}
+		if(count($cols)<=0) {
+			displayFormMsg("No change found",'info');
+		}
+		//validation
+		$cols=validateInput($cols,$formConfig['fields']);
+		$cols=processInput($cols,$formConfig,$oriData);
 
-				//Merge With fixed data that needs autofilling
-				$cols=mergeFixedData($cols,$formConfig,$oriData);
+		//Merge With fixed data that needs autofilling
+		$cols=mergeFixedData($cols,$formConfig,$oriData);
 
-				//printArray($cols);exit();
-
+		//printArray($cols);exit();
+		switch ($source['type']) {
+			case 'sql':
 				//insert/update detection
 				$dbKey=$formConfig['dbkey'];
 				switch ($formConfig['mode']) {
@@ -494,9 +495,45 @@ switch($_REQUEST["action"]) {
 					displayFormMsg($data,'success',$formConfig['gotolink']);
 				} elseif(file_exists($file) && is_file($file)) {
 					$data=include_once($file);
+
+					finalizeSubmit($formConfig,$data,$where);
 					displayFormMsg($data,'success',$formConfig['gotolink']);
 				} else {
 					displayFormMsg("Sorry, Form Submit Source File Not Found.");
+				}
+				break;
+			case "plugin":
+				if(isset($formConfig['source']['plugin']) && strlen($formConfig['source']['plugin'])>0) {
+					$pluginPath = checkModule($formConfig['source']['plugin']);
+					if($pluginPath) {
+						$pluginPath = dirname($pluginPath);
+
+						$dataFiles = [
+								$pluginPath."/data_forms.php",
+								$pluginPath."/data.php",
+							];
+
+						$finalFile = false;
+						foreach($dataFiles as $f) {
+							if($finalFile) continue;
+							if(file_exists($f)) {
+								$finalFile = $f;
+							}
+						}
+
+						if($finalFile) {
+							$data=include_once($finalFile);
+
+							finalizeSubmit($formConfig,$data,$where);
+							displayFormMsg($data,'success',$formConfig['gotolink']);
+						} else {
+							displayFormMsg("Sorry, Form Data - Plugin Does Not Support Plugin:Data Requirements");
+						}
+					} else {
+						displayFormMsg("Sorry, Form Data - Plugin Not Found");
+					}
+				} else {
+					displayFormMsg("Sorry, Form Submit Source Plugin Not Found.");
 				}
 				break;
 			default:

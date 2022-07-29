@@ -162,10 +162,10 @@ if(!function_exists("mergeFixedData")) {
 
 	function displayFormMsg($msg,$type='error',$gotoLink="") {
 		$formid=$_REQUEST['formid'];
-		$msg=str_replace("'", '"', $msg);
-
+		
 		switch ($type) {
 			case 'error':
+				$msg=str_replace("'", '"', $msg);
 				if(isset($_REQUEST['submitType']) && $_REQUEST['submitType']=="ajax") {
 					trigger_error($msg);
 				} else {
@@ -174,6 +174,7 @@ if(!function_exists("mergeFixedData")) {
 				}
 				break;
 			case 'info':
+				$msg=str_replace("'", '"', $msg);
 				if(isset($_REQUEST['submitType']) && $_REQUEST['submitType']=="ajax") {
 					printServiceMsg(['type'=>'info','msg'=>$msg]);
 				} else {
@@ -183,6 +184,7 @@ if(!function_exists("mergeFixedData")) {
 				break;
 			case 'success':
 				if(isset($_REQUEST['submitType']) && $_REQUEST['submitType']=="ajax") {
+					$msg=str_replace("'", '"', $msg);
 					printServiceMsg(['type'=>'success','msg'=>$msg]);
 				} else {
 					if($gotoLink!=null && strlen($gotoLink)>0) {
@@ -199,6 +201,7 @@ if(!function_exists("mergeFixedData")) {
 						$msg=json_encode($msg);
 						echo "<script>parent.formsSubmitStatus('$formid',$msg,'success','$gotoLink');</script>";
 					} else {
+						$msg=str_replace("'", '"', $msg);
 						echo "<script>parent.formsSubmitStatus('$formid','$msg','success','$gotoLink');</script>";
 					}
 				}
