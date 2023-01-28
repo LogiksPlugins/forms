@@ -19,7 +19,6 @@ if(isset($_REQUEST['src']) && strlen($_REQUEST['src'])>0) {
 	$formConfig=findForm($_REQUEST['src']);
 
 	if($formConfig) {
-// 		echo "<div class='formholder' style='width:100%;height:100%;'>";
 		if(($mode=="edit" || $mode=="update") && isset($slug['refid'])) {
 			$where=[];
 			if(isset($formConfig['source']) && isset($formConfig['source']['refcol'])) {
@@ -33,11 +32,11 @@ if(isset($_REQUEST['src']) && strlen($_REQUEST['src'])>0) {
 			if(isset($formConfig['source']['precreate']) && isset($formConfig['source']['precreate'])==true) {
 				autoReferenceSystem($formConfig,$slug['refid']);
 			}
+
 			printForm($mode,$formConfig,$formConfig['dbkey'],$where);
 		} else {
 			printForm($mode,$formConfig,$formConfig['dbkey']);
 		}
-// 		echo "</div>";
 	} else {
 		echo "<h1 class='errormsg'>Sorry, form '{$_REQUEST['src']}' not found.</h1>";
 	}

@@ -1151,33 +1151,100 @@ if(!function_exists("findForm")) {
 	}
 
 	function autoReferenceSystem($formConfig,$refid) {
-		if(isset($formConfig['source']['refmaster'])) {
+		if($refid==null || strlen($refid)<=0) return false;
+
+		if(strlen($refid)==32) {
 			$dCount = _db()->_selectQ($formConfig['source']['table'], "count(*) as cnt", ["md5({$formConfig['source']['refcol']})"=>$refid])->_GET();
 			if($dCount[0]['cnt']<=0) {
-				$dRefers = _db()->_selectQ($formConfig['source']['refmaster'], "id", ["md5(id)"=>$refid])->_GET();
-				if(isset($dRefers[0])) {
-					$srcid=$dRefers[0]['id'];
-					$inData=[
-									'guid'=>$_SESSION['SESS_GUID'],
-									$formConfig['source']['refcol']=>$srcid,
-									'created_by'=>$_SESSION['SESS_USER_ID'],
-									'edited_by'=>$_SESSION['SESS_USER_ID'],
-									'created_on'=>date('Y-m-d H:i:s'),
-									'edited_on'=>date('Y-m-d H:i:s'),
-								];
-					$ans=_db()->_insertQ1($formConfig['source']['table'], $inData)->_RUN();
+				if(isset($formConfig['source']['refmaster'])) {
+					$dRefers = _db()->_selectQ($formConfig['source']['refmaster'], "id", ["md5(id)"=>$refid])->_GET();
+					if(isset($dRefers[0])) {
+						$srcid=$dRefers[0]['id'];
+						$inData=[
+										'guid'=>$_SESSION['SESS_GUID'],
+										$formConfig['source']['refcol']=>$srcid,
+										'created_by'=>$_SESSION['SESS_USER_ID'],
+										'edited_by'=>$_SESSION['SESS_USER_ID'],
+										'created_on'=>date('Y-m-d H:i:s'),
+										'edited_on'=>date('Y-m-d H:i:s'),
+									];
+						$ans=_db()->_insertQ1($formConfig['source']['table'], $inData)->_RUN();
 
+						if($ans) {
+							//header("Location:"._link(PAGE));
+							return true;
+						} else {
+							trigger_logikserror("Failed to auto create reference record.");
+						}
+					} else {
+						trigger_logikserror("Reference does not exist for this record.");
+					}
+				} else {
+					if(!isset($formConfig['source']['refcol'])) $formConfig['source']['refcol'] = "ref_hash";
+
+					$ans=_db()->_insertQ1($formConfig['source']['table'], [
+								'guid'=>$_SESSION['SESS_GUID'],
+								$formConfig['source']['refcol']=>$refid,
+								'created_by'=>$_SESSION['SESS_USER_ID'],
+								'edited_by'=>$_SESSION['SESS_USER_ID'],
+								'created_on'=>date('Y-m-d H:i:s'),
+								'edited_on'=>date('Y-m-d H:i:s'),
+							])->_RUN();
 					if($ans) {
-						header("Location:"._link(PAGE));
+						return true;
 					} else {
 						trigger_logikserror("Failed to auto create reference record.");
 					}
-				} else {
-					trigger_logikserror("Reference does not exist for this record.");
 				}
+			} else {
+				return true;
 			}
 		} else {
-			trigger_logikserror("RefAutoCreate is enabled, but refmaster not defined.");
+			$dCount = _db()->_selectQ($formConfig['source']['table'], "count(*) as cnt", ["{$formConfig['source']['refcol']}"=>$refid])->_GET();
+			if($dCount[0]['cnt']<=0) {
+				if(isset($formConfig['source']['refmaster'])) {
+					$dRefers = _db()->_selectQ($formConfig['source']['refmaster'], "id", ["id"=>$refid])->_GET();
+					if(isset($dRefers[0])) {
+						$srcid=$dRefers[0]['id'];
+						$inData=[
+										'guid'=>$_SESSION['SESS_GUID'],
+										$formConfig['source']['refcol']=>$srcid,
+										'created_by'=>$_SESSION['SESS_USER_ID'],
+										'edited_by'=>$_SESSION['SESS_USER_ID'],
+										'created_on'=>date('Y-m-d H:i:s'),
+										'edited_on'=>date('Y-m-d H:i:s'),
+									];
+						$ans=_db()->_insertQ1($formConfig['source']['table'], $inData)->_RUN();
+
+						if($ans) {
+							//header("Location:"._link(PAGE));
+							return true;
+						} else {
+							trigger_logikserror("Failed to auto create reference record.");
+						}
+					} else {
+						trigger_logikserror("Reference does not exist for this record.");
+					}
+				} else {
+					if(!isset($formConfig['source']['refcol'])) $formConfig['source']['refcol'] = "ref_id";
+
+					$ans=_db()->_insertQ1($formConfig['source']['table'], [
+								'guid'=>$_SESSION['SESS_GUID'],
+								$formConfig['source']['refcol']=>$refid,
+								'created_by'=>$_SESSION['SESS_USER_ID'],
+								'edited_by'=>$_SESSION['SESS_USER_ID'],
+								'created_on'=>date('Y-m-d H:i:s'),
+								'edited_on'=>date('Y-m-d H:i:s'),
+							])->_RUN();
+					if($ans) {
+						return true;
+					} else {
+						trigger_logikserror("Failed to auto create reference record.");
+					}
+				}
+			} else {
+				return true;
+			}
 		}
 	}
 

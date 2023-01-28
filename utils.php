@@ -21,6 +21,7 @@ if(!function_exists("mergeFixedData")) {
 		$_ENV['FORMSUBMIT']=["data"=>$data,"where"=>$where,"config"=>$formConfig,"mode"=>$formConfig['mode']];
 		processFormHook("postSubmit",$_ENV['FORMSUBMIT']);
 	}
+	
 	function mergeFixedData($cols,$formConfig,$data) {
 		//printArray($formConfig);
 		$user="guest";
@@ -88,6 +89,7 @@ if(!function_exists("mergeFixedData")) {
 		
 		return $cols;
 	}
+
 	function processInput($cols,$formConfig,$data) {
 		foreach($formConfig['fields'] as $key=>$field) {
 			if($formConfig['mode']=="update" && isset($field['disabled']) && $field['disabled']) {
@@ -217,6 +219,7 @@ if(!function_exists("mergeFixedData")) {
 		if(isset($_GET['NOEXIT'])) return;
 		exit();
 	}
+
 	function handleFileUpload($formConfig,$fs) {
 		if(!isset($_FILES) || count($_FILES)<=0) return [];
 		

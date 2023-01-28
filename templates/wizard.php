@@ -72,7 +72,29 @@ if(count($fieldGroups)>1) {
 echo "<script>if(typeof initFormUI=='function' && typeof $.fn.sortable=='function') {initFormUI();} else $(function() {initFormUI();});</script>";
 ?>
 <script>
+const WIZARD_NAV_LISTENER = [];
 function nextWizardPane(btn) {
+	var proceed = true;
+	$(btn).closest("form.form").find(".tab-pane.active label.error").detach();
+	$(btn).closest("form.form").find(".tab-pane.active").find("input[required],select[required]").each(function() {
+	    if($(this).val().length<=0) {
+	        var randKey = $(this).attr("name")+Math.ceil(Math.random()*100000000000);
+	        $(`<label id="${randKey}" generated="true" class="error">This field is required.</label>`).insertAfter(this);
+	        $(this).change(function() {
+	        	$(`label.error#${randKey}`).detach();
+	        });
+	        proceed = false;
+	    }
+	});
+	if(!proceed) {
+		if(typeof lgksToast=="function") lgksToast("Some required fields are invalid. They have been marked.<br>Please fix them to proceed.");
+		else if(typeof lgksAlert=="function") lgksAlert("Some required fields are invalid. They have been marked.<br>Please fix them to proceed.");
+		else {
+			alert("Some required fields are invalid. They have been marked.<br>Please fix them to proceed.");
+		}
+		return;
+	}
+
   continerDiv=$(btn).closest("form.form").parent();
   if(continerDiv.find(".nav.nav-tabs").length>0) {
 		continerDiv.find(".nav.nav-tabs  > .active").next('li').find('a').trigger('click');
@@ -89,6 +111,10 @@ function nextWizardPane(btn) {
 	} else {
 		$('button[cmd="previousWizardPane"]').removeClass("disabled");
 	}
+
+	$.each(WIZARD_NAV_LISTENER, function(k, func) {
+		if(typeof func == "function") func($(btn).closest("form.form"), "next");
+	});
 }
 function previousWizardPane(btn) {
   continerDiv=$(btn).closest("form.form").parent();
@@ -107,5 +133,9 @@ function previousWizardPane(btn) {
 	} else {
 		$('button[cmd="previousWizardPane"]').removeClass("disabled");
 	}
+
+	$.each(WIZARD_NAV_LISTENER, function(k, func) {
+		if(typeof func == "function") func($(btn).closest("form.form"), "prev");
+	});
 }
 </script>
