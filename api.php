@@ -1109,7 +1109,7 @@ if(!function_exists("findForm")) {
 					ob_start();
 					loadWidget($fieldinfo['src']);
 					$html.=ob_get_contents();
-					ob_clean();
+					ob_end_clean();
 				} else {
 					$html.="Widget '{$fieldinfo['src']}' not found.";
 				}
@@ -1123,14 +1123,14 @@ if(!function_exists("findForm")) {
 						loadModuleComponent($src[0],$src[1]);
 						echo "</div>";
 						$html.=ob_get_contents();
-						ob_clean();
+						ob_end_clean();
 					} else {
 						ob_start();
 						echo "<div class='form-module' name='{$fieldinfo['src']}'>";
 						loadModules($fieldinfo['src']);
 						echo "</div>";
 						$html.=ob_get_contents();
-						ob_clean();
+						ob_end_clean();
 					}
 				} else {
 					$html.="Module '{$fieldinfo['src']}' not found.";
@@ -1142,12 +1142,12 @@ if(!function_exists("findForm")) {
 						ob_start();
 						include $fieldinfo['src'];
 						$html.=ob_get_contents();
-						ob_clean();
+						ob_end_clean();
 					} elseif(file_exists(APPROOT.$fieldinfo['src'])) {
 						ob_start();
 						include APPROOT.$fieldinfo['src'];
 						$html.=ob_get_contents();
-						ob_clean();
+						ob_end_clean();
 					} else {
 						$html.="Source '".basename($fieldinfo['src'])."' not found.";
 					}
