@@ -781,16 +781,16 @@ if(!function_exists("findForm")) {
 					$html.=createDataSelectorFromUniques($fieldinfo['table'],$fieldinfo['column'],$fieldinfo['column'],$fieldinfo['where']);
 				}*/
 				if(isset($fieldinfo['table'])) {
-                                        if(!isset($fieldinfo['column'])) $fieldinfo['column'] = $formKey;
-                                        if(!isset($fieldinfo['where'])) $fieldinfo['where'] = [];
-                                        $html.=createDataSelectorFromUniques($fieldinfo['table'],$fieldinfo['column'],$fieldinfo['column'],$fieldinfo['where']);
-                                } elseif(isset($_ENV['FORMKEY']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'])) {
-                                        if(isset($fieldinfo['where']) && is_array($fieldinfo['where']) && count($fieldinfo['where'])>0) {
-                                                $html.=createDataSelectorFromUniques($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'],$formKey,$formKey, $fieldinfo['where']);
-                                        } else {
-                                                $html.=createDataSelectorFromUniques($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'],$formKey,$formKey);
-                                        }
-                                }
+                        if(!isset($fieldinfo['column'])) $fieldinfo['column'] = $formKey;
+                        if(!isset($fieldinfo['where'])) $fieldinfo['where'] = [];
+                        $html.=createDataSelectorFromUniques($fieldinfo['table'],$fieldinfo['column'],$fieldinfo['column'],$fieldinfo['where']);
+                } elseif(isset($_ENV['FORMKEY']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']) && isset($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'])) {
+                        if(isset($fieldinfo['where']) && is_array($fieldinfo['where']) && count($fieldinfo['where'])>0) {
+                                $html.=createDataSelectorFromUniques($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'],$formKey,$formKey, $fieldinfo['where']);
+                        } else {
+                                $html.=createDataSelectorFromUniques($_SESSION['FORM'][$_ENV['FORMKEY']]['source']['table'],$formKey,$formKey);
+                        }
+                }
 				$html.="</datalist>";
 				$html.="<div class='input-group-addon'><i class='fa fa-caret-down'></i></div>";
 				$html.="</div>";
@@ -1092,12 +1092,16 @@ if(!function_exists("findForm")) {
 					$src=explode(".",$fieldinfo['src']);
 					if(count($src)>1 && strlen($src[1])>0) {
 						ob_start();
+						echo "<div class='form-module' name='{$src[0]}'>";
 						loadModuleComponent($src[0],$src[1]);
+						echo "</div>";
 						$html.=ob_get_contents();
 						ob_clean();
 					} else {
 						ob_start();
+						echo "<div class='form-module' name='{$fieldinfo['src']}'>";
 						loadModules($fieldinfo['src']);
+						echo "</div>";
 						$html.=ob_get_contents();
 						ob_clean();
 					}
@@ -1124,7 +1128,31 @@ if(!function_exists("findForm")) {
 					$html.="Source '".basename($fieldinfo['src'])."' not defined.";
 				}
 				break;
-				
+			case 'method':
+				if(isset($fieldinfo['src'])) {
+					if(function_exists($fieldinfo['src'])) {
+						$html.=call_user_func($fieldinfo['src'], [
+								"fieldinfo"=>$fieldinfo,
+								"data"=>$data,
+								"dbkey"=>$dbKey
+							]);
+					} else {
+						$html.="Method not Supported.";
+					}
+				} elseif(isset($fieldinfo['method'])) {
+					if(function_exists($fieldinfo['method'])) {
+						$html.=call_user_func($fieldinfo['method'], [
+								"fieldinfo"=>$fieldinfo,
+								"data"=>$data,
+								"dbkey"=>$dbKey
+							]);
+					} else {
+						$html.="Method not Supported.";
+					}
+				} else {
+					$html.="Method not defined.";
+				}
+				break;
 			case 'static':
 			case 'static2':
 				if(isset($fieldinfo['content']))

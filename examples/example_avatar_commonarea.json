@@ -1,0 +1,91 @@
+{
+	"forcefill":{
+	    "groupuid":"#SESS_GROUP_NAME#",
+        "guid":"#SESS_GUID#"
+	},
+	"source": {
+		"type": "sql",
+		"table": "profile_tbl",
+		"where": ["md5(id)"]
+	},
+	"gotolink":"infoview/profile.main/{hashid}?",
+	"fields": {
+	    "avatar_photo": {
+			"label": "Type",
+			"type":  "avatar",
+			"group": "common",
+			"required": true
+		},
+		"name": {
+			"label": "Profile Name",
+			"group": "common",
+			"required": true
+		},
+		"branch_code": {
+			"label": "Profile Code (E.g- de,cg)",
+			"group": "common",
+			"required": true
+		},
+		"company": {
+			"label": "Company Name",
+			"group": "common"
+		},
+		"type": {
+			"label": "Type",
+			"group": "Info",
+			"type": "autosuggest",
+			"required": true
+		},
+		"tags": {
+			"label": "Branch Tags",
+			"type":"tag",
+			"group": "Info"
+		},
+		"dob": {
+			"label": "Date of Birth",
+			"group": "Info",
+			"type": "date",
+			"required": true
+		},
+		"email": {
+			"label": "E-mail",
+			"group": "Info",
+			"type": "email",
+			"required": true
+		},
+		"address": {
+			"label": "Address",
+			"group": "Address",
+			"type": "textarea",
+			"required": true
+		},
+		"region": {
+			"label": "Region",
+			"group": "Address",
+			"required": true
+		},
+		"country": {
+			"label": "Country",
+			"group": "Address",
+			"type": "select",
+			"options":{
+			    "in": "india"
+			},
+			"required": true
+		},
+		"zipcode": {
+			"label": "Zipcode",
+			"group": "Address",
+			"required": true
+		},
+		"blocked": {
+			"label": "Blocked",
+			"group": "Info",
+			"type": "dataSelector",
+		    "groupid":"boolean",
+			"vmode":"edit",
+			"required": true
+		}
+	}
+}
+

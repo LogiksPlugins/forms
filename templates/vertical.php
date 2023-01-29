@@ -7,7 +7,7 @@ if(count($fieldGroups)>1) {
 	$accordionID=$formConfig['formkey'];
 
 	echo '<form class="form validate '.$formConfig['mode'].' '.($formConfig['simpleform']?"simple-form":"").'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'">';
-	echo '<div class="panel-group accordion-layout" id="accordion'.$accordionID.'" role="tablist" aria-multiselectable="true">';
+	echo '<div class="panel-group vertical-layout" id="accordion'.$accordionID.'" role="tablist" aria-multiselectable="true">';
 	foreach ($groups as $nx=>$fkey) {
 		$title=toTitle(_ling($fkey));
 		$panelID=md5($fkey);
@@ -16,9 +16,9 @@ if(count($fieldGroups)>1) {
 		echo '<div class="panel-heading" role="tab" id="heading'.$panelID.'">';
 		echo '<h4 class="panel-title">';
 		if($nx==0) {
-		echo '<a role="button" data-toggle="collapse" aria-expanded="true" aria-controls="collapse'.$panelID.'" data-parent="#accordion'.$accordionID.'" href="#collapse'.$panelID.'" >'.$title.'</a>';
+		echo '<a role="button" aria-expanded="true" aria-controls="collapse'.$panelID.'" data-parent="#accordion'.$accordionID.'" href="#collapse'.$panelID.'" >'.$title.'</a>';
 		} else {
-		echo '<a role="button" data-toggle="collapse" aria-expanded="false" aria-controls="collapse'.$panelID.'" data-parent="#accordion'.$accordionID.'" href="#collapse'.$panelID.'" >'.$title.'</a>';
+		echo '<a role="button" aria-expanded="false" aria-controls="collapse'.$panelID.'" data-parent="#accordion'.$accordionID.'" href="#collapse'.$panelID.'" >'.$title.'</a>';
 		}
 		echo '</h4>';
 		echo '</div>';
@@ -26,7 +26,7 @@ if(count($fieldGroups)>1) {
 		if($nx==0) {
 			echo '<div id="collapse'.$panelID.'" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading'.$panelID.'">';
 		} else {
-			echo '<div id="collapse'.$panelID.'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading'.$panelID.'">';
+			echo '<div id="collapse'.$panelID.'" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading'.$panelID.'">';
 		}
 
 		echo '<div class="panel-body">';

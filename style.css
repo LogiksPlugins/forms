@@ -101,6 +101,9 @@
 .formbox .form-simplicity input {
   margin-right: 5px;
 }
+.formbox .form-group .form-module {
+    margin-top: -20px;
+}
 
 form .form-actions button {
   margin-left:20px;
@@ -147,7 +150,7 @@ form .file-input .file-preview .file-drop,
 }
 form .file-input .file-preview .file-drop .file-upload,
   form .file-input .file-preview .file-gallery .file-upload,
-  form .file-input .file-preview .file-drop-avatar .file-upload {
+   {
   width: 72px;
   height: 72px;
   display: inline-block;
@@ -155,6 +158,14 @@ form .file-input .file-preview .file-drop .file-upload,
   text-align: center;
   padding-top: 30px;
   border: 1px dashed #DEDEDE;
+}
+form .file-input .file-preview .file-drop-avatar .file-upload {
+  width: 72px;
+  height: 72px;
+  display: inline-block;
+  overflow: hidden;
+  text-align: center;
+  padding-top: 30px;
 }
 form .file-input .file-preview .file-drop .file-upload i.fa,
   form .file-input .file-preview .file-gallery .file-upload i.fa,
@@ -286,7 +297,7 @@ form .file-input.file-input-attachment .filename {
 }
 
 .form-panel {
-  margin-bottom: -10px;
+  margin-bottom: -30px;
   border: 0px;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -297,7 +308,7 @@ form .file-input.file-input-attachment .filename {
   position: relative;
 }
 .form-panel .formbox .formbox-content {
-  padding:  10px;
+/*  padding:  10px;*/
   border: 0px;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -310,6 +321,7 @@ form .file-input.file-input-attachment .filename {
 .file-field-avatar {
   margin-left: -10px;
   margin-right: -20px;
+  border: 1px dashed #DEDEDE;
 }
 .file-field-avatar .file-preview {
   margin: auto;
