@@ -409,6 +409,11 @@ function initAdvFields() {
 				$(this).multiselect();
 			});
 	}
+
+	if(typeof FORM_CAMERA == "object") {
+		FORM_CAMERA.initialize(".camera_field");
+		// FORM_CAMERA.capture_image();
+	}
 }
 function initDateFields() {
 	if(typeof $.fn.datetimepicker == "function") {

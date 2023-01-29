@@ -897,6 +897,33 @@ if(!function_exists("findForm")) {
 				$html.="</div>";
 				$html.="</div></div>";
 				break;
+			case 'camera2':
+				$fieldHash=md5($formKey.time());
+
+				$fieldinfo['multiple']=false;
+
+				$html.="<div id='{$fieldID}' class='camera-input file-field-{$fieldinfo['type']}' $xtraAttributes>";
+
+				$html.="<div class='camera_field'></div>";
+
+				if(isset($data[$formKey]) && strlen($data[$formKey])>0) {
+					$media=searchMedia($data[$formKey]);
+					if($media) {
+						$html.="<div class='file-preview-thumb'>";
+						$html.="<span class='pull-right fa fa-times fa-close' onclick='$(this).parent.detach();'></span>";
+						$html.="<img src='{$media['url']}' />";
+						$html.="<input id='{$fieldID}' name='{$fieldNameKey}' type='hidden' class='hidden' value='{$media['raw']}' >";
+						$html.="</div>";
+					} else {
+						$html.="<input id='{$fieldID}' name='{$fieldNameKey}' type='hidden' class='hidden' value='{$media['raw']}' >";
+					}
+				} else {
+					$html.="<input id='{$fieldID}' name='{$fieldNameKey}' type='hidden' class='hidden' value='' >";
+				}
+
+				$html.="</div>";
+				
+				break;
 			case 'camera':
 				$fieldHash=md5($formKey.time());
 
