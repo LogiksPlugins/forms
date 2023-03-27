@@ -446,7 +446,8 @@ if(!function_exists("findForm")) {
 				$data[$formKey]="";
 			}
 		}
-
+		$fieldinfo["dbkey"] = $dbKey;
+		$fieldinfo["data"] = $data;
 		if(!isset($fieldinfo['type'])) $fieldinfo['type']="text";
 		if(!isset($fieldinfo['label'])) $fieldinfo['label']=_ling($formKey);
 		if(!isset($fieldinfo['placeholder'])) $fieldinfo['placeholder']="";
@@ -1106,6 +1107,7 @@ if(!function_exists("findForm")) {
 
 			case 'widget':
 				if(isset($fieldinfo['src'])) {
+					$_ENV['FORMVIEW']=$fieldinfo;
 					ob_start();
 					loadWidget($fieldinfo['src']);
 					$html.=ob_get_contents();
@@ -1116,6 +1118,7 @@ if(!function_exists("findForm")) {
 				break;
 			case 'module':
 				if(isset($fieldinfo['src'])) {
+					$_ENV['FORMVIEW']=$fieldinfo;
 					$src=explode(".",$fieldinfo['src']);
 					if(count($src)>1 && strlen($src[1])>0) {
 						ob_start();
@@ -1138,6 +1141,7 @@ if(!function_exists("findForm")) {
 				break;
 			case 'source':
 				if(isset($fieldinfo['src'])) {
+					$_ENV['FORMVIEW']=$fieldinfo;
 					if(file_exists($fieldinfo['src'])) {
 						ob_start();
 						include $fieldinfo['src'];
@@ -1157,6 +1161,7 @@ if(!function_exists("findForm")) {
 				break;
 			case 'method':
 				if(isset($fieldinfo['src'])) {
+					$_ENV['FORMVIEW']=$fieldinfo;
 					if(function_exists($fieldinfo['src'])) {
 						$html.=call_user_func($fieldinfo['src'], [
 								"fieldinfo"=>$fieldinfo,
