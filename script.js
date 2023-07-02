@@ -406,7 +406,24 @@ function initAdvFields() {
 					vx=vx.split(",");
 					$(this).val(vx);
 				}
-				$(this).multiselect();
+				if($(this).hasClass("search")) {
+					$(this).multiselect({
+						//nonSelectedText: 'Check an option!',
+						nSelectedText: ' - Too many options selected!',
+						includeSelectAllOption: true,
+						enableFiltering: true,
+	            		includeFilterClearBtn: false
+					});
+				} else {
+					$(this).multiselect({
+						//nonSelectedText: 'Check an option!',
+						nSelectedText: ' - Too many options selected!',
+						disableIfEmpty: true,
+						includeSelectAllOption: true,
+						enableClickableOptGroups: true,
+            			enableCollapsibleOptGroups: true
+					});
+				}
 			});
 	}
 

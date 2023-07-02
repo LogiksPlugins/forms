@@ -125,7 +125,7 @@ switch($_REQUEST["action"]) {
 						foreach($cols as $a=>$b) {
 							$b=explode(" as ",$b);
 							$cols=$b[0];
-							$whr[$b[0]]=[$_POST['q'],"SW"];
+							$whr[$b[0]]=[$_POST['q'],"CW"];
 						}
 					} elseif(isset($_POST['v'])) {
 						foreach($cols as $a=>$b) {
