@@ -200,7 +200,7 @@ if(!function_exists("findForm")) {
 					if(isset($formConfig['config']['GUID_LOCK']) && $formConfig['config']['GUID_LOCK']===true) {
 						$whereCondition["guid"]=$_SESSION['SESS_GUID'];
 					}
-
+					
 					$tempFields = array_filter($formConfig['fields'], function($value,$key){
 											return ((strpos($key, '__') !== 0) && !(isset($value['nodb']) && $value['nodb']));
 									}, ARRAY_FILTER_USE_BOTH );
@@ -511,6 +511,10 @@ if(!function_exists("findForm")) {
 		if(isset($fieldinfo['nodb']) && $fieldinfo['nodb']==true) {
 			$class.=" nodb";
 			$xtraAttributes[]="nodb";
+		}
+		if(isset($fieldinfo['nosave']) && $fieldinfo['nosave']==true) {
+			$class.=" nosave";
+			$xtraAttributes[]="nosave";
 		}
 
 		if(isset($fieldinfo['ajaxchain']) && isset($fieldinfo['ajaxchain']['target'])>0) {

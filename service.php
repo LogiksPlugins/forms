@@ -397,6 +397,10 @@ switch($_REQUEST["action"]) {
 					unset($cols[$key]);
 					continue;
 				}
+				if(isset($formConfig['fields'][$key]['nosave']) && $formConfig['fields'][$key]['nosave']) {
+					unset($cols[$key]);
+					continue;
+				}
 				/*if(array_key_exists($key, $formConfig['data']) && md5($formConfig['data'][$key])==md5($_POST[$key])) {
 					unset($cols[$key]);
 					unset($_POST[$key]);

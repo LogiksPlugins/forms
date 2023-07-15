@@ -41,7 +41,9 @@ function initFormUI() {
 	});
 
 	$("form .nodb").each(function() {
-		$(this).attr("name","");
+		if(!$(this).hasClass("nosave")) {
+			$(this).attr("name","");
+		}
 	});
 
 	initValidationRules();
