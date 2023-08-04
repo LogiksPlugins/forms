@@ -95,7 +95,7 @@ if(!function_exists("mergeFixedData")) {
 			if($formConfig['mode']=="update" && isset($field['disabled']) && $field['disabled']) {
 				continue;
 			}
-			if($field['nodb'] || $field['nosave']) {
+			if($field['nosave']) {
 				continue;
 			}
 			if(!isset($data[$key])) {
