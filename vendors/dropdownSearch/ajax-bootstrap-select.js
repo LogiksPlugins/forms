@@ -456,7 +456,7 @@ AjaxBootstrapSelect.prototype.log = function (type, message) {
             }
 
             // Display the message(s).
-            window.console[type].apply(window.console, args);
+            //window.console[type].apply(window.console, args);
         }
     }
 };
