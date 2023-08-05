@@ -655,7 +655,11 @@ if(!function_exists("findForm")) {
 					else {
 						$data[$formKey] = str_replace("T"," ",current(explode("Z", $data[$formKey])));
 						if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])/",$data[$formKey])) {
-							$data[$formKey]=_pDate($data[$formKey],"d/m/Y");
+							if($fieldinfo['type']=="datetime") {
+								$data[$formKey]=_pDate($data[$formKey],getConfig("DATE_FORMAT")." ".getConfig("TIME_FORMAT"));
+							} else {
+								$data[$formKey]=_pDate($data[$formKey], getConfig("DATE_FORMAT"));
+							}
 						}
 					}
 				}

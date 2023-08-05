@@ -2,17 +2,25 @@ var reloadAfterSubmit=false;
 function initFormUI() {
 	$("form select[data-value]").each(function() {this.value=$(this).data('value');});
 
-	$("form select.multiple").each(function() {
-		
-	});
 	if(typeof $.fn.tagsinput == "function") {
 		$('input[type=tags]').tagsinput({
 	  
 		});
 	}
 	
-	$(".select-group select:not(.multiple).search").each(function() {
-		loadDropSearch(this);
+	$(".select-group select.search").each(function() {
+		if($(this).hasClass("multiple")) {
+			loadMultiDropLocalSearch(this);//To Be Replaced with tag type field
+		} else {
+			loadDropSearch(this);
+		}
+	});
+	$(".select-group select.multiple").each(function() {
+		if(!$(this).hasClass("search")) {
+			if($(this).children().length>10) {
+				loadMultiDropLocalSearch(this);
+			}
+		}
 	});
 	
 	//Chain selectors
@@ -398,36 +406,6 @@ function initAdvFields() {
 			});
 		}
 	});
-
-	if(typeof $.fn.multiselect == "function") {
-		$(".select-group select.field-dropdown.multiple").each(function() {
-				rid=$(this).attr("name");
-				$(this).css("width","100%");$(this).attr("id",rid);
-				vx=$(this).data("value");
-				if(vx!=null && vx.length>0) {
-					vx=vx.split(",");
-					$(this).val(vx);
-				}
-				if($(this).hasClass("search")) {
-					$(this).multiselect({
-						//nonSelectedText: 'Check an option!',
-						nSelectedText: ' - Too many options selected!',
-						includeSelectAllOption: true,
-						enableFiltering: true,
-	            		includeFilterClearBtn: false
-					});
-				} else {
-					$(this).multiselect({
-						//nonSelectedText: 'Check an option!',
-						nSelectedText: ' - Too many options selected!',
-						disableIfEmpty: true,
-						includeSelectAllOption: true,
-						enableClickableOptGroups: true,
-            			enableCollapsibleOptGroups: true
-					});
-				}
-			});
-	}
 
 	if(typeof FORM_CAMERA == "object") {
 		FORM_CAMERA.initialize(".camera_field");
@@ -818,6 +796,38 @@ function loadAjaxChain(srcSelect) {
 				}
 			});
 		}
+	}
+}
+function loadMultiDropLocalSearch(srcSelect) {
+	//$(".select-group select.field-dropdown:not(.search).multiple").each(function() {
+	if(typeof $.fn.multiselect == "function") {
+		$(srcSelect).each(function() {
+				var rid=$(this).attr("name");
+				$(this).css("width","100%");$(this).attr("id",rid);
+				var vx=$(this).data("value");
+				if(vx!=null && vx.length>0) {
+					vx=vx.split(",");
+					$(this).val(vx);
+				}
+				if($(this).hasClass("search")) {
+					$(this).multiselect({
+						//nonSelectedText: 'Check an option!',
+						nSelectedText: ' - Too many options selected!',
+						includeSelectAllOption: true,
+						enableFiltering: true,
+	            		includeFilterClearBtn: false
+					});
+				} else {
+					$(this).multiselect({
+						//nonSelectedText: 'Check an option!',
+						nSelectedText: ' - Too many options selected!',
+						disableIfEmpty: true,
+						includeSelectAllOption: true,
+						enableClickableOptGroups: true,
+            			enableCollapsibleOptGroups: true
+					});
+				}
+			});
 	}
 }
 function loadDropSearch(srcSelect) {
