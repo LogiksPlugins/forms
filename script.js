@@ -253,7 +253,7 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 		title = "...";
 
 
-		typeofPopup = "iframe";
+		var typeofPopup = "iframe";
 		if(formBox.closest(".modal").length>0) {
 			typeofPopup = "modal";
 			formBox.closest(".modal").modal("hide").removeClass("in show").detach();
@@ -267,11 +267,14 @@ function formsSubmitStatus(formid,msgObj,msgType,gotoLink) {
 			if(gotoLink=="closepopup") {
 				if(typeofPopup=="modal") {
 					formBox.closest(".modal").modal("hide").removeClass("in show").detach();
+					if($(".modal").length<=0 && $(".modal-backdrop").length>=1) $(".modal-backdrop").detach();
 					if(typeof rpt == "object") rpt.refetchCurrentDataGrid();
 				} else if(typeofPopup=="iframe") {
 					parent.$("iframe").each(function() {
 					    if($(this).attr("src")==window.location.href) {
-					        $(this).closest(".modal").modal("hide").removeClass("in show").detach();
+					        $(this).closest(".modal").modal("hide").removeClass("in show");
+					        if(parent.$(".modal").length==1 && parent.$(".modal-backdrop").length>=1) parent.$(".modal-backdrop").detach();
+					        $(this).detach();
 					    }
 					});
 					if(typeof parent.rpt == "object") parent.rpt.refetchCurrentDataGrid();
