@@ -446,7 +446,7 @@ if(!function_exists("findForm")) {
 				$data[$formKey]="";
 			}
 		}
-		$fieldinfo["dbkey"] = $dbKey;
+		if(!isset($fieldinfo["dbkey"])) $fieldinfo["dbkey"] = $dbKey;
 		$fieldinfo["data"] = $data;
 		if(!isset($fieldinfo['type'])) $fieldinfo['type']="text";
 		if(!isset($fieldinfo['label'])) $fieldinfo['label']=_ling($formKey);
