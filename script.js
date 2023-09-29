@@ -17,9 +17,9 @@ function initFormUI() {
 	});
 	$(".select-group select.multiple").each(function() {
 		if(!$(this).hasClass("search")) {
-			if($(this).children().length>10) {
+			// if($(this).children().length>10) {
 				loadMultiDropLocalSearch(this);
-			}
+			// }
 		}
 	});
 	
