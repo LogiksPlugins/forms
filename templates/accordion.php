@@ -6,7 +6,7 @@ if(count($fieldGroups)>1) {
 
 	$accordionID=$formConfig['formkey'];
 
-	echo '<form class="form validate '.$formConfig['mode'].' '.($formConfig['simpleform']?"simple-form":"").'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'">';
+	echo '<div id="'.$formConfig["formkey"].'"><form class="form validate '.$formConfig['mode'].' '.($formConfig['simpleform']?"simple-form":"").'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'">';
 	echo '<div class="panel-group accordion-layout" id="accordion'.$accordionID.'" role="tablist" aria-multiselectable="true">';
 	foreach ($groups as $nx=>$fkey) {
 		$title=toTitle(_ling($fkey));
@@ -47,9 +47,9 @@ if(count($fieldGroups)>1) {
 	echo getFormActions($formConfig['actions'],$formConfig);
 	echo '</div></div>';
 
-	echo '</form>';
+	echo '</form></div>';
 } else {
-	echo '<div class="formbox"><div class="formbox-content">';
+	echo '<div class="formbox"><div id="'.$formConfig["formkey"].'" class="formbox-content">';
 	echo '<form class="form validate '.$formConfig['mode'].' '.($formConfig['simpleform']?"simple-form":"").'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'">';
 	echo "<div class='row'>";
 	echo getFormFieldset($formConfig['fields'],$formData,$formConfig['dbkey'],$formConfig['mode']);
@@ -60,6 +60,6 @@ if(count($fieldGroups)>1) {
 	echo '</div></div>';
 	echo '</form></div></div>';
 }
-echo "<script>if(typeof initFormUI=='function') initFormUI(); else $(function() {initFormUI();});</script>";
+echo "<script>if(typeof initFormUI=='function') initFormUI('#{$formConfig["formkey"]}'); else $(function() {initFormUI('#{$formConfig["formkey"]}');});</script>";
 //echo "<script>$(function() {initFormUI()});</script>";
 ?>

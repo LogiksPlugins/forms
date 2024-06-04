@@ -1,5 +1,7 @@
 var reloadAfterSubmit=false;
-function initFormUI() {
+function initFormUI(refid) {
+	if(refid==null) refid = "body";
+
 	$("form select[data-value]").each(function() {this.value=$(this).data('value');});
 
 	if(typeof $.fn.tagsinput == "function") {
@@ -131,8 +133,9 @@ function initFormUI() {
 	}
 
 	//$("form.validate").valid();
+	//console.log("FORM", refid);
 
-	$("form.validate").validate({
+	$("form.validate", refid).validate({
 		  //debug:true,
 		  ignore: ".ignore",
 		  errorClass: "error",

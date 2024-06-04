@@ -52,11 +52,13 @@ if(!function_exists("findForm")) {
 
 		$formConfig=json_decode(file_get_contents($file),true);
 
+		if(!isset($formConfig['uuid'])) $formConfig['uuid'] = uniqid();
+
 		$formConfig['sourcefile']=$file;
 		if(isset($formConfig['singleton']) && $formConfig['singleton']) {
-			$formConfig['formkey']=md5(session_id().$file);
+			$formConfig['formkey']=md5(session_id().$file.$formConfig['uuid']);
 		} else {
-			$formConfig['formkey']=md5(session_id().time().$file);
+			$formConfig['formkey']=md5(session_id().time().$file.$formConfig['uuid']);
 		}
 		$formConfig['srckey']=$fileName;
 		if(!isset($formConfig['dbkey'])) $formConfig['dbkey']="app";
@@ -96,7 +98,9 @@ if(!function_exists("findForm")) {
 			$formConfig=array_merge_recursive($formConfig,$globalParams);
 		}
 
-		if(!isset($formConfig['formkey'])) $formConfig['formkey']=md5(session_id().time());
+		if(!isset($formConfig['uuid'])) $formConfig['uuid'] = uniqid();
+
+		if(!isset($formConfig['formkey'])) $formConfig['formkey']=md5(session_id().time().$formConfig['uuid']);
 
 		$formConfig['formcode']=md5($_SESSION['SESS_USER_ID'].$formConfig['sourcefile']);
 		$formConfig['formuid']=md5($formConfig['sourcefile']);

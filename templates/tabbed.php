@@ -17,7 +17,7 @@ if(count($fieldGroups)>1) {
 	echo '<form class="form validate '.$formConfig['mode'].' '.($formConfig['simpleform']?"simple-form":"").'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'" >';
 	if(isset($fieldGroups['common'])) {
 		echo "<div role='commonpanel' class='panel form-panel'>";
-		echo '<div class="formbox"><div class="formbox-content">';
+		echo '<div class="formbox"><div id="'.$formConfig["formkey"].'" class="formbox-content">';
 		echo "<div class='row'>";
 
 		$hasAvatar = array_search("avatar", array_column($fieldGroups['common'], 'type'));
@@ -75,7 +75,7 @@ if(count($fieldGroups)>1) {
 	echo '</div></div>';
 	echo '</form>';
 } else {
-	echo '<div class="formbox"><div class="formbox-content">';
+	echo '<div class="formbox"><div id="'.$formConfig["formkey"].'" class="formbox-content">';
 	echo '<form class="form validate '.$formConfig['mode'].' '.($formConfig['simpleform']?"simple-form":"").'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'" >';
 	echo "<div class='row'>";
 	echo getFormFieldset($formConfig['fields'],$formData,$formConfig['dbkey'],$formConfig['mode']);
@@ -86,5 +86,5 @@ if(count($fieldGroups)>1) {
 	echo '</div></div>';
 	echo '</form></div></div>';
 }
-echo "<script>if(typeof initFormUI=='function' && typeof $.fn.sortable=='function') {initFormUI();} else $(function() {initFormUI();});</script>";
+echo "<script>if(typeof initFormUI=='function' && typeof $.fn.sortable=='function') {initFormUI('#{$formConfig["formkey"]}');} else $(function() {initFormUI('#{$formConfig["formkey"]}');});</script>";
 ?>
