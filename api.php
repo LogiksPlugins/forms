@@ -234,7 +234,7 @@ if(!function_exists("findForm")) {
 				case 'php':
 					$file=APPROOT.$source['file'];
 					if(file_exists($file) && is_file($file)) {
-						$formData=include_once($file);
+						$formData=include($file);
 					} else {
 						trigger_error("Form Data Source File Not Found");
 					}
@@ -268,7 +268,7 @@ if(!function_exists("findForm")) {
 								}
 
 								$formConfig['mode'] = "fetch";
-								$formData=include_once($finalFile);
+								$formData=include($finalFile);
 							} else {
 								//displayFormMsg("Sorry, Form Data - Plugin Does Not Support Plugin:Data Requirements");
 							}
