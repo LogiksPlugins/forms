@@ -14,10 +14,11 @@ if(count($fieldGroups)>1) {
 	}
 	// printArray($fieldGroups);
 
+	echo '<div class="form-parent" id="'.$formConfig["formkey"].'" >';
 	echo '<form class="form validate '.$formConfig['mode'].' '.($formConfig['simpleform']?"simple-form":"").'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'" >';
 	if(isset($fieldGroups['common'])) {
 		echo "<div role='commonpanel' class='panel form-panel'>";
-		echo '<div class="formbox"><div id="'.$formConfig["formkey"].'" class="formbox-content">';
+		echo '<div class="formbox"><div class="formbox-content">';
 		echo "<div class='row'>";
 
 		$hasAvatar = array_search("avatar", array_column($fieldGroups['common'], 'type'));
@@ -74,6 +75,7 @@ if(count($fieldGroups)>1) {
 	echo getFormActions($formConfig['actions'],$formConfig);
 	echo '</div></div>';
 	echo '</form>';
+	echo '</div>';
 } else {
 	echo '<div class="formbox"><div id="'.$formConfig["formkey"].'" class="formbox-content">';
 	echo '<form class="form validate '.$formConfig['mode'].' '.($formConfig['simpleform']?"simple-form":"").'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'" >';

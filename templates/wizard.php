@@ -36,6 +36,7 @@ if(count($fieldGroups)>1) {
 		}
 	}
 	echo '</ul>';
+	echo '<div class="form-parent" id="'.$formConfig["formkey"].'" >';
 	echo '<form class="form validate '.$formConfig['mode'].' '.($formConfig['simpleform']?"simple-form":"").'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'" >';
 	echo '<div class="tab-content">';
 	foreach ($groups as $nx=>$fkey) {
@@ -57,6 +58,7 @@ if(count($fieldGroups)>1) {
 	echo getFormActions($formConfig['actions'],$formConfig);
 	echo '</div></div>';
 	echo '</form>';
+	echo '</div>';
 } else {
 	echo '<div class="formbox"><div id="'.$formConfig["formkey"].'" class="formbox-content">';
 	echo '<form class="form validate '.$formConfig['mode'].' '.($formConfig['simpleform']?"simple-form":"").'" method="POST" enctype="multipart/form-data" data-formkey="'.$formConfig["formkey"].'" data-glink="'.$formConfig['gotolink'].'" data-relink="'.$formConfig['reloadlink'].'" data-clink="'.$formConfig['cancellink'].'" >';
