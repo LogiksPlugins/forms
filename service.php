@@ -44,6 +44,11 @@ switch($_REQUEST["action"]) {
 					if(!isset($src['where'])) {
 						$src['where'] = ["blocked" => "false"];
 					}
+					if($src['where'] && is_array($src['where'])) {
+						foreach($src['where'] as $k=>$v) {
+							$src['where'][$k] = _replace($v);
+						}
+					}
 					
 					$sqlData=_db()->_selectQ($src['table'],$src['columns'],$src['where']);
 					if(isset($src['where']) && $src['where']) {
@@ -70,6 +75,11 @@ switch($_REQUEST["action"]) {
 					
 					if(!isset($src['where'])) {
 						$src['where'] = ["blocked" => "false"];
+					}
+					if($src['where'] && is_array($src['where'])) {
+						foreach($src['where'] as $k=>$v) {
+							$src['where'][$k] = _replace($v);
+						}
 					}
 					
 					$sqlData=_db()->_selectQ($src['table'],$src['columns'],$src['where']);
@@ -138,6 +148,11 @@ switch($_REQUEST["action"]) {
 					if(!isset($src['where'])) {
 						$src['where'] = ["blocked" => "false"];
 					}
+					if($src['where'] && is_array($src['where'])) {
+						foreach($src['where'] as $k=>$v) {
+							$src['where'][$k] = _replace($v);
+						}
+					}
 					
 					$sqlData=_db()->_selectQ($src['table'],$src['columns'],$src['where'])->_WHERE($whr,"AND","OR");
 					if(isset($src['where']) && $src['where']) {
@@ -180,7 +195,12 @@ switch($_REQUEST["action"]) {
 					if(!isset($src['where'])) {
 						$src['where'] = ["blocked" => "false"];
 					}
-					
+					if($src['where'] && is_array($src['where'])) {
+						foreach($src['where'] as $k=>$v) {
+							$src['where'][$k] = _replace($v);
+						}
+					}
+
 					$sqlData=_db()->_selectQ($src['table'],$src['columns'],$src['where'])->_WHERE($whr,"AND","OR");
 					$sqlData=$sqlData->_limit(10)->_GET();
 					
@@ -215,6 +235,11 @@ switch($_REQUEST["action"]) {
 				}
 			} else {
 				$src['where']=[];
+			}
+			if($src['where'] && is_array($src['where'])) {
+				foreach($src['where'] as $k=>$v) {
+					$src['where'][$k] = _replace($v);
+				}
 			}
 
 			$data=_db()->_selectQ($src['table'],$src['columns'],$src['where']);
